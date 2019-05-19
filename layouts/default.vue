@@ -1,6 +1,6 @@
 <template>
   <v-app light>
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
@@ -26,13 +26,13 @@
         </v-list-tile>
       </v-list>
       
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
     <v-toolbar
       :clipped-left="clipped"
       fixed
       app
     >
-      <v-toolbar-side-icon @click="drawer = !drawer" />
+      <!-- <v-toolbar-side-icon @click="drawer = !drawer" /> -->
 
       <!-- <v-btn
         icon

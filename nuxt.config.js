@@ -40,7 +40,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/vuetify'
+    '@/plugins/vuetify',
+    // '@/plugins/vue2-google-maps'
   ],
 
   /*
@@ -62,8 +63,10 @@ export default {
   */
   build: {
     transpile: ['vuetify/lib'],
-    // vendor:['vue-image-upload-resize'],
-    plugins: [new VuetifyLoaderPlugin()],
+    vendor:['vue2-google-maps'],
+    plugins: [
+      new VuetifyLoaderPlugin()
+      ],
     loaders: {
       stylus: {
         import: ['~assets/style/variables.styl']
