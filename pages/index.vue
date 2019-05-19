@@ -21,7 +21,7 @@
           <v-select
             v-model="animalType"
             :items="animalTypes"
-            label="animal"
+            label="Animal"
           ></v-select>
       </v-flex>
       <v-flex>
@@ -31,8 +31,6 @@
             label="Purpose"
           ></v-select>
       </v-flex>
-      <v-flex>
-         <p>asdas {{purpose}}</p></v-flex>
       <v-flex>
           <v-select
             v-model="urgency"
