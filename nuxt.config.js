@@ -24,6 +24,33 @@ export default {
     ]
   },
 
+  //dynamic routes
+  // generate: {
+  //   routes: [
+  //     '/profile/13',
+  //     '/profile/14',
+  //     '/profile/15',
+  //     '/profile/16',
+  //     '/profile/17',
+  //     '/profile/18',
+  //     '/profile/19',
+  //     '/profile/20',
+  //     '/profile/21',
+  //     '/profile/22',
+  //     '/profile/23',
+  //     '/profile/24',
+  //     '/profile/25',
+  //     '/profile/26',
+  //     '/profile/27',
+  //   ]
+  //   // routes: function () {
+  //   //   return axios.get('https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/')
+  //   //   .then((res) => {
+  //   //     return res.data.map((user) => {
+  //   //       return '/profile/' + user.id
+  //   //     })
+  //   //   })
+  // },
   /*
   ** Customize the progress-bar color
   */
