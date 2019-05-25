@@ -25,8 +25,9 @@ export const state = () => ({
   }
 
   export const actions = {
-    async getProfile ({ commit }, payload) {
+    async getProfileLoad ({ commit }, payload) {
       commit('isLoading')
+      console.log('getprofile: '+payload);
       this.$axios.get(
         // 'https://localhost:44352/api/AnimalProfile/get/' + this.$route.query.id , 
         'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/'+ payload ,          
@@ -38,6 +39,13 @@ export const state = () => ({
           console.log(error);
         }); 
         
-        commit('completedLoading')        
+        commit('completedLoading')    
+    },
+    async getProfile ({ commit }, payload) {
+        var result =  await this.$axios.get(
+            // 'https://localhost:44352/api/AnimalProfile/get/' + this.$route.query.id , 
+            'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/'+ payload ,          
+                )
+        return result.data
     },
   }

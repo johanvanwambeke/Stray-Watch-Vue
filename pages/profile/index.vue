@@ -1,6 +1,5 @@
 <template>
     <v-container> 
-
       <h1>{{sentense}}</h1>
       <v-flex xs12 sm6 offset-3>
         <v-btn raised class="primary" @click="onPickFile">upload image</v-btn>
@@ -9,7 +8,6 @@
       <v-flex>
         <img :src="imageUrl" alt="" width="300">
       </v-flex>
-
       <v-flex>
         <v-select
           v-model="healthStatus"
@@ -51,18 +49,6 @@
 
 <script>
 export default {
-  // head () {
-  //     return {
-  //       title:'Customisable PageTitle Bobbies profile',
-  //       meta: [
-  //           {'property':'og:title', 'content': this.sentense},
-  //           {'property':'og:description', 'content':this.description},
-  //           {'property':'og:image', 'content':this.imageUrl},
-  //           {'property':'og:url', 'content':'https://app.stray-watch.com/'},
-  //           {'property':'og:type', 'content':'Charity'},
-  //         ]
-  //     }
-  //   },
  data() {
     return {
       info:'',
@@ -117,7 +103,7 @@ export default {
 
       .then((response)=> {
         console.log(response.data.id);
-        this.$router.push({path: 'read', query: { id: response.data.id  } })
+        this.$router.push({ path: `/profile/${response.data.id}` })
       })
       .catch((error)=> {
         console.log(error);

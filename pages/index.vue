@@ -6,6 +6,15 @@
         alt="Vuetify.js"
         class="mb-5"
       >
+      <form @submit.prevent="submit" >
+      <v-text-field placeholder="diercode" 
+              autofocus
+              v-model="search">
+      </v-text-field>
+      </form>
+      <h1>Hallo</h1>
+      <picture-input ref="pictureInput" @change="onChange"></picture-input>
+
       <blockquote class="blockquote">
         &#8220;We are raising funds for a <b>global</b> solution connecting stray <b>animals</b> in need with <b>caregivers</b> and <b>capital</b>.&#8221;
         <footer>
@@ -13,7 +22,48 @@
             <em>&mdash;John Johnson</em>
           </small>
         </footer>
-      </blockquote>
+      </blockquote>      
     </v-flex>
   </v-layout>
 </template>
+<script>
+export default {
+  head:{
+    script: [
+      { src: 'https://unpkg.com/vue-picture-input' },
+      // { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' },
+    ],     
+    // script: [
+    //   { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' },
+    // ],
+    link: [
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto' }
+    ]
+ 
+  },
+  data(){
+    return{
+      search:''
+    }
+  },
+  methods:{
+    submit(event){
+      this.$router.push(`profile/${this.search}`)
+    },
+      onChange (image) {
+          console.log('onChange!')
+          if (image) {
+              EXIF.getData(this.$refs.pictureInput.file, function() {
+                  console.log('image info', this)
+                  console.log('exif data', this.exifdata)
+              })
+          } else {
+              console.log(`it's not image`)
+          }
+      }
+  },
+  components: {
+    'picture-input': PictureInput
+  },
+}
+</script>
