@@ -60,7 +60,7 @@ export default {
       }
     }
   },
-  middleware:'getProfile',
+  // middleware:'getProfile',
   head () {
       return {
         title:this.sentense,
