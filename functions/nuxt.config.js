@@ -1,7 +1,8 @@
-import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
-import pkg from './package'
+const pkg = require('./package.json');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
-export default {
+// export default {
+module.exports = {
   mode: 'universal',
 
   /*
@@ -69,6 +70,7 @@ export default {
   /*
   ** Build configuration
   */
+  buildDir: 'nuxt',
   build: {
     transpile: ['vuetify/lib'],
     vendor:['vue2-google-maps'],
