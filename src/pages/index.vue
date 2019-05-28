@@ -31,7 +31,7 @@
         </picture-input>
       </div> -->
       <blockquote class="blockquote">
-        &#8220;We are raising funds for a <b>global</b> solution connecting stray <b>animals</b> in need with <b>caregivers</b> and <b>capital</b>.&#8221;
+        &#8220; V1 : We are raising funds for a <b>global</b> solution connecting stray <b>animals</b> in need with <b>caregivers</b> and <b>capital</b>.&#8221;
         <footer>
           <small>
             <em>&mdash;John Johnson</em>

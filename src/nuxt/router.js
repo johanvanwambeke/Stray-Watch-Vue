@@ -2,9 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import { interopDefault } from './utils'
 
-const _54f5228e = () => interopDefault(import('..\\pages\\profile\\index.vue' /* webpackChunkName: "pages_profile_index" */))
-const _718fabfe = () => interopDefault(import('..\\pages\\profile\\_id\\index.vue' /* webpackChunkName: "pages_profile__id_index" */))
-const _0b7f2252 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
+const _6faad1b4 = () => interopDefault(import('..\\pages\\profile\\index.vue' /* webpackChunkName: "pages_profile_index" */))
+const _b91f2834 = () => interopDefault(import('..\\pages\\profile\\_id\\index.vue' /* webpackChunkName: "pages_profile__id_index" */))
+const _287e68f7 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 Vue.use(Router)
 
@@ -82,15 +82,15 @@ export function createRouter() {
 
     routes: [{
       path: "/profile",
-      component: _54f5228e,
+      component: _6faad1b4,
       name: "profile"
     }, {
       path: "/profile/:id",
-      component: _718fabfe,
+      component: _b91f2834,
       name: "profile-id"
     }, {
       path: "/",
-      component: _0b7f2252,
+      component: _287e68f7,
       name: "index"
     }],
 
