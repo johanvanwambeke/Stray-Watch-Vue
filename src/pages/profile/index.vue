@@ -1,13 +1,19 @@
 <template>
     <v-container> 
       <h1>{{sentense}}</h1>
-      <v-flex xs12 sm6 offset-3>
+      <!-- <v-flex xs12 sm6 offset-3>
         <v-btn raised class="primary" @click="onPickFile">upload image</v-btn>
         <input type="file" style="display:none" ref="fileInput" accept="image/*" @change="onFilePicked">
       </v-flex>
       <v-flex>
         <img :src="imageUrl" alt="" width="300">
-      </v-flex>
+      </v-flex> -->
+
+            <no-ssr placeholder="Loading...">
+        <MyImageUploader/>
+      </no-ssr>
+
+
       <v-flex>
         <v-select
           v-model="healthStatus"
@@ -48,6 +54,7 @@
 </template>
 
 <script>
+import MyImageUploader from "~/components/MyImageUploader.vue";
 export default {
  data() {
     return {
@@ -76,7 +83,7 @@ export default {
     }
   },
   components: {
-    // GoogleMap
+    MyImageUploader
   },
   computed:{
     sentense(){
