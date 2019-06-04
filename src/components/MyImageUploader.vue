@@ -1,51 +1,85 @@
 <template>
   <div class="example-avatar">
-    <v-btn raised class="primary" @click="onPickFile">upload image</v-btn>
-    <input type="file" style="display:none" ref="fileInput" accept="image/*" @change="setImage">
-
-    <!-- <input type="file" name="image" accept="image/*" @change="setImage" /> -->
-    <div v-if="imgSrc != ''" 
-      style="width: 400px; height:300px; border: 1px solid gray; display: inline-block;">
-      <vue-cropper            
+    <input type="file" style="display:none" ref="fileInput1" accept="image/*" @change="setImage($event,1)">
+    <input type="file" style="display:none" ref="fileInput2" accept="image/*" @change="setImage($event,2)">
+    <input type="file" style="display:none" ref="fileInput3" accept="image/*" @change="setImage($event,3)">
+    <input type="file" style="display:none" ref="fileInput4" accept="image/*" @change="setImage($event,4)">
+    <v-dialog 
+      v-model="dialog">
+      <v-btn icon dark @click="dialog = false">
+      <v-icon>close</v-icon>
+      </v-btn>
+      <vue-cropper class="cropperStyle"        
           ref='cropper'
           :guides="true"
-          :view-mode="2"
+          :view-mode="0"
           drag-mode="crop"
-          aspectRatio= "1"
           :auto-crop-area="0.5"
-          :min-container-width="250"
-          :min-container-height="180"
           :background="true"
           :rotatable="true"
           :src="imgSrc"
           alt="Source Image"
-          :img-style="{ 'width': '100%' }">
+          >
       </vue-cropper>
+      <v-btn @click="cropImage" >Crop</v-btn>
+      <v-btn @click="rotate" v-if="imgSrc != ''">Rotate</v-btn>  
+    </v-dialog>   
+
+    <v-container grid-list-md >
+        <v-layout>          
+          <v-flex v-for="(image, imageIndex) in images" :key="imageIndex" xs3 class="imageframe">
+            <v-card >
+              <img :src="image" v-bind:class="{ ImageSelected:image!='paw-white.svg' }" class="image" @click="onPickFile(imageIndex)"/>
+
+              <v-card-actions v-if="image!='paw-white.svg'">
+                  <v-btn icon flat @click="showCropper($event,imageIndex)"> 
+                    <v-icon>crop</v-icon> 
+                  </v-btn>
+                  <v-btn icon flat @click="deleteImg(imageIndex)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
     </div>
-
-    <v-btn @click="cropImage" v-if="imgSrc != ''" >Crop</v-btn>
-    <v-btn @click="rotate" v-if="imgSrc != ''">Rotate</v-btn>   
-
-    <div>
-      <img
-        v-for="(image, imageIndex) in images"
-        :key="imageIndex"
-        :src="image"/>
-    </div>
-
-
-  </div>
 </template>
 <style scoped>
-.image {
-  float: left;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  border: 1px solid #ebebeb;
-  padding: 5px;
-  width:"25%"
+.cropperStyle{
+  margin-left: auto;
+  margin-right: auto;
+  height:70vh;
+  width:80vh;
+  border-style: none;
 }
+.btnMenu {
+  
+}
+.image {
+	width: 100%;
+	height: auto;
+  max-height: 50vh;
+  border-style: dashed;
+  border-width: 7px;
+  border-color: gray;
+  background-color: rgb(221, 221, 221);
+}
+.ImageSelected{
+  width: 100%;
+	height: auto;
+  max-height: 50vh;
+  border-style: solid;
+  border-width: 0px;
+  border-color: rgb(120, 179, 115);
+  background-color: rgb(221, 221, 221);
+}
+
+
+.image:hover{
+  cursor: pointer;
+}
+
 </style>
 
 <script>
@@ -57,8 +91,15 @@ export default {
   },
   data() {
     return {
+      dialog:false,
+      staticFile:'paw-white.svg',
       images: [
+       'paw-white.svg',
+       'paw-white.svg',
+       'paw-white.svg',
+       'paw-white.svg'
       ],
+      editingImage:0,
       index: null,
       imgSrc: '',
       cropImg: '',
@@ -67,33 +108,24 @@ export default {
     }
   },
   mounted(){
-    // this.$refs.cropper.rotate(45);
-        //  this.imgSrc= ''
-  },
-  watch: {
-    edit(value) {
-      console.log(value)
-      if (value) {
-        this.$nextTick(function () {
-          if (!this.$refs.editImage) {
-            return
-          }
-          let cropper = new Cropper(this.$refs.editImage, {
-            aspectRatio: 1 / 1,
-            viewMode: 1,
-          })
-          this.cropper = cropper
-        })
-      } else {
-        if (this.cropper) {
-          this.cropper.destroy()
-          this.cropper = false
-        }
-      }
-    }
   },
   methods: {
-     setImage(e) {
+    showCropper(e,nr){
+      this.dialog=true;
+      this.imgSrc =this.images[nr]
+      this.editingImage = nr;
+      try {
+          this.$refs.cropper.replace(this.images[nr]);
+          console.log('replaced')
+      } catch (error) {
+        console.log('find a way to fix this #1')
+      }
+    },
+     deleteImg(nr){
+        this.images.splice(nr,1,'paw-white.svg')
+     },
+     setImage(e, nr) {
+       console.log(nr)
       const file = e.target.files[0];
       if (!file.type.includes('image/')) {
         alert('Please select an image file');
@@ -102,9 +134,12 @@ export default {
       if (typeof FileReader === 'function') {
         const reader = new FileReader();
         reader.onload = (event) => {
-          this.imgSrc = event.target.result;
+          this.images.splice(nr-1,1,event.target.result)
+          // this.images.push(event.target.result)
+          //Cropper !
           // rebuild cropperjs with the updated source
-          this.$refs.cropper.replace(event.target.result);
+          // this.imgSrc = event.target.result;
+          // this.$refs.cropper.replace(event.target.result);
         };
         reader.readAsDataURL(file);
       } else {
@@ -113,28 +148,23 @@ export default {
     },
     cropImage() {
       // get image data for post processing, e.g. upload or setting image src
-      this.images.push(this.$refs.cropper.getCroppedCanvas().toDataURL());
+      this.images.splice(this.editingImage,1,this.$refs.cropper.getCroppedCanvas().toDataURL())
+      this.dialog=false;
+      
     },
     rotate() {
       // guess what this does :)
       this.$refs.cropper.rotate(90);
     },
-    onFilePicked(event){
-
-      const files = event.target.files
-      const fileReader = new FileReader()
-      fileReader.addEventListener('load',()=>{
-        console.log('loaded')
-        this.cropper.destroy();
-        var base64result = fileReader.result//.split(',')[1];
-        this.imgSrc = base64result;
-        fileReader.src = base64result;
-        this.cropper = new Cropper(base64result)
-      })
-      fileReader.readAsDataURL(files[0]) 
-    },
-    onPickFile(){
-      this.$refs.fileInput.click()
+    onPickFile(e){
+      if(e==0)
+       this.$refs.fileInput1.click()
+      if(e==1)
+       this.$refs.fileInput2.click()
+      if(e==2)
+       this.$refs.fileInput3.click()
+      if(e==3)
+       this.$refs.fileInput4.click()
     },
     editSave() {
       this.edit = false
