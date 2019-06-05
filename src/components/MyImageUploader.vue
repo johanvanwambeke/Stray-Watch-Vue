@@ -29,7 +29,14 @@
         <v-layout>          
           <v-flex v-for="(image, imageIndex) in images" :key="imageIndex" xs3 class="imageframe">
             <v-card >
-              <img :src="image.src" v-bind:class="{ ImageSelected:image!='paw-white.svg' }" class="image" @click="onPickFile(imageIndex)"/>
+              <v-img :src="image.src" v-bind:class="{ ImageSelected:image!='paw-white.svg' }" class="image" @click="onPickFile(imageIndex)"/>
+              <v-card-title v-if="image.long!=''">
+                <div>
+                  <span class="grey--text">Coordinates</span><br>
+                  <span>{{image.long}}</span><br>
+                  <span>{{image.lat}}</span>
+                </div>
+              </v-card-title>
               <v-card-actions v-if="image.src!='paw-white.svg'">
                   <v-btn icon flat @click="showCropper($event,imageIndex)"> 
                     <v-icon>crop</v-icon> 
@@ -43,10 +50,9 @@
               </v-card-actions>
             </v-card>
           </v-flex>
-          
         </v-layout>
       </v-container>
-      <canvas ref="canvas" height="0" width="0" style="display: none;"></canvas>
+      <canvas ref="canvas" height="10" width="10" hidden ></canvas>
     </div>
 </template>
 
@@ -78,6 +84,9 @@ export default {
   mounted(){
   },
   methods: {
+    showImages(){
+      console.log(this.images)
+    },
     showCropper(e,nr){
       this.dialog=true;
       this.imgSrc =this.images[nr].src
@@ -92,8 +101,10 @@ export default {
      deleteImg(nr){
         this.images.splice(nr,1,{src:'paw-white.svg',uploaded:false})
      },
-     setImage(e, nr) {
+     async setImage(e, nr) {
       const file = e.target.files[0];
+      var imgcords = await this.getImageInfo(file);
+
       if (!file.type.includes('image/')) {
         alert('Please select an image file');
         return;
@@ -101,12 +112,17 @@ export default {
       if (typeof FileReader === 'function') {
         const reader = new FileReader();
         reader.onload = (event) => {
-          this.images.splice(nr-1,1,{src:event.target.result, uploaded:false,img:e.target.files[0]})
+          var myimg = {src:event.target.result, uploaded:false,img:e.target.files[0]}
+          myimg.lat = imgcords.latitude;
+          myimg.long = imgcords.longitude;
+          this.images.splice(nr-1,1,myimg)
         };
         reader.readAsDataURL(file);
+        
       } else {
         alert('Sorry, FileReader API not supported');
       }
+
     },
     cropImage() {
       // get image data for post processing, e.g. upload or setting image src
@@ -135,6 +151,15 @@ export default {
         img.src = URL.createObjectURL(src)
       })
     },
+    getImageInfo(file){
+        return new Promise((resolve, reject)=>{
+          EXIF.getData(file, function() {
+            var latitude =this.exifdata.GPSLatitude[0].numerator +';'+this.exifdata.GPSLatitude[1].numerator + ';'+this.exifdata.GPSLatitude[2].numerator;
+            var longitude =this.exifdata.GPSLongitude[0].numerator +';'+this.exifdata.GPSLongitude[1].numerator + ';'+this.exifdata.GPSLongitude[2].numerator;
+            resolve( {latitude:latitude, longitude:longitude})
+          })
+        })
+    },
     async upload(nr){
       //We schalen de afbeelding omlaag of naar een maximum aantal MB
       var myCanvas = this.$refs.canvas
@@ -144,8 +169,8 @@ export default {
       console.log(data)
 
 
-      var MAX_WIDTH = 200;
-      var MAX_HEIGHT = 200;
+      var MAX_WIDTH = 600;
+      var MAX_HEIGHT = 600;
       var width = data.w;
       var height = data.h;
 
@@ -164,8 +189,8 @@ export default {
       myCanvas.height = height;
 
       ctx.drawImage(data.i, 0, 0,width,height);
-
-      dataurl = myCanvas.toDataURL("image/jpg");
+      
+      var dataurl = myCanvas.toDataURL("image/jpg");
       await this.onFilePicked(dataurl,nr);
     },
     async onFilePicked(image,nr){
