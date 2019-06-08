@@ -1,19 +1,9 @@
 <template>
     <v-container> 
       <h1>{{sentense}}</h1>
-      <!-- <v-flex xs12 sm6 offset-3>
-        <v-btn raised class="primary" @click="onPickFile">upload image</v-btn>
-        <input type="file" style="display:none" ref="fileInput" accept="image/*" @change="onFilePicked">
-      </v-flex>
-      <v-flex>
-        <img :src="imageUrl" alt="" width="300">
-      </v-flex> -->
-
-            <no-ssr placeholder="Loading...">
+      <no-ssr placeholder="Loading...">
         <MyImageUploader/>
       </no-ssr>
-
-
       <v-flex>
         <v-select
           v-model="healthStatus"
@@ -55,11 +45,18 @@
 
 <script>
 import MyImageUploader from "~/components/MyImageUploader.vue";
+import MapBox from "~/components/MapBox.vue";
 export default {   
   head: {
     script: [
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' }
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' },
+      { src: 'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js' },
+      { src:'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.min.js' },
     ],
+    link:[
+      {href:'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css', rel:'stylesheet'},
+      {href:'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.css', rel:'stylesheet', type:'text/css'}
+      ]
   },
  data() {
     return {
@@ -88,7 +85,8 @@ export default {
     }
   },
   components: {
-    MyImageUploader
+    MyImageUploader,
+    MapBox
   },
   computed:{
     sentense(){

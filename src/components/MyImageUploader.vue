@@ -15,7 +15,7 @@
           :view-mode="0"
           drag-mode="crop"
           :auto-crop-area="0.5"
-          :background="true"
+          :background="false"
           :rotatable="true"
           :src="imgSrc"
           alt="Source Image"
@@ -30,11 +30,12 @@
           <v-flex v-for="(image, imageIndex) in images" :key="imageIndex" xs3 class="imageframe">
             <v-card >
               <v-img :src="image.src" v-bind:class="{ ImageSelected:image!='paw-white.svg' }" class="image" @click="onPickFile(imageIndex)"/>
-              <v-card-title v-if="image.long!=''">
+              <v-card-title v-if="image.long">
                 <div>
-                  <span class="grey--text">Coordinates</span><br>
-                  <span>{{image.long}}</span><br>
-                  <span>{{image.lat}}</span>
+                  <MapBox/>
+                  <!-- <span class="grey--text">Coordinates</span><br>
+                  <span>Lat:{{image.lat}}</span><br>
+                  <span>Long:{{image.long}}</span> -->
                 </div>
               </v-card-title>
               <v-card-actions v-if="image.src!='paw-white.svg'">
@@ -59,9 +60,11 @@
 <script>
 import VueCropper from 'vue-cropperjs'
 import 'cropperjs/dist/cropper.css';
+import MapBox from "~/components/MapBox.vue";
 export default {
   components: {
-    VueCropper
+    VueCropper,
+    MapBox
   },
   data() {
     return {
@@ -154,9 +157,22 @@ export default {
     getImageInfo(file){
         return new Promise((resolve, reject)=>{
           EXIF.getData(file, function() {
-            var latitude =this.exifdata.GPSLatitude[0].numerator +';'+this.exifdata.GPSLatitude[1].numerator + ';'+this.exifdata.GPSLatitude[2].numerator;
-            var longitude =this.exifdata.GPSLongitude[0].numerator +';'+this.exifdata.GPSLongitude[1].numerator + ';'+this.exifdata.GPSLongitude[2].numerator;
-            resolve( {latitude:latitude, longitude:longitude})
+            if(this.exifdata.GPSLatitude){
+              console.log(this.exifdata.GPSLatitude)
+              var latitude = 
+                 (this.exifdata.GPSLatitude[0].numerator / this.exifdata.GPSLatitude[0].denominator)  +
+                ((this.exifdata.GPSLatitude[1].numerator / this.exifdata.GPSLatitude[1].denominator) /60) +
+                ((this.exifdata.GPSLatitude[2].numerator / this.exifdata.GPSLatitude[2].denominator) /3600)
+              var Longtitude = 
+                 (this.exifdata.GPSLongitude[0].numerator / this.exifdata.GPSLongitude[0].denominator)  +
+                ((this.exifdata.GPSLongitude[1].numerator / this.exifdata.GPSLongitude[1].denominator) /60) +
+                ((this.exifdata.GPSLongitude[2].numerator / this.exifdata.GPSLongitude[2].denominator) /3600)
+              if(this.exifdata.GPSLatitudeRef == "S")
+                latitude *= -1
+              if(this.exifdata.GPSLongitudeRef != "E")
+                longitude *=-1
+            }
+            resolve( {latitude:latitude, longitude:Longtitude})
           })
         })
     },
