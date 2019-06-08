@@ -50,6 +50,7 @@ module.exports = {
   */
   plugins: [
     '@/plugins/vuetify',
+    '@/plugins/vue2-touch-events'
     // '@/plugins/vue2-google-maps'
   ],
 

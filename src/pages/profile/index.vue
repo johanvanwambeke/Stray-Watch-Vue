@@ -1,9 +1,10 @@
 <template>
-    <v-container> 
-      <h1>{{sentense}}</h1>
+    <div> 
       <no-ssr placeholder="Loading...">
-        <MyImageUploader/>
+        <!-- <MyImageUploader/> -->
+        <ImageSlider/>
       </no-ssr>
+      <h1>{{sentense}}</h1>
       <v-flex>
         <v-select
           v-model="healthStatus"
@@ -40,11 +41,11 @@
         ></v-textarea>
       </v-flex>
       <v-btn @click="saveProfile">Save profile</v-btn>
-    </v-container>
+    </div>
 </template>
 
 <script>
-import MyImageUploader from "~/components/MyImageUploader.vue";
+import ImageSlider from "~/components/ImageSlider.vue";
 import MapBox from "~/components/MapBox.vue";
 export default {   
   head: {
@@ -85,7 +86,7 @@ export default {
     }
   },
   components: {
-    MyImageUploader,
+    ImageSlider,
     MapBox
   },
   computed:{
