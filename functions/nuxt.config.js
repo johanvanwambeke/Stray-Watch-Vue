@@ -50,6 +50,7 @@ module.exports = {
   */
   plugins: [
     '@/plugins/vuetify',
+    '@/plugins/vue2-touch-events'
     // '@/plugins/vue2-google-maps'
   ],
 
@@ -59,6 +60,7 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/dotenv',
   ],
   /*
   ** Axios module configuration

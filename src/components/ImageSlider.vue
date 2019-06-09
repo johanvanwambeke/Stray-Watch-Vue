@@ -1,6 +1,13 @@
 <template>
-    <div v-touch:swipe="swipeHandler" class="image" :style="{'background-image': 'url(' + (!this.images[0]? '' : this.images[counter-1].src) + ')'}">
-      <input type="file" style="display:none" ref="fileInput" accept="image/*" @change="addImage">
+    <div v-touch:swipe="swipeHandler"     class="image" 
+    :style="{'background-image': 'url(' + (!this.images[0]? '' : this.images[counter-1].src) + ')'}">
+       <input 
+        type="file" 
+        style="display:none" 
+        ref="fileInput" 
+        accept="image/*" 
+        @change="addImage"
+        multiple>
        <v-toolbar 
         flat
         dark
@@ -11,13 +18,13 @@
           <v-icon>add_circle_outline</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn icon @click="showCropper">
+        <v-btn icon @click="showCropper" :disabled="!this.images[0]">
           <v-icon>crop_rotate</v-icon>
         </v-btn>
-        <v-btn icon @click="deleteImage">
+        <v-btn icon @click="deleteImage" :disabled="!this.images[0]">
           <v-icon>delete</v-icon>
         </v-btn>
-        <v-btn icon @click="upload">
+        <v-btn icon @click="upload" :disabled="!this.images[0]">
           <v-icon>cloud_upload</v-icon>
         </v-btn>
       </v-toolbar>
@@ -47,16 +54,17 @@
           flat
           dark
           dense
-          class="croppernav"
+          class="croppernavup"
           color="rgba(0, 0, 0, 0.2)">
           <v-btn icon flat  @click="dialog = false">
             <v-icon>close</v-icon>
           </v-btn>
-          <v-btn icon flat  @click="cropImage">
-            <v-icon>crop</v-icon>
-          </v-btn>
           <v-btn icon flat  @click="rotate">
             <v-icon>rotate_90_degrees_ccw</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn icon flat  @click="cropImage">
+            OK
           </v-btn>
         </v-toolbar>
         <vue-cropper 
@@ -80,7 +88,7 @@
 .image{
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;
+  background-size:contain;
   background-color: rgba(170, 172, 170, 0.664);
   border-radius: 10px;
   min-height: 300px;
@@ -110,7 +118,7 @@
   margin: 3px;
   border-radius: 50%;
   display: inline-block;
-  background-color:blanchedalmond;
+  background-color:rgb(255, 255, 255);
 }
 .dotSelected{
   background-color: #6FCDC7;
@@ -129,6 +137,7 @@
   position:absolute;
   z-index: 10;
 }
+
 </style>
 <script>
 import VueCropper from 'vue-cropperjs'
@@ -173,7 +182,6 @@ export default {
       return new Promise((resolve, reject)=>{
         EXIF.getData(file, function() {
           if(this.exifdata.GPSLatitude){
-            console.log(this.exifdata.GPSLatitude)
             var latitude = 
                 (this.exifdata.GPSLatitude[0].numerator / this.exifdata.GPSLatitude[0].denominator)  +
               ((this.exifdata.GPSLatitude[1].numerator / this.exifdata.GPSLatitude[1].denominator) /60) +
@@ -191,22 +199,32 @@ export default {
         })
       })
     },
-    async addImage(e) {
-      const file = e.target.files[0];
+    async addImage(e){
+      var arraytemp = Array.from(e.target.files)
+      if(this.images.length + arraytemp.length > 4){
+        alert('no more then 4 images, only the  first '+ (4- this.images.length) +'will be added')
+        arraytemp = arraytemp.slice(0,4 - this.images.length)
+      }
+      
+      arraytemp.forEach(file => {
+        this.addImageLooped(file)
+      });
+    },
+    async addImageLooped(e) {
+
+      const file =e;
       var self = this
       var imgcords = await this.getImageInfo(file);
       if (typeof FileReader === 'function') {
         const reader = new FileReader();
         reader.onload = (event) => {
-          console.log(file)
           var myimg = {
             src:event.target.result,
             uploaded:false,
-            img:e.target.files[0],
+            img:file,
             lat:imgcords.latitude,
             long: imgcords.longitude
           }
-          console.log(myimg)
           this.$store.dispatch('images/add',myimg)
           self.counter = self.images.length
         };
