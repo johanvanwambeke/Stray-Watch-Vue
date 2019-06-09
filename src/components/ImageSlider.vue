@@ -24,8 +24,9 @@
         <v-btn icon @click="deleteImage" :disabled="!this.images[0]">
           <v-icon>delete</v-icon>
         </v-btn>
-        <v-btn icon @click="upload" :disabled="!this.images[0]">
-          <v-icon>cloud_upload</v-icon>
+        <v-btn icon @click="setMain" :disabled="!this.images[0]"
+          v-bind:class="{ selected: (!this.images[0]? false :  this.images[counter-1].main) }" >
+          <v-icon>person</v-icon>
         </v-btn>
       </v-toolbar>
       <v-toolbar
@@ -34,7 +35,7 @@
         dark         
         dense
         color="rgba(0, 0, 0, 0)">
-        <v-btn icon flat @click="counter-=1" :disabled="counter < 2">
+        <v-btn icon flat @click="counter-=1" :disabled="counter < 2" >
           <v-icon>arrow_back_ios</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
@@ -55,7 +56,7 @@
           dark
           dense
           class="croppernavup"
-          color="rgba(0, 0, 0, 0.2)">
+          color="black">
           <v-btn icon flat  @click="dialog = false">
             <v-icon>close</v-icon>
           </v-btn>
@@ -82,6 +83,13 @@
         </vue-cropper>
       </v-dialog> 
       <canvas ref="canvas" height="10" width="10" hidden ></canvas>
+      <v-snackbar
+          v-model="snackbar"
+          bottom
+          color="#E28C8B"
+        >
+        <center>{{ snackmsg }}</center> 
+    </v-snackbar>
     </div>
 </template>
 <style scoped>
@@ -104,27 +112,30 @@
 }
 .v-toolbar.nav{
   position: absolute;
-  top: 50%;
+  top: 85%;
+  z-index: 15;
+}
+.selected{
+  color:black;
 }
 .dots{
   width: 100%;
   text-align: center;
   position: absolute;
-  top: 85%;
+  top: 90%;
 }
 .dot {
-  height: 12px;
-  width: 12px;
+  height: 10px;
+  width: 10px;
   margin: 3px;
   border-radius: 50%;
   display: inline-block;
-  background-color:rgb(255, 255, 255);
+  background-color:rgba(255, 255, 255, 0.7);
 }
 .dotSelected{
   background-color: #6FCDC7;
 }
 .cropperStyle{
-  border-radius: 15px;
   height:100vh;
   border-style: none;
   position: relative;
@@ -137,6 +148,17 @@
   position:absolute;
   z-index: 10;
 }
+.vue-notification {
+  z-index: 12;
+  padding: 10px;
+  margin: 0 5px 5px;
+ 
+  font-size: 12px;
+ 
+  color: #ffffff;
+  background: #44A4FC;
+  border-left: 5px solid #187FE7;
+}
 
 </style>
 <script>
@@ -148,6 +170,8 @@ export default {
       counter:1,
       cropperImg:'',
       dialog:false,
+      snackmsg:'',
+      snackbar:false,
     }
   },
   components: {
@@ -170,6 +194,9 @@ export default {
       if(e == 'right' && this.counter > 1){
         this.counter -=1
       }
+    },
+    setMain(){
+      this.$store.dispatch('images/setMain',this.counter-1)        
     },
     deleteImage(){
       this.$store.dispatch('images/delete',this.counter-1)  
@@ -201,37 +228,36 @@ export default {
     },
     async addImage(e){
       var arraytemp = Array.from(e.target.files)
+
       if(this.images.length + arraytemp.length > 4){
-        alert('no more then 4 images, only the  first '+ (4- this.images.length) +'will be added')
+        this.snackmsg = 'Max 4 images'
+        this.snackbar = true
         arraytemp = arraytemp.slice(0,4 - this.images.length)
-      }
-      
+      }      
       arraytemp.forEach(file => {
         this.addImageLooped(file)
       });
     },
-    async addImageLooped(e) {
-
-      const file =e;
+    async addImageLooped(file) {
       var self = this
-      var imgcords = await this.getImageInfo(file);
-      if (typeof FileReader === 'function') {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          var myimg = {
-            src:event.target.result,
+      //Get the mata-data image info
+      var imgInfo = await this.getImageInfo(file);
+
+      //resize the image
+      var imgResized = await this.resizeImg(file,1000)
+
+      //If this is the first image, set it as main
+      var myimg = {
+            src:imgResized,
             uploaded:false,
-            img:file,
-            lat:imgcords.latitude,
-            long: imgcords.longitude
+            img:imgResized,
+            lat:imgInfo.latitude,
+            long: imgInfo.longitude,
+            main:this.images.length == 0 ? true:false 
           }
-          this.$store.dispatch('images/add',myimg)
-          self.counter = self.images.length
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert('Sorry, FileReader API not supported');
-      }
+
+      this.$store.dispatch('images/add',myimg)
+      this.counter = this.images.length
     },
     showCropper(){
       this.dialog=true;
@@ -260,18 +286,14 @@ export default {
         img.src = URL.createObjectURL(src)
       })
     },
-    async upload(){
+    async resizeImg(img,max){
       //We schalen de afbeelding omlaag of naar een maximum aantal MB
       var myCanvas = this.$refs.canvas
       var ctx = myCanvas.getContext("2d");
-      console.log(this.images[this.counter-1])
-      var data = await this.loadImageObject(this.images[this.counter-1].img)
+      var data = await this.loadImageObject(img)
 
-      console.log(data)
-
-
-      var MAX_WIDTH = 600;
-      var MAX_HEIGHT = 600;
+      var MAX_WIDTH = max;
+      var MAX_HEIGHT = max;
       var width = data.w;
       var height = data.h;
 
@@ -291,7 +313,11 @@ export default {
 
       ctx.drawImage(data.i, 0, 0,width,height);
       
-      var dataurl = myCanvas.toDataURL("image/jpg");
+      var dataurl = myCanvas.toDataURL();
+      return dataurl
+    },
+    async upload(){
+      var dataurl = this.resizeImg(this.images[this.counter-1].img,600)
       await this.onFilePicked(dataurl);
     },
     async onFilePicked(image){

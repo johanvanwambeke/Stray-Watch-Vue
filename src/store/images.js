@@ -19,6 +19,12 @@ export const mutations = {
         var myimage = state.images[payload.nr];
         myimage.src = payload.img
         state.images.splice(payload.nr,1,myimage)
+    },    
+    setMainImage(state,payload){
+        state.images.forEach(function(entry) {
+            entry.main = false;
+        });
+        state.images[payload].main = true
     }
 }
 
@@ -32,4 +38,7 @@ export const actions = {
     async replace ({ commit },payload) {
         commit ('replaceImage', payload)
     },
+    async setMain ({ commit },payload) {
+        commit ('setMainImage', payload)
+    }
 }

@@ -1,5 +1,6 @@
 <template>
   <v-app light>
+    <notifications group="foo" position="bottom right" />
     <v-toolbar
       :clipped-left="clipped"
       fixed
@@ -25,7 +26,7 @@
     >
     <span>&copy; Stray-Watch 2019</span>
     </v-footer>
-  </v-app>
+  </v-app>  
 </template>
 <style scoped>
 
