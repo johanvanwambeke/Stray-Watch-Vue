@@ -33,6 +33,16 @@ module.exports = {
       }
     ]
   },
+
+  // PWA
+  icon: {
+    // Icon options
+   },
+  manifest: {
+    name: 'Stray-Watch',
+    display: "standalone",
+    orientation: "portrait",
+  },
   /*
   ** Customize the progress-bar color
   */
@@ -62,6 +72,7 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/dotenv',
+    '@nuxtjs/pwa'
   ],
   /*
   ** Axios module configuration

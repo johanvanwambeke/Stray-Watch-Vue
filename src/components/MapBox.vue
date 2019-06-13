@@ -1,110 +1,168 @@
 <template>
     <div>
-        <div id="map" ref='map' style='width: 400px; height: 300px;'></div>
-        <v-btn @click="init"></v-btn>
+        <div class="mapblock">
+            
+            <div id="map" ref='map' class="mapbox"></div>
+            <div id='geocoder' class='geocoder'></div>
+        </div>      
+        <v-dialog 
+            v-model="dialog">
+            <v-toolbar 
+            flat
+            dark
+            dense
+            class="croppernavup"
+            color="black">
+            <v-btn icon flat  @click="dialog = false">
+                <v-icon>close</v-icon>
+            </v-btn>
+            <v-btn icon flat  >
+                <v-icon>rotate_90_degrees_ccw</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn icon flat  >
+                OK
+            </v-btn>
+            </v-toolbar>           
+            <div id="map2" ref='map2' class="mapboxFull"></div>
+        </v-dialog> 
     </div>
 </template>
+<style>
+.mapblock{
+    position: relative;
+}
+.mapbox{
+    width:100%;
+    min-height:150px;    
+    border-radius: 10px;
+    z-index: 2;
+}
+.overlay{
+    border-radius: 10px;
+    width:100%;
+    height: 100%;
+    background-color: rgba(66, 66, 66, 0.315);
+    position: absolute;
+    top:0px;
+    left:0px;
+    z-index: 3;
+}
 
+.my-custom-control {
+  color: #f00;
+  background: #000;
+  padding: 8px;
+  border-radius: 4px;
+  margin: 8px;
+}
+.mapboxgl-ctrl-geocoder {
+    width:70%;
+    min-width:100px;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+.mapboxgl-ctrl-icon{
+    background-color: rgba(255, 255, 255, 0.15);
+
+}
+
+</style>
 <script>
+import { mapState } from 'vuex'
+var map = null;
+var map2 = null;
+var marker = null;
 export default {
+    watch:{
+        longLat: function (val) {
+            map.flyTo({center:val});
+            marker.setLngLat(val)
+        },
+    },
     data(){
         return{
-            cords:[115.17715959972223,-8.686694799722222 ]
+            cords:[50,50],
+            dialog:false,
         }
     },
+    computed:{
+        ...mapState({
+            longLat: state => state.profiles.longLat,
+            })
+    },
+    mounted(){
+        this.init()
+    },
     methods:{
+        fullScreen(){
+            map.getContainer().requestFullscreen()
+        },
+        dosmth(){
+            console.log(map.getContainer())
+        },
+        getstatus(){
+          var status =  this.$store.state.profiles.longLat
+          console.log('coords')
+          console.log(status)
+          map.flyTo({center:status});
+        },
         init(){
+            var self = this
             mapboxgl.accessToken = process.env.MAP_TOKEN;
-            var map = new mapboxgl.Map({
+            map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v11',
                 center: this.cords,
                 zoom: 11
             });
-            var size = 100;
- 
-            var pulsingDot = {
-            width: size,
-            height: size,
-            data: new Uint8Array(size * size * 4),
             
-            onAdd: function() {
-            var canvas = document.createElement('canvas');
-            canvas.width = this.width;
-            canvas.height = this.height;
-            this.context = canvas.getContext('2d');
-            },
+            // Create the marker
+            marker = new mapboxgl.Marker({
+                draggable: true
+            })
+            marker.setLngLat(this.cords)
+            .addTo(map);
+
+            // Create marker Event
+            function onDragEnd() {
+                var lngLat = marker.getLngLat();      
+                // self.$store.commit('profiles/setlongLat', lngLat)
+            }            
+            marker.on('dragend', onDragEnd);
             
-            render: function() {
-            var duration = 1000;
-            var t = (performance.now() % duration) / duration;
-            
-            var radius = size / 2 * 0.3;
-            var outerRadius = size / 2 * 0.7 * t + radius;
-            var context = this.context;
-            
-            // draw outer circle
-            context.clearRect(0, 0, this.width, this.height);
-            context.beginPath();
-            context.arc(this.width / 2, this.height / 2, outerRadius, 0, Math.PI * 2);
-            context.fillStyle = 'rgba(255, 200, 200,' + (1 - t) + ')';
-            context.fill();
-            
-            // draw inner circle
-            context.beginPath();
-            context.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2);
-            context.fillStyle = 'rgba(255, 100, 100, 1)';
-            context.strokeStyle = 'white';
-            context.lineWidth = 2 + 4 * (1 - t);
-            context.fill();
-            context.stroke();
-            
-            // update this image's data with data from the canvas
-            this.data = context.getImageData(0, 0, this.width, this.height).data;
-            
-            // keep the map repainting
-            map.triggerRepaint();
-            
-            // return `true` to let the map know that the image was updated
-            return true;
-            }
-            };
-            
-            map.on('load', function () {
-            
-            map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
-            
-            map.addLayer({
-            "id": "points",
-            "type": "symbol",
-            "source": {
-            "type": "geojson",
-            "data": {
-            "type": "FeatureCollection",
-            "features": [{
-            "type": "Feature",
-            "geometry": {
-            "type": "Point",
-            "coordinates": [115.17715959972223,-8.686694799722222 ]
-            }
-            }]
-            }
-            },
-            "layout": {
-            "icon-image": "pulsing-dot"
-            }
-            });
-            });
+            map.on('click',function(e){
+                console.log(e)
+                marker.setLngLat(e.lngLat)
+                // map.flyTo({center:e.lngLat})
+            })
+            map.on('touch',function(e){
+                console.log(e)
+                marker.setLngLat(e.lngLat)
+                map.flyTo({center:e.lngLat})
+            })            
+            // search
+            var searchControl = new MapboxGeocoder({
+                accessToken: process.env.MAP_TOKEN,
+                mapboxgl: mapboxgl})
+            map.addControl(searchControl,'top-right')
+            // Full screen
+            var fullScreen = new mapboxgl.FullscreenControl({
+                position: 'top-left'
+            })
+            map.addControl(fullScreen, 'top-left');
+            // Current location
+            var currentLocation = new mapboxgl.GeolocateControl({
+                positionOptions: {
+                enableHighAccuracy: true
+                },
+                trackUserLocation: true,
+            })
+            map.addControl(currentLocation,'top-left');
+
         }
     },
     
    
 }
 </script>
-<style>
-.bigbox{
-    background-color: green;
-    width:400px;
-    height: 500px;
-}
-</style>
+

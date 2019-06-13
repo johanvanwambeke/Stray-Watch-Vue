@@ -15,7 +15,11 @@
         class="actions"
         color="rgba(0, 0, 0, 0.2)">
         <v-btn icon @click="pickFile" :disabled="images.length > 3">         
-          <v-icon>add_circle_outline</v-icon>
+          <v-icon>add_a_photo</v-icon>
+        </v-btn>
+        <v-btn icon @click="setMain" :disabled="!this.images[0]" >
+          <v-icon v-if="(!this.images[0]? false :  !this.images[counter-1].main)">outlined_flag</v-icon>
+          <v-icon v-if="(!this.images[0]? false :  this.images[counter-1].main)">flag</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn icon @click="showCropper" :disabled="!this.images[0]">
@@ -24,9 +28,8 @@
         <v-btn icon @click="deleteImage" :disabled="!this.images[0]">
           <v-icon>delete</v-icon>
         </v-btn>
-        <v-btn icon @click="setMain" :disabled="!this.images[0]"
-          v-bind:class="{ selected: (!this.images[0]? false :  this.images[counter-1].main) }" >
-          <v-icon>person</v-icon>
+        <v-btn icon @click="setCoords" >
+          <v-icon>map</v-icon>
         </v-btn>
       </v-toolbar>
       <v-toolbar
@@ -86,7 +89,7 @@
       <v-snackbar
           v-model="snackbar"
           bottom
-          color="#E28C8B"
+          color="#E28B8A"
         >
         <center>{{ snackmsg }}</center> 
     </v-snackbar>
@@ -100,7 +103,7 @@
   background-color: rgba(170, 172, 170, 0.664);
   border-radius: 10px;
   min-height: 300px;
-  max-height: 400px;
+  max-height: 390px;
   width: 100%;
   color:rgba(255, 217, 0, 0);
   margin-bottom: 20px;
@@ -186,6 +189,9 @@ export default {
     },
   },
   methods:{
+    setCoords(){
+      this.$store.commit('profiles/setlongLat', [70.123123, 10.12312])
+    },
     swipeHandler(e){
       var amountofimg = this.images.length
       if(e == 'left' && amountofimg > this.counter){
@@ -196,7 +202,11 @@ export default {
       }
     },
     setMain(){
-      this.$store.dispatch('images/setMain',this.counter-1)        
+      if(this.images[this.counter-1].main==true)
+        return
+      this.$store.dispatch('images/setMain',this.counter-1)   
+      this.snackmsg = 'Set as main image'
+      this.snackbar = true
     },
     deleteImage(){
       this.$store.dispatch('images/delete',this.counter-1)  
@@ -206,6 +216,7 @@ export default {
       this.$refs.fileInput.click()
     },
     getImageInfo(file){
+      var self = this
       return new Promise((resolve, reject)=>{
         EXIF.getData(file, function() {
           if(this.exifdata.GPSLatitude){
@@ -222,6 +233,7 @@ export default {
             if(this.exifdata.GPSLongitudeRef != "E")
               longitude *=-1
           }
+          self.$store.commit('profiles/setlongLat',[Longtitude, latitude]) 
           resolve( {latitude:latitude, longitude:Longtitude})
         })
       })

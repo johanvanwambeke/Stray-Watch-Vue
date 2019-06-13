@@ -1,8 +1,8 @@
 <template>
     <div> 
       <no-ssr placeholder="Loading...">
-        <!-- <MyImageUploader/> -->
         <ImageSlider/>
+        <MapBox/>
       </no-ssr>
       <h1>{{sentense}}</h1>
       <v-flex>
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import ImageSlider from "~/components/ImageSlider.vue";
 import MapBox from "~/components/MapBox.vue";
 export default {   
@@ -61,18 +62,13 @@ export default {
   },
  data() {
     return {
-      info:'',
       imageUrl:'',
       image:null,
       email:'default@ce.com',
       animalTypes:['cat', 'dog'],
-      animalType:'',
       purposes:['fosterhome','funding', 'adoption','new owner','Medical assistance', 'feeding'],
-      purpose:'',
       urgencies:['immediatly ','in 1 day', 'in 2 days','in 1 week','in 1 month '],
-      urgency:'',
       healthStatuses:['healthy ','in treatment', 'untreated'],
-      healthStatus:'',
       show: true,
 			params: {
 				token: '123456798',
@@ -90,10 +86,58 @@ export default {
     MapBox
   },
   computed:{
+    healthStatus: {
+    get () {
+        return this.$store.state.healthStatus
+      },
+      set (value) {
+        this.$store.commit('profiles/sethealthStatus', value)
+      }
+    },
+    animalType: {
+      get () {
+        return this.$store.state.profiles.animalType
+      },
+      set (value) {
+        this.$store.commit('profiles/setanimalType', value)
+      }
+    },
+    purpose: {
+      get () {
+        return this.$store.state.profiles.purpose
+      },
+      set (value) {
+        this.$store.commit('profiles/setpurpose', value)
+      }
+    },
+    urgency: {
+      get () {
+        return this.$store.state.profiles.urgency
+      },
+      set (value) {
+        this.$store.commit('profiles/seturgency', value)
+      }
+    },
+    info: {
+      get () {
+        return this.$store.state.profiles.info
+      },
+      set (value) {
+        this.$store.commit('profiles/setinfo', value)
+      }
+    },
+    longLat: {
+      get () {
+        return this.$store.state.profiles.longLat
+      },
+      set (value) {
+        this.$store.commit('profiles/setlongLat', value)
+      }
+    },
     sentense(){
       if(this.animalType === '') return 'Please fill in the profile';
       return this.healthStatus + ' ' + this.animalType + ' needs ' + this.purpose + ' ' + this.urgency;
-    }
+    },
   },
   methods:{
     async saveProfile(){

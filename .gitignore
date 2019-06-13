@@ -67,3 +67,7 @@ node_modules/
 src/nuxt
 functions/nuxt
 public/_nuxt
+
+
+# PWA
+sw.*
