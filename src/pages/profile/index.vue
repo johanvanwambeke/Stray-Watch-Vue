@@ -1,10 +1,12 @@
 <template>
     <div> 
       <no-ssr placeholder="Loading...">
-        <ImageSlider/>
-        <MapBox/>
       </no-ssr>
-      <h1>{{sentense}}</h1>
+      <ImageSlider/>
+      <div class="mapbox mt-4">
+        <MapBox/>
+      </div>
+      <h1 class="mt-4">{{sentense}}</h1>
       <v-flex>
         <v-select
           v-model="healthStatus"
@@ -43,6 +45,24 @@
       <v-btn @click="saveProfile">Save profile</v-btn>
     </div>
 </template>
+<style scoped>
+.mapbox{
+  /* position: absolute;
+  left: 0;
+  width: 100%;
+  display: inline-block; */
+
+  padding: 15px;
+  background-color:#E5897A;
+  
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+</style>
 
 <script>
 import { mapState } from 'vuex'

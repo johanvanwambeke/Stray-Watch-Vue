@@ -40,8 +40,10 @@ module.exports = {
    },
   manifest: {
     name: 'Stray-Watch',
+    description: 'collaborate on saving and suporting local stray animals',
     display: "standalone",
     orientation: "portrait",
+    theme_color: "#66A39E",
   },
   /*
   ** Customize the progress-bar color

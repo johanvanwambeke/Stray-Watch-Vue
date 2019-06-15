@@ -39,8 +39,7 @@ module.exports = {
     // Icon options
    },
   manifest: {
-    name: 'My Awesome App',
-    lang: 'fa',
+    name: 'Stray-Watch',
     display: "standalone",
     orientation: "portrait",
   },

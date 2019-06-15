@@ -4,7 +4,7 @@ export const state = () => ({
  purpose: '',
  urgency: '',
  info: '',
- longLat: [],
+ longLat: [40,8],
 })
 
 export const getters = {

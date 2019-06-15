@@ -1,5 +1,5 @@
 <template>
-  <v-app light>
+  <v-app light class="appcss">
     <notifications group="foo" position="bottom right" />
     <v-toolbar
       :clipped-left="clipped"
@@ -44,6 +44,10 @@
   color:rgb(107, 107, 107)!important;
   font-size: 14px ;
   border-bottom:5px solid rgb(107, 107, 107);
+}
+
+.appcss{
+  background-image:    linear-gradient(to bottom, #ffffff 0%,#d2d2d2 100%)!important;
 }
 
 </style>

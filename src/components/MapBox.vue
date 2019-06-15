@@ -1,34 +1,33 @@
 <template>
     <div>
         <div class="mapblock">
-            
+            <div  class="btnBigMap" @click="fullScreen"><v-icon>search</v-icon></div>
             <div id="map" ref='map' class="mapbox"></div>
-            <div id='geocoder' class='geocoder'></div>
-        </div>      
-        <v-dialog 
-            v-model="dialog">
-            <v-toolbar 
-            flat
-            dark
-            dense
-            class="croppernavup"
-            color="black">
-            <v-btn icon flat  @click="dialog = false">
-                <v-icon>close</v-icon>
-            </v-btn>
-            <v-btn icon flat  >
-                <v-icon>rotate_90_degrees_ccw</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn icon flat  >
-                OK
-            </v-btn>
-            </v-toolbar>           
             <div id="map2" ref='map2' class="mapboxFull"></div>
-        </v-dialog> 
+        </div>   
     </div>
 </template>
-<style>
+<style scoped>
+.btnBigMap{
+    background-color: rgb(241, 241, 241);
+    border-radius: 10px;
+    padding: 5px;
+    z-index: 3;
+    position: absolute;
+    top:10px;
+    left:10px;
+}
+.btnBigMap:hover{
+    background-color: rgb(241, 241, 241);
+    border-radius: 10px;
+    border:solid gray 1px;
+    padding: 5px;
+    z-index: 3;
+    position: absolute;
+    top:10px;
+    left:10px;
+}
+
 .mapblock{
     position: relative;
 }
@@ -49,6 +48,10 @@
     z-index: 3;
 }
 
+.mapboxFull{
+    z-index: 10;
+}
+
 .my-custom-control {
   color: #f00;
   background: #000;
@@ -56,15 +59,7 @@
   border-radius: 4px;
   margin: 8px;
 }
-.mapboxgl-ctrl-geocoder {
-    width:70%;
-    min-width:100px;
-    background-color: rgba(255, 255, 255, 0.15);
-}
-.mapboxgl-ctrl-icon{
-    background-color: rgba(255, 255, 255, 0.15);
 
-}
 
 </style>
 <script>
@@ -72,16 +67,20 @@ import { mapState } from 'vuex'
 var map = null;
 var map2 = null;
 var marker = null;
+var marker2 = null;
 export default {
     watch:{
         longLat: function (val) {
             map.flyTo({center:val});
+            map2.flyTo({center:val});
             marker.setLngLat(val)
+            marker2.setLngLat(val)
+            console.log('úpdated')
         },
     },
     data(){
         return{
-            cords:[50,50],
+            mapLongLat:[50,50],
             dialog:false,
         }
     },
@@ -95,10 +94,7 @@ export default {
     },
     methods:{
         fullScreen(){
-            map.getContainer().requestFullscreen()
-        },
-        dosmth(){
-            console.log(map.getContainer())
+            map2.getContainer().requestFullscreen()
         },
         getstatus(){
           var status =  this.$store.state.profiles.longLat
@@ -108,48 +104,65 @@ export default {
         },
         init(){
             var self = this
+            this.createMap2()
+            // map1
+            //////
+            //////
             mapboxgl.accessToken = process.env.MAP_TOKEN;
             map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v11',
                 center: this.cords,
-                zoom: 11
+                zoom: 9,
+                attributionControl: false
             });
+            
             
             // Create the marker
             marker = new mapboxgl.Marker({
-                draggable: true
+                draggable: true,
+                color:'#66A39E'
             })
-            marker.setLngLat(this.cords)
+            marker.setLngLat([4.28,50.30])
             .addTo(map);
 
             // Create marker Event
             function onDragEnd() {
-                var lngLat = marker.getLngLat();      
-                // self.$store.commit('profiles/setlongLat', lngLat)
+                var lngLat = marker.getLngLat();
+                marker2.setLngLat(e.lngLat)
+                map2.flyTo({center:val});
             }            
             marker.on('dragend', onDragEnd);
             
             map.on('click',function(e){
-                console.log(e)
                 marker.setLngLat(e.lngLat)
-                // map.flyTo({center:e.lngLat})
+                marker2.setLngLat(e.lngLat)
+                map2.flyTo({center:e.lngLat})
             })
             map.on('touch',function(e){
-                console.log(e)
                 marker.setLngLat(e.lngLat)
-                map.flyTo({center:e.lngLat})
+                marker2.setLngLat(e.lngLat)
+                map2.flyTo({center:e.lngLat});
             })            
-            // search
+           
+
+        },
+        createMap2(){
+            mapboxgl.accessToken = process.env.MAP_TOKEN;
+            map2 = new mapboxgl.Map({
+                container: 'map2',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: this.cords,
+                zoom: 11
+            });
+             // search
             var searchControl = new MapboxGeocoder({
                 accessToken: process.env.MAP_TOKEN,
                 mapboxgl: mapboxgl})
-            map.addControl(searchControl,'top-right')
-            // Full screen
-            var fullScreen = new mapboxgl.FullscreenControl({
-                position: 'top-left'
-            })
-            map.addControl(fullScreen, 'top-left');
+            map2.addControl(searchControl,'top-right')
+            // fullscreen
+            var fullscreenControl  = new mapboxgl.FullscreenControl()
+            map2.addControl(fullscreenControl, 'top-left');
             // Current location
             var currentLocation = new mapboxgl.GeolocateControl({
                 positionOptions: {
@@ -157,8 +170,35 @@ export default {
                 },
                 trackUserLocation: true,
             })
-            map.addControl(currentLocation,'top-left');
+            map2.addControl(currentLocation,'top-left');
 
+             // Create the marker
+            marker2 = new mapboxgl.Marker({
+                draggable: true,
+                color:'#66A39E'
+            })
+            marker2.setLngLat(this.longLat)
+            .addTo(map2);
+
+            // Create marker Event
+            function onDragEnd2() {
+                var lngLat = marker2.getLngLat(); 
+                marker.setLngLat(lngLat)
+                map.flyTo({center:lngLat})
+                console.log('draged it 2')
+            }            
+            marker2.on('dragend', onDragEnd2);
+            
+            map2.on('click',function(e){
+                marker2.setLngLat(e.lngLat)
+                marker.setLngLat(e.lngLat)
+                map.flyTo({center:e.lngLat});
+            })
+            map2.on('touch',function(e){
+                marker2.setLngLat(e.lngLat)
+                marker.setLngLat(e.lngLat)
+                map.flyTo({center:e.lngLat});
+            })            
         }
     },
     
