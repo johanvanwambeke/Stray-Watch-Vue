@@ -42,7 +42,12 @@
           v-model="info"
         ></v-textarea>
       </v-flex>
+      <p>Data{{dataOK}}</p>
+      <p>IMg{{imageOK}}</p>
+      <p>Nr Imgae{{images.length}}</p>
       <v-btn @click="saveProfile">Save profile</v-btn>
+      <!-- {{imageOK}}
+      {{locationOK}} -->
     </div>
 </template>
 <style scoped>
@@ -106,9 +111,15 @@ export default {
     MapBox
   },
   computed:{
+    ...mapState({
+      imageOK: state => state.profiles.imageOK,
+      locationOK: state => state.profiles.locationOK,
+      dataOK: state => state.profiles.dataOK,
+      images: state => state.images.images
+    }),
     healthStatus: {
-    get () {
-        return this.$store.state.healthStatus
+      get () {
+        return this.$store.state.profiles.healthStatus
       },
       set (value) {
         this.$store.commit('profiles/sethealthStatus', value)
@@ -161,6 +172,17 @@ export default {
   },
   methods:{
     async saveProfile(){
+      //save each file, receiving URL
+      //Try to do it async so all files go at the same time
+      this.images.forEach((image,i) => {        
+        console.log(image.imgForUpload)
+        this.$store.dispatch('images/uploadImage',{image:image.imgForUpload,nr:i})
+      });
+      //      	                      
+      return
+
+
+
       //I will wrap the form data in 1 object and send it to the backend to save
       //It returns the ID of the profile
       //I navigate to the profile ID

@@ -4,7 +4,10 @@ export const state = () => ({
  purpose: '',
  urgency: '',
  info: '',
- longLat: [40,8],
+ longLat: [10, 10],
+ imageOK: false,
+ locationOK: false,
+ dataOK: false,
 })
 
 export const getters = {
@@ -26,6 +29,15 @@ export const getters = {
  longLat(state) {
   return state.longLat
  },
+ imageOK(state) {
+  return state.imageOK
+ },
+ locationOK(state) {
+  return state.locationOK
+ },
+ dataOK(state) {
+  return state.dataOK
+ },
 }
 
 export const mutations = {
@@ -39,22 +51,58 @@ export const mutations = {
  },
  sethealthStatus(state, payload) {
   state.healthStatus = payload
+  state.dataOK =
+   state.info != '' &&
+   state.urgency != '' &&
+   state.purpose != '' &&
+   state.animalType != '' &&
+   state.healthStatus != ''
  },
  setanimalType(state, payload) {
   state.animalType = payload
+  state.dataOK =
+   state.info != '' &&
+   state.urgency != '' &&
+   state.purpose != '' &&
+   state.animalType != '' &&
+   state.healthStatus != ''
  },
  setpurpose(state, payload) {
   state.purpose = payload
+  state.dataOK =
+   state.info != '' &&
+   state.urgency != '' &&
+   state.purpose != '' &&
+   state.animalType != '' &&
+   state.healthStatus != ''
  },
  seturgency(state, payload) {
   state.urgency = payload
+  state.dataOK =
+   state.info != '' &&
+   state.urgency != '' &&
+   state.purpose != '' &&
+   state.animalType != '' &&
+   state.healthStatus != ''
  },
  setinfo(state, payload) {
   state.info = payload
+  state.dataOK =
+   state.info != '' &&
+   state.urgency != '' &&
+   state.purpose != '' &&
+   state.animalType != '' &&
+   state.healthStatus != ''
  },
  setlongLat(state, payload) {
   state.longLat = payload
   console.log(state.longLat)
+ },
+ setImageOK(state, context) {
+  state.imageOK = context.rootState.images.images.length != 0;
+ },
+ setLocationOK(state) {
+  state.locationOK = state.longLat != []
  },
 }
 
@@ -86,9 +134,4 @@ export const actions = {
   )
   return result.data
  },
-//  async updateCoordinates({
-//   commit
-//  }, payload) {
-//   commit('longLat', payload)
-//  }
 }

@@ -28,9 +28,9 @@
         <v-btn icon @click="deleteImage" :disabled="!this.images[0]">
           <v-icon>delete</v-icon>
         </v-btn>
-        <v-btn icon @click="setCoords" >
+        <!-- <v-btn icon @click="setCoords" >
           <v-icon>map</v-icon>
-        </v-btn>
+        </v-btn> -->
       </v-toolbar>
       <v-toolbar
        class="nav"
@@ -189,9 +189,9 @@ export default {
     },
   },
   methods:{
-    setCoords(){
-      this.$store.commit('profiles/setlongLat', [70.123123, 10.12312])
-    },
+    // setCoords(){
+    //   this.$store.commit('profiles/setlongLat', [70.123123, 10.12312])
+    // },
     swipeHandler(e){
       var amountofimg = this.images.length
       if(e == 'left' && amountofimg > this.counter){
@@ -233,8 +233,12 @@ export default {
             if(this.exifdata.GPSLongitudeRef != "E")
               longitude *=-1
           }
-          self.$store.commit('profiles/setlongLat',[Longtitude, latitude]) 
-          resolve( {latitude:latitude, longitude:Longtitude})
+          if(latitude != '' && latitude != null){
+            self.$store.commit('profiles/setlongLat',[Longtitude, latitude]) 
+            resolve( {latitude:latitude, longitude:Longtitude})
+          }else{
+            resolve()
+          }
         })
       })
     },
@@ -254,20 +258,25 @@ export default {
       var self = this
       //Get the mata-data image info
       var imgInfo = await this.getImageInfo(file);
+      console.log('resized')
 
       //resize the image
       var imgResized = await this.resizeImg(file,1000)
-
+      console.log('resized')
+      //resize the image for upload
+      var imgResizedUpload = await this.resizeImg(file,600)
+      console.log('resized for upload')
       //If this is the first image, set it as main
       var myimg = {
             src:imgResized,
             uploaded:false,
             img:imgResized,
-            lat:imgInfo.latitude,
-            long: imgInfo.longitude,
+            imgForUpload:imgResizedUpload,
+            longlat:imgInfo,
             main:this.images.length == 0 ? true:false 
           }
-
+      console.log('object created')
+      console.log(myimg)
       this.$store.dispatch('images/add',myimg)
       this.counter = this.images.length
     },
@@ -283,7 +292,7 @@ export default {
     },
     cropImage() {
       // get image data for post processing, e.g. upload or setting image src
-      this.$store.dispatch('images/replace',{nr: this.counter-1, img:this.$refs.cropper.getCroppedCanvas().toDataURL()})
+      this.$store.dispatch('images/replace',{nr: this.counter-1, imgForUpload:this.$refs.cropper.getCroppedCanvas().toDataURL()})
       this.dialog=false;      
     },
     rotate() {
@@ -331,11 +340,13 @@ export default {
     async upload(){
       var dataurl = this.resizeImg(this.images[this.counter-1].img,600)
       await this.onFilePicked(dataurl);
+
     },
     async onFilePicked(image){
       console.log('startupload')
       let filename = image.name
-
+      // await this.$store.dispatch('images/uploadImage',image,nr)
+      // console.log(this.$store.images.images)
       this.$axios.post(
         // 'https://localhost:44352/api/FileUpload/savefile',
         'https://stray-watch-api.azurewebsites.net/api/FileUpload/savefile',      

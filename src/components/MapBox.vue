@@ -1,10 +1,27 @@
 <template>
     <div>
         <div class="mapblock">
-            <div  class="btnBigMap" @click="fullScreen"><v-icon>search</v-icon></div>
+            <div ref="btnBig" class="btnBigMap" @click="fullScreen"><v-icon>search</v-icon></div>
             <div id="map" ref='map' class="mapbox"></div>
-            <div id="map2" ref='map2' class="mapboxFull"></div>
         </div>   
+          <v-dialog 
+        v-model="dialog">
+        <v-toolbar 
+          flat
+          dark
+          dense
+          class="croppernavup"
+          color="black">
+          <v-btn icon flat  @click="dialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn icon flat  @click="resizeMap">
+            OK
+          </v-btn>
+        </v-toolbar>
+        <div id="map2" ref='map2' class="mapboxfull" ></div>        
+      </v-dialog> 
     </div>
 </template>
 <style scoped>
@@ -17,15 +34,11 @@
     top:10px;
     left:10px;
 }
-.btnBigMap:hover{
-    background-color: rgb(241, 241, 241);
-    border-radius: 10px;
-    border:solid gray 1px;
-    padding: 5px;
-    z-index: 3;
-    position: absolute;
-    top:10px;
-    left:10px;
+
+.mapboxfull{
+    width:100vh;
+    min-height:100vh;    
+    z-index: 2;
 }
 
 .mapblock{
@@ -48,17 +61,7 @@
     z-index: 3;
 }
 
-.mapboxFull{
-    z-index: 10;
-}
 
-.my-custom-control {
-  color: #f00;
-  background: #000;
-  padding: 8px;
-  border-radius: 4px;
-  margin: 8px;
-}
 
 
 </style>
@@ -93,8 +96,14 @@ export default {
         this.init()
     },
     methods:{
+        resizeMap(){
+            map2.resize()
+        },
         fullScreen(){
-            map2.getContainer().requestFullscreen()
+            this.dialog=true
+            // map2.getContainer().requestFullscreen()
+            // this.$refs.map2.style.height = '100%'
+            map2.resize()
         },
         getstatus(){
           var status =  this.$store.state.profiles.longLat
@@ -144,7 +153,9 @@ export default {
                 marker2.setLngLat(e.lngLat)
                 map2.flyTo({center:e.lngLat});
             })            
-           
+
+
+            map.addControl(new HelloWorldControl(),'top-right')
 
         },
         createMap2(){
@@ -159,16 +170,15 @@ export default {
             var searchControl = new MapboxGeocoder({
                 accessToken: process.env.MAP_TOKEN,
                 mapboxgl: mapboxgl})
-            map2.addControl(searchControl,'top-right')
-            // fullscreen
-            var fullscreenControl  = new mapboxgl.FullscreenControl()
-            map2.addControl(fullscreenControl, 'top-left');
+            map2.addControl(searchControl,'top-left')
+
             // Current location
             var currentLocation = new mapboxgl.GeolocateControl({
                 positionOptions: {
                 enableHighAccuracy: true
                 },
-                trackUserLocation: true,
+                trackUserLocation: false,
+                showUserLocation: false
             })
             map2.addControl(currentLocation,'top-left');
 
@@ -204,5 +214,24 @@ export default {
     
    
 }
+
+class HelloWorldControl {
+    onAdd(map) {
+        this._map = map;
+        this._container = document.createElement('div');
+        this._container.className = 'btnBigMap';
+        this._container.Content = '<v-icon>search</v-icon>';
+        this._container.onclick = function(){
+            this.fullScreen()
+        }
+        return this._container;
+    }
+
+    onRemove() {
+        this._container.parentNode.removeChild(this._container);
+        this._map = undefined;
+    }
+}
+
 </script>
 

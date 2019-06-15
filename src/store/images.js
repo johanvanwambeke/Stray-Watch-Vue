@@ -17,7 +17,7 @@ export const mutations = {
     },
     replaceImage(state,payload){
         var myimage = state.images[payload.nr];
-        myimage.src = payload.img
+        myimage.src = payload.imgForUpload
         state.images.splice(payload.nr,1,myimage)
     },    
     setMainImage(state,payload){
@@ -25,6 +25,10 @@ export const mutations = {
             entry.main = false;
         });
         state.images[payload].main = true
+    },
+    setUrl(state,payload){
+        state.images[payload.nr].uploadUrl = payload.uri
+        state.images[payload.nr].uploaded = true
     }
 }
 
@@ -40,5 +44,29 @@ export const actions = {
     },
     async setMain ({ commit },payload) {
         commit ('setMainImage', payload)
+    },
+    async uploadImage({commit},payload){
+        console.log(payload.image)
+        this.$axios.post(
+        'https://localhost:44352/api/Image/SaveFile',
+        // 'https://stray-watch-api.azurewebsites.net/api/Image/savefile',      
+          {
+            'imgString': payload.image,
+            'smth': 'tekst'
+          },
+          {
+            onUploadProgress: uploadEvent=>{
+              console.log('uploaded: '  + Math.round(uploadEvent.loaded / uploadEvent.total)*100 + '%')
+            }
+          }
+        )  
+        .then((response)=> {
+            console.log(response.data.uri);
+            commit('setUrl',{url:response.data.uri,nr:nr})
+        })
+        .catch((error)=> {
+            console.log(error);
+        }); 
     }
+    
 }
