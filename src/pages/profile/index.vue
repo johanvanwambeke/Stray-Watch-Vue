@@ -1,14 +1,10 @@
 <template>
     <div> 
       <LoadingScreen :value="loading" progressColor="green" :message="loadingMessage" />
-      <ImageSlider/>
-          <MapBox/>
-      <no-ssr placeholder="Loading...">
-        <!-- <div class="mapbox mt-4"> -->
-        <!-- </div> -->
-      </no-ssr>
-      <v-container>
-        <h1 class="mt-4">{{sentense}}</h1>
+      <ImageSlider  class="mt-4" />
+      <MapBox class="mt-4"/>
+      <v-container class="mt-4">
+        <h1 >{{sentense}}</h1>
         <v-flex>
             <v-select solo
               v-model="animal"
@@ -60,10 +56,10 @@
             v-model="info"
           ></v-textarea>
         </v-flex>
-        <p>Data{{dataOK}}</p>
+        <!-- <p>Data{{dataOK}}</p>
         <p>IMg{{imageOK}}</p>
         <p>Nr Imgae{{images.length}}</p>
-        <p>Location{{locationOK}}</p>
+        <p>Location{{locationOK}}</p> -->
         <v-btn @click="saveProfile">Save profile</v-btn>
     </v-container>
   </div>

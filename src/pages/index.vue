@@ -1,46 +1,14 @@
 <template>
-  <v-layout>
-    <v-flex text-xs-center>
-      <img
-        src="/v.png"
-        alt="Vuetify.js"
-        class="mb-5"
-      >
-      <form @submit.prevent="submit" >
-        <v-text-field placeholder="diercode" 
-                autofocus
-                v-model="search">
-        </v-text-field>
-      </form>
-      <h1>Hallo</h1>
-      
-      <!-- <div class="hello">    
-        <picture-input 
-          ref="pictureInput"
-          width="600" 
-          height="600" 
-          margin="16" 
-          accept="image/jpeg,image/png" 
-          size="10" 
-          button-class="btn"
-          :custom-strings="{
-            upload: '<h1>Bummer!</h1>',
-            drag: 'Drag a 😺 GIF or GTFO'
-          }"
-          @change="onChange">
-        </picture-input>
-      </div> -->
-      <blockquote class="blockquote">
-        &#8220; V1 : We are raising funds for a <b>global</b> solution connecting stray <b>animals</b> in need with <b>caregivers</b> and <b>capital</b>.&#8221;
-        <footer>
-          <small>
-            <em>&mdash;John Johnson</em>
-          </small>
-        </footer>
-      </blockquote>      
-    </v-flex>
-  </v-layout>
+  <iframe src="https://stray-watch.com"></iframe>     
 </template>
+<style scoped>
+  iframe{
+    width:100%;
+    height:100%;
+
+  }
+</style>
+
 <script>
 
 export default {

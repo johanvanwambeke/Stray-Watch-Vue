@@ -20,12 +20,12 @@
         <nuxt />
       <!-- </v-container> -->
     </v-content>
-    <v-footer
+    <!-- <v-footer
       :fixed="fixed"
       app
     >
     <span>&copy; Stray-Watch 2019</span>
-    </v-footer>
+    </v-footer> -->
   </v-app>  
 </template>
 <style scoped>

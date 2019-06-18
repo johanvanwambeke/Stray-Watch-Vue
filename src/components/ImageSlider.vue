@@ -100,7 +100,6 @@
 .imgIcon{
   background-color:rgba(27, 27, 27, 0.246);
   margin-top: 20px;
-  /* background-color: #66A39D; */
   padding:10px;
   height:42px;
   width:42px;
@@ -110,7 +109,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size:contain;
-  background-color: rgba(170, 172, 170, 0.664);
+  background-color: rgba(170, 172, 170, 0);
   min-height: 300px;
   max-height: 390px;
   width: 100%;

@@ -83,10 +83,7 @@ export default {
     watch:{
         longLat: function (val) {
             map.flyTo({center:val});
-            // map2.flyTo({center:val});
             marker.setLngLat(val)
-            // marker2.setLngLat(val)
-            console.log('úpdated')
         },
     },
     data(){
@@ -130,8 +127,8 @@ export default {
             map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v11',
-                center: this.cords,
-                zoom: 9,
+                center: [4.28, 50.30],
+                zoom: 5,
                 attributionControl: false
             });
             
