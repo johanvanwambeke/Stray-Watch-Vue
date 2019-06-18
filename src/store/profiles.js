@@ -1,8 +1,10 @@
 export const state = () => ({
- healthStatus: '4',
- animalType: '',
- purpose: '',
+ animal: '',
+ age: '',
+ needs: '',
+ medical: '',
  urgency: '',
+ behavior: '',
  info: '',
  longLat: [10, 10],
  imageOK: false,
@@ -11,17 +13,23 @@ export const state = () => ({
 })
 
 export const getters = {
- healthStatus(state) {
-  return state.healthStatus
+ animal(state) {
+  return state.animal
  },
- animalType(state) {
-  return state.animalType
+ age(state) {
+  return state.age
  },
- purpose(state) {
-  return state.purpose
+ needs(state) {
+  return state.needs
+ },
+ medical(state) {
+  return state.medical
  },
  urgency(state) {
   return state.urgency
+ },
+ behavior(state) {
+  return state.behavior
  },
  info(state) {
   return state.info
@@ -41,59 +49,27 @@ export const getters = {
 }
 
 export const mutations = {
- setprofile(state, payload) {
-  state.healthStatus = payload.healthStatus
-  state.animalType = payload.animalType
-  state.purpose = payload.purpose
-  state.urgency = payload.urgency
-  state.info = payload.info
-  state.longLat = payload.longLat
- },
- sethealthStatus(state, payload) {
-  state.healthStatus = payload
-  state.dataOK =
-   state.info != '' &&
-   state.urgency != '' &&
-   state.purpose != '' &&
-   state.animalType != '' &&
-   state.healthStatus != ''
- },
- setanimalType(state, payload) {
-  state.animalType = payload
-  state.dataOK =
-   state.info != '' &&
-   state.urgency != '' &&
-   state.purpose != '' &&
-   state.animalType != '' &&
-   state.healthStatus != ''
- },
- setpurpose(state, payload) {
-  state.purpose = payload
-  state.dataOK =
-   state.info != '' &&
-   state.urgency != '' &&
-   state.purpose != '' &&
-   state.animalType != '' &&
-   state.healthStatus != ''
- },
- seturgency(state, payload) {
-  state.urgency = payload
-  state.dataOK =
-   state.info != '' &&
-   state.urgency != '' &&
-   state.purpose != '' &&
-   state.animalType != '' &&
-   state.healthStatus != ''
- },
- setinfo(state, payload) {
-  state.info = payload
-  state.dataOK =
-   state.info != '' &&
-   state.urgency != '' &&
-   state.purpose != '' &&
-   state.animalType != '' &&
-   state.healthStatus != ''
- },
+  animal(state, payload) {
+   state.animal = payload
+  },
+  age(state, payload) {
+   state.age = payload
+  },
+  needs(state, payload) {
+   state.needs = payload
+  },
+  medical(state, payload) {
+   state.medical = payload
+  },
+  urgency(state, payload) {
+   state.urgency = payload
+  },
+  behavior(state, payload) {
+   state.behavior = payload
+  },
+  info(state,payload){
+    state.info = payload
+  },
  setlongLat(state, payload) {
   state.longLat = payload
   console.log(state.longLat)
@@ -125,13 +101,20 @@ export const actions = {
 
   commit('completedLoading')
  },
- async getProfile({
-  commit
- }, payload) {
+ async getProfile({  commit }, payload) {
   var result = await this.$axios.get(
    // 'https://localhost:44352/api/AnimalProfile/get/' + this.$route.query.id , 
    'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/' + payload,
   )
   return result.data
  },
+ async saveProfile({  commit }, payload) {
+  return new Promise((resolve, reject) => {
+    this.$axios.post(
+      // 'https://localhost:44352/api/AnimalProfile/Create',
+      'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/Create/',
+      payload)
+      .then(result=>resolve(result.data.id))
+  })
+ }
 }

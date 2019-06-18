@@ -29,6 +29,7 @@ export const mutations = {
     setUrl(state,payload){
         state.images[payload.nr].uploadUrl = payload.uri
         state.images[payload.nr].uploaded = true
+        console.log(state.images[payload.nr].uploadUrl)
     }
 }
 
@@ -45,28 +46,38 @@ export const actions = {
     async setMain ({ commit },payload) {
         commit ('setMainImage', payload)
     },
-    async uploadImage({commit},payload){
-        console.log(payload.image)
-        this.$axios.post(
-        'https://localhost:44352/api/Image/SaveFile',
-        // 'https://stray-watch-api.azurewebsites.net/api/Image/savefile',      
-          {
-            'imgString': payload.image,
-            'smth': 'tekst'
-          },
-          {
-            onUploadProgress: uploadEvent=>{
-              console.log('uploaded: '  + Math.round(uploadEvent.loaded / uploadEvent.total)*100 + '%')
-            }
-          }
-        )  
-        .then((response)=> {
-            console.log(response.data.uri);
-            commit('setUrl',{url:response.data.uri,nr:nr})
+    uploadImages({dispatch},payload){
+        return new Promise((resolve, reject) => {
+            payload.forEach((image,i) => {        
+                dispatch('uploadImage',{image:image.imgForUpload,nr:i})
+                });
+            resolve(r)
         })
-        .catch((error)=> {
-            console.log(error);
-        }); 
-    }
-    
+    },
+    uploadImage({commit},payload){  
+        return new Promise((resolve, reject) => {
+            this.$axios.post(
+            // 'https://localhost:44352/api/Image/SaveFile',
+            'https://stray-watch-api.azurewebsites.net/api/Image/savefile',      
+            {
+                'imgString': payload.image,
+                'smth': 'tekst'
+            },
+            {
+                onUploadProgress: uploadEvent=>{
+                console.log('uploaded: '  + Math.round(uploadEvent.loaded / uploadEvent.total)*100 + '%')
+                }
+            }
+            )  
+            .then((response)=> {
+                console.log(response.data.uri);
+                commit('setUrl',{url:response.data.uri,nr:payload.nr})
+                resolve('ok')
+            })
+            .catch((error)=> {
+                console.log(error);
+                reject('fail')
+            }); 
+        })
+    }    
 }

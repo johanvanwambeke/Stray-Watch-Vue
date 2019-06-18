@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mapblock">
-            <div ref="btnBig" class="btnBigMap" @click="fullScreen"><v-icon>search</v-icon></div>
+            <!-- <div ref="btnBig" class="btnBigMap" @click="fullScreen"><v-icon>search</v-icon></div> -->
             <div id="map" ref='map' class="mapbox"></div>
         </div>   
           <v-dialog 
@@ -25,9 +25,18 @@
     </div>
 </template>
 <style scoped>
+.mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate{
+  background-color:rgba(27, 27, 27, 0.246);
+  margin-top: 20px;
+  /* background-color: #66A39D; */
+  padding:10px;
+  height:42px;
+  width:42px;
+  border-radius:50%;
+
+}
 .btnBigMap{
     background-color: rgb(241, 241, 241);
-    border-radius: 10px;
     padding: 5px;
     z-index: 3;
     position: absolute;
@@ -47,7 +56,6 @@
 .mapbox{
     width:100%;
     min-height:150px;    
-    border-radius: 10px;
     z-index: 2;
 }
 .overlay{
@@ -75,9 +83,9 @@ export default {
     watch:{
         longLat: function (val) {
             map.flyTo({center:val});
-            map2.flyTo({center:val});
+            // map2.flyTo({center:val});
             marker.setLngLat(val)
-            marker2.setLngLat(val)
+            // marker2.setLngLat(val)
             console.log('úpdated')
         },
     },
@@ -113,7 +121,8 @@ export default {
         },
         init(){
             var self = this
-            this.createMap2()
+            const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
+            const MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder')
             // map1
             //////
             //////
@@ -126,7 +135,6 @@ export default {
                 attributionControl: false
             });
             
-            
             // Create the marker
             marker = new mapboxgl.Marker({
                 draggable: true,
@@ -138,24 +146,31 @@ export default {
             // Create marker Event
             function onDragEnd() {
                 var lngLat = marker.getLngLat();
-                marker2.setLngLat(e.lngLat)
-                map2.flyTo({center:val});
+                // marker2.setLngLat(e.lngLat)
+                // map2.flyTo({center:val});
             }            
             marker.on('dragend', onDragEnd);
             
             map.on('click',function(e){
                 marker.setLngLat(e.lngLat)
-                marker2.setLngLat(e.lngLat)
-                map2.flyTo({center:e.lngLat})
+                // marker2.setLngLat(e.lngLat)
+                // map2.flyTo({center:e.lngLat})
             })
             map.on('touch',function(e){
                 marker.setLngLat(e.lngLat)
-                marker2.setLngLat(e.lngLat)
-                map2.flyTo({center:e.lngLat});
+                // marker2.setLngLat(e.lngLat)
+                // map2.flyTo({center:e.lngLat});
             })            
 
-
-            map.addControl(new HelloWorldControl(),'top-right')
+            // Current location
+            var currentLocation = new mapboxgl.GeolocateControl({
+                positionOptions: {
+                enableHighAccuracy: true
+                },
+                trackUserLocation: false,
+                showUserLocation: false
+            })
+            map.addControl(currentLocation,'top-left');
 
         },
         createMap2(){
@@ -171,16 +186,6 @@ export default {
                 accessToken: process.env.MAP_TOKEN,
                 mapboxgl: mapboxgl})
             map2.addControl(searchControl,'top-left')
-
-            // Current location
-            var currentLocation = new mapboxgl.GeolocateControl({
-                positionOptions: {
-                enableHighAccuracy: true
-                },
-                trackUserLocation: false,
-                showUserLocation: false
-            })
-            map2.addControl(currentLocation,'top-left');
 
              // Create the marker
             marker2 = new mapboxgl.Marker({
@@ -215,23 +220,6 @@ export default {
    
 }
 
-class HelloWorldControl {
-    onAdd(map) {
-        this._map = map;
-        this._container = document.createElement('div');
-        this._container.className = 'btnBigMap';
-        this._container.Content = '<v-icon>search</v-icon>';
-        this._container.onclick = function(){
-            this.fullScreen()
-        }
-        return this._container;
-    }
-
-    onRemove() {
-        this._container.parentNode.removeChild(this._container);
-        this._map = undefined;
-    }
-}
 
 </script>
 

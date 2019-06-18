@@ -5,7 +5,7 @@
       :clipped-left="clipped"
       fixed
       app
-      color = "#6FCDC7" 
+      color = "#6FCDC7"
     >    
     <v-toolbar-items style="margin-left:auto;margin-right:auto;">
     <!-- <nuxt-link to="/profile">CREATE</nuxt-link> -->
@@ -16,9 +16,9 @@
     </v-toolbar-items>
     </v-toolbar>
     <v-content>
-      <v-container>
+      <!-- <v-container> -->
         <nuxt />
-      </v-container>
+      <!-- </v-container> -->
     </v-content>
     <v-footer
       :fixed="fixed"

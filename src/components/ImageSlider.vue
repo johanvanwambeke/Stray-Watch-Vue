@@ -1,11 +1,11 @@
 <template>
     <div v-touch:swipe="swipeHandler"     class="image" 
     :style="{'background-image': 'url(' + (!this.images[0]? '' : this.images[counter-1].src) + ')'}">
-       <input 
-        type="file" 
-        style="display:none" 
-        ref="fileInput" 
-        accept="image/*" 
+       <input
+        type="file"
+        style="display:none"
+        ref="fileInput"
+        accept="image/*"
         @change="addImage"
         multiple>
        <v-toolbar 
@@ -13,19 +13,20 @@
         dark
         dense
         class="actions"
-        color="rgba(0, 0, 0, 0.2)">
-        <v-btn icon @click="pickFile" :disabled="images.length > 3">         
-          <v-icon>add_a_photo</v-icon>
+        color="rgba(0, 0, 0, 0.0)">
+        <v-btn class="imgIcon" icon @click="pickFile" :disabled="images.length > 3">         
+          <v-icon >add_a_photo</v-icon>
         </v-btn>
-        <v-btn icon @click="setMain" :disabled="!this.images[0]" >
+        <v-btn class="imgIcon" icon @click="setMain" :disabled="!this.images[0]" >
+          <v-icon v-if="(this.images.length == 0)">outlined_flag</v-icon>
           <v-icon v-if="(!this.images[0]? false :  !this.images[counter-1].main)">outlined_flag</v-icon>
           <v-icon v-if="(!this.images[0]? false :  this.images[counter-1].main)">flag</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn icon @click="showCropper" :disabled="!this.images[0]">
+        <v-btn  class="imgIcon" icon @click="showCropper" :disabled="!this.images[0]">
           <v-icon>crop_rotate</v-icon>
         </v-btn>
-        <v-btn icon @click="deleteImage" :disabled="!this.images[0]">
+        <v-btn  class="imgIcon" icon @click="deleteImage" :disabled="!this.images[0]">
           <v-icon>delete</v-icon>
         </v-btn>
         <!-- <v-btn icon @click="setCoords" >
@@ -96,23 +97,27 @@
     </div>
 </template>
 <style scoped>
+.imgIcon{
+  background-color:rgba(27, 27, 27, 0.246);
+  margin-top: 20px;
+  /* background-color: #66A39D; */
+  padding:10px;
+  height:42px;
+  width:42px;
+  border-radius:50%;
+}
 .image{
   background-repeat: no-repeat;
   background-position: center;
   background-size:contain;
   background-color: rgba(170, 172, 170, 0.664);
-  border-radius: 10px;
   min-height: 300px;
   max-height: 390px;
   width: 100%;
   color:rgba(255, 217, 0, 0);
-  margin-bottom: 20px;
   position: relative;
 }
-.v-toolbar.actions{
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
+
 .v-toolbar.nav{
   position: absolute;
   top: 85%;
