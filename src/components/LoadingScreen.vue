@@ -12,27 +12,26 @@
 </template>
 
 <script>
-    export default {
-        name: "Loading",
-        data: function () {
-            return {}
-        },
-        props: {
-            value: {type: Boolean, default: false},
-            message: {type: String, default: null},
-            progressColor: {type: String, default: 'purple'},
-        },
-    }
+export default {
+  name: 'Loading',
+  data: function() {
+    return {}
+  },
+  props: {
+    value: { type: Boolean, default: false },
+    message: { type: String, default: null },
+    progressColor: { type: String, default: 'purple' }
+  }
+}
 </script>
 
 <style>
-  .dialog.centered-dialog,
-  .v-dialog.centered-dialog
- {
-    background: #282c2dad;
-    box-shadow: none;
-    border-radius: 6px;
-    width: auto;
-    color: whitesmoke;
-  }
+.dialog.centered-dialog,
+.v-dialog.centered-dialog {
+  background: #282c2dad;
+  box-shadow: none;
+  border-radius: 6px;
+  width: auto;
+  color: whitesmoke;
+}
 </style>

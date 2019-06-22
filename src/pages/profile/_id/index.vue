@@ -1,31 +1,41 @@
 <template>
+<div>
+    <!-- <ImageSlider  class="mt-4" /> -->
+    <!-- <MapBox class="mt-4"/> -->
     <v-container> 
       <h1>{{sentense}}</h1>   
-      <v-flex>
-        <img :src="profile.imageUrl" alt="" width="300">
+      <v-flex v-if="profile.url">
+        <img  :src="profile.url[0]" alt="" width="300">
       </v-flex>
-      <!-- {{store.state.profiles.profile.imageUrl}} -->
-      <v-flex>
-        <v-select
-          v-model="profile.health"
-          :items="healthStatuses"
-          label="Health"
-          disabled
-        ></v-select>
+      
+       <v-flex>
+        <p>{{profile.animal}}</p>         
       </v-flex>
+
+      
        <v-flex>
           <v-select
-            v-model="profile.animal"
+            v-model="profile.age"
             :items="animalTypes"
-            label="Animal"
+            label="age"
           disabled
           ></v-select>
       </v-flex>
+
+
+      <v-flex>
+        <v-select
+          v-model="profile.needs"
+          :items="healthStatuses"
+          label="Needs"
+          disabled
+        ></v-select>
+      </v-flex>
       <v-flex>
           <v-select
-            v-model="profile.purpose"
+            v-model="profile.medical"
             :items="purposes"
-            label="Purpose"
+            label="Medical"
           disabled
           ></v-select>
       </v-flex>
@@ -45,8 +55,9 @@
           disabled
         ></v-textarea>
       </v-flex>
+      <v-btn @click="loadProfile"></v-btn>
       <iframe 
-        :src="`https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fstray-watch-vue.firebaseapp.com%2Fprofile%2F${$route.params.id}&layout=button_count&size=large&appId=1985973471691447&width=84&height=28`"
+        :src="`https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.stray-watch.com%2Fprofile%2F${$route.params.id}&layout=button_count&size=large&appId=1985973471691447&width=84&height=28`"
         width="84" 
         height="28" 
         style="border:none;overflow:hidden" 
@@ -55,20 +66,16 @@
         allowTransparency="true" 
         allow="encrypted-media"></iframe>
     </v-container>
+</div>
 </template>
 
 <script>
+import ImageSlider from "~/components/ImageSlider.vue";
+import MapBox from "~/components/MapBox.vue";
 export default {
   async asyncData({ app, params, store, }){
-    console.log('asyncData')
-    var oets = await store.dispatch('profiles/getProfile', params.id )
-    return {
-      profile:{
-        ...oets
-      }
-    }
+    store.dispatch('profiles/getProfile', params.id )
   },
-  // middleware:'getProfile',
   head () {
       return {
         title:this.sentense,
@@ -83,14 +90,22 @@ export default {
           },
           {
             'property':  'og:image',
-            'content': `${this.profile.imageUrl}`
+            'content': `${!this.profile.url?'':this.profile.url[0]}`
           },
         ],
+        script: [
+          { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' },
+          // { src: 'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js' },
+          // { src:'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.min.js' },
+        ],
+        link:[
+          {href:'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css', rel:'stylesheet'},
+          {href:'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.css', rel:'stylesheet', type:'text/css'},
+        ]
       }
     },
  data() {
     return {
-      profile:{},
       animalTypes:['cat', 'dog'],
       purposes:['fosterhome','funding', 'adoption','new owner','Medical assistance', 'feeding'],
       urgencies:['immediatly ','in 1 day', 'in 2 days','in 1 week','in 1 month '],
@@ -105,17 +120,21 @@ export default {
   },
   computed:{
     sentense(){
-      if(this.profile.animal === '') return 'Please fill in the profile';
-      return this.profile.health + ' ' +
-       this.profile.animal +
-        ' needs ' + this.profile.purpose +
+      if(this.profile.animal === '') 
+        return 'Please fill in the profile';
+        return
+        this.profile.animal +
+        ' needs ' + this.profile.needs +
          ' ' + this.profile.urgency;
     },
-    // profile () {
-    //   // return this.$store.getters['profiles/profile']
-    // },
+    profile () {
+      return this.$store.getters['profiles/profile']
+    },
   },
   methods:{
+    loadProfile(){
+      
+    }
   },
   created() {
     if (process.browser) {

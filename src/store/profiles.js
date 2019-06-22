@@ -10,6 +10,7 @@ export const state = () => ({
  imageOK: false,
  locationOK: false,
  dataOK: false,
+ profile:{},
 })
 
 export const getters = {
@@ -46,6 +47,20 @@ export const getters = {
  dataOK(state) {
   return state.dataOK
  },
+ profile(state){
+   return {
+    //  profile:{
+      animal : state.animal,
+      age:state.age,
+      needs:state.needs,
+      medical:state.medical,
+      urgency:state.urgency,
+      behavior:state.behavior,
+      info:state.info,
+      // longLat:state.longLat
+      // }
+    }
+  }
 }
 
 export const mutations = {
@@ -67,46 +82,38 @@ export const mutations = {
   behavior(state, payload) {
    state.behavior = payload
   },
-  info(state,payload){
+  setInfo(state,payload){
     state.info = payload
   },
- setlongLat(state, payload) {
-  state.longLat = payload
-  console.log(state.longLat)
- },
- setImageOK(state, context) {
-  state.imageOK = context.rootState.images.images.length != 0;
- },
- setLocationOK(state) {
-  state.locationOK = state.longLat != []
- },
+  setlongLat(state, payload) {
+    state.longLat = payload
+    console.log(state.longLat)
+  },
+  setImageOK(state, context) {
+    state.imageOK = context.rootState.images.images.length != 0;
+  },
+  setLocationOK(state) {
+    state.locationOK = state.longLat != []
+  },
+  setProfile(state,payload){
+    state.profile = payload
+  }
 }
 
 export const actions = {
- async getProfileLoad({
-  commit
- }, payload) {
-  commit('isLoading')
-  console.log('getprofile: ' + payload);
+ async getProfile({  commit }, payload) {
   this.$axios.get(
-    // 'https://localhost:44352/api/AnimalProfile/get/' + this.$route.query.id , 
+    // 'https://localhost:44352/api/AnimalProfile/get/' + payload , 
     'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/' + payload,
    )
    .then((response) => {
-    commit('setProfile', response.data)
+     console.log(response)
+     commit('setProfile',response.data)
+      // this.profile = response.data
    })
    .catch((error) => {
     console.log(error);
    });
-
-  commit('completedLoading')
- },
- async getProfile({  commit }, payload) {
-  var result = await this.$axios.get(
-   // 'https://localhost:44352/api/AnimalProfile/get/' + this.$route.query.id , 
-   'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/' + payload,
-  )
-  return result.data
  },
  async saveProfile({  commit }, payload) {
   return new Promise((resolve, reject) => {
