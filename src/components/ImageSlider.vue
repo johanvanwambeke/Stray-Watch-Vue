@@ -1,9 +1,15 @@
 <template>
-  <div
-    v-touch:swipe="swipeHandler"
-    class="image"
-    :style="{'background-image': 'url(' + (!this.images[0]? '' : this.images[counter-1].src) + ')'}"
-  >
+  <div class="containerImg" v-touch:swipe="swipeHandler">
+    <transition-group
+      tag="div"
+      class="img-slider"
+      :name="direction"
+      v-if="images && images.length>0"
+    >
+      <div v-for="number in [counter-1]" v-bind:key="number">
+        <img :src="images[Math.abs(counter-1) % images.length].src">
+      </div>
+    </transition-group>
     <input
       type="file"
       style="display:none"
@@ -33,11 +39,16 @@
       </v-btn>-->
     </v-toolbar>
     <v-toolbar class="nav" flat dark dense color="rgba(0, 0, 0, 0)">
-      <v-btn icon flat @click="counter-=1" :disabled="counter < 2">
+      <v-btn icon flat @click="counter-=1; direction='left'" :disabled="counter < 2">
         <v-icon>arrow_back_ios</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn icon flat @click="counter+=1" :disabled="counter > 3 || (images.length-1)<counter">
+      <v-btn
+        icon
+        flat
+        @click="counter+=1; direction ='right'"
+        :disabled="counter > 3 || (images.length-1)<counter"
+      >
         <v-icon>arrow_forward_ios</v-icon>
       </v-btn>
     </v-toolbar>
@@ -80,6 +91,50 @@
   </div>
 </template>
 <style scoped>
+.containerImg {
+  overflow: hidden;
+}
+/* slide to the left */
+.left-leave-active,
+.left-enter-active {
+  transition: 0.4s ease-out;
+}
+.left-enter {
+  transform: translate(-100%, 0);
+}
+.left-leave-to {
+  transform: translate(100%, 0);
+}
+/* slide tot he right */
+.right-leave-active,
+.right-enter-active {
+  transition: 0.4s ease-out;
+}
+.right-enter {
+  transform: translate(100%, 0);
+}
+.right-leave-to {
+  transform: translate(-100%, 0);
+}
+
+.img-slider {
+  overflow: hidden;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.img-slider img {
+  object-fit: contain;
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
 .imgIcon {
   background-color: rgba(27, 27, 27, 0.246);
   margin-top: 20px;
@@ -88,16 +143,14 @@
   width: 42px;
   border-radius: 50%;
 }
-.image {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  background-color: rgba(170, 172, 170, 0);
-  min-height: 300px;
-  max-height: 390px;
+.containerImg {
   width: 100%;
-  color: rgba(255, 217, 0, 0);
+  min-height: 60vh;
   position: relative;
+  background-color: gray;
+}
+.image {
+  width: 90%;
 }
 
 .v-toolbar.nav {
@@ -156,6 +209,7 @@ import 'cropperjs/dist/cropper.css'
 export default {
   data() {
     return {
+      direction: 'right',
       counter: 1,
       cropperImg: '',
       dialog: false,
@@ -174,10 +228,21 @@ export default {
       return this.$store.getters['images/counter']
     }
   },
+  mounted() {
+    window.addEventListener('keyup', function(event) {
+      console.log(event.key)
+      if (event.key.toString() === 'ArrowRight') {
+        console.log('didit')
+        this.counter = this.counter + 1
+        this.direction = 'right'
+      }
+      if (event.key.toString() === 'ArrowLeft') {
+        this.counter = this.counter - 1
+        this.direction = 'left'
+      }
+    })
+  },
   methods: {
-    // setCoords(){
-    //   this.$store.commit('profiles/setlongLat', [70.123123, 10.12312])
-    // },
     swipeHandler(e) {
       var amountofimg = this.images.length
       if (e == 'left' && amountofimg > this.counter) {

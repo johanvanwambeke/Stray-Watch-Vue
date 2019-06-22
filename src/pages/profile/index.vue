@@ -1,8 +1,8 @@
 <template>
   <div>
     <LoadingScreen :value="loading" progressColor="green" :message="loadingMessage"/>
-    <v-stepper non-linear>
-      <v-stepper-header>
+    <v-stepper non-linear v-model="stepCount">
+      <v-stepper-header class="sticky">
         <v-stepper-step editable step="1">Pictures</v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step editable step="2">Location</v-stepper-step>
@@ -11,32 +11,68 @@
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
+          <h1>Picture time</h1>
+          <p>
+            <v-chip color="primary" text-color="white">Tip</v-chip>Use pictures that show us different angles
+          </p>
           <ImageSlider class="mt-4"/>
+          <ul>
+            <li>
+              <v-icon>add_a_photo</v-icon>This allows you to add a picture
+            </li>
+            <li>
+              <v-icon>crop_rotate</v-icon>Cut off some part? Use this button
+            </li>
+            <li>
+              <v-icon>outlined_flag</v-icon>Press the flag on your favorite image
+            </li>
+            <li>
+              <v-icon>delete</v-icon>Ooops wrong image, delete!
+            </li>
+          </ul>
+          <p>Chose or take up to 4 pictures.</p>
+          <p>encourage while uploading somehow...? Show good examples</p>
+          <p>You have no images ? Continue without adding any images ?</p>
+          <p>You have 4 images, nice! Next step :)</p>
+          <v-btn @click="stepCount = 2">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
+          <h1>Where ?!</h1>
+          <p>You can move the map around and place the pin to indicate the location.</p>
+          <p>X images with location tracking, i placed X pins on the map.</p>
           <MapBox class="mt-4"/>
+          <p>This is amaizing, we know what he/she looks like! And where to find it.</p>
+          <p>Now let's find out if it is in fact a He or a She.</p>
+          <v-btn @click="stepCount =3">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="3">
           <AnimalProfileForm/>
+          <p>This was the last step, now save and you get a unique profile, sharable anywhere and everywhere.</p>
+          <v-btn @click="saveProfile">Complete</v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-    <v-container class="mt-4">
-      <v-btn @click="saveProfile">Save profile</v-btn>
-    </v-container>
   </div>
 </template>
 <style scoped>
-.v-stepper:not(.v-stepper--vertical) .v-stepper__label {
-  display: none !important;
+ul {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
-
-.v-stepper__label {
-  display: block !important;
+li {
+  list-style-type: none;
+  margin-left: -20px;
 }
-.v-stepper-step {
-  background-color: green;
+li .v-icon {
+  margin-right: 10px;
 }
+/* .sticky {
+  position: fixed;
+  top: 60px;
+  width: 100%;
+  background-color: white;
+  /* z-index: 5; */
+/* }  */
 .mapbox {
   padding: 15px;
   background-color: #e5897a;
@@ -76,7 +112,8 @@ export default {
   data() {
     return {
       loadingMessage: 'Saving profile',
-      loading: false
+      loading: false,
+      stepCount: 1
     }
   },
   components: {
