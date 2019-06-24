@@ -64,9 +64,7 @@
 <script>
 import { mapState } from 'vuex'
 var map = null
-var map2 = null
 var marker = null
-var marker2 = null
 export default {
   watch: {
     longLat: function(val) {
@@ -94,16 +92,14 @@ export default {
     },
     fullScreen() {
       this.dialog = true
-      // map2.getContainer().requestFullscreen()
-      // this.$refs.map2.style.height = '100%'
       map2.resize()
     },
-    getstatus() {
-      var status = this.$store.state.profiles.longLat
-      console.log('coords')
-      console.log(status)
-      map.flyTo({ center: status })
-    },
+    // getstatus() {
+    //   var status = this.$store.state.profiles.longLat
+    //   console.log('coords')
+    //   console.log(status)
+    //   map.flyTo({ center: status })
+    // },
     init() {
       var self = this
       const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
@@ -130,20 +126,14 @@ export default {
       // Create marker Event
       function onDragEnd() {
         var lngLat = marker.getLngLat()
-        // marker2.setLngLat(e.lngLat)
-        // map2.flyTo({center:val});
       }
       marker.on('dragend', onDragEnd)
 
       map.on('click', function(e) {
         marker.setLngLat(e.lngLat)
-        // marker2.setLngLat(e.lngLat)
-        // map2.flyTo({center:e.lngLat})
       })
       map.on('touch', function(e) {
         marker.setLngLat(e.lngLat)
-        // marker2.setLngLat(e.lngLat)
-        // map2.flyTo({center:e.lngLat});
       })
 
       // Current location
@@ -155,48 +145,6 @@ export default {
         showUserLocation: false
       })
       map.addControl(currentLocation, 'top-left')
-    },
-    createMap2() {
-      mapboxgl.accessToken = process.env.MAP_TOKEN
-      map2 = new mapboxgl.Map({
-        container: 'map2',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: this.cords,
-        zoom: 11
-      })
-      // search
-      var searchControl = new MapboxGeocoder({
-        accessToken: process.env.MAP_TOKEN,
-        mapboxgl: mapboxgl
-      })
-      map2.addControl(searchControl, 'top-left')
-
-      // Create the marker
-      marker2 = new mapboxgl.Marker({
-        draggable: true,
-        color: '#66A39E'
-      })
-      marker2.setLngLat(this.longLat).addTo(map2)
-
-      // Create marker Event
-      function onDragEnd2() {
-        var lngLat = marker2.getLngLat()
-        marker.setLngLat(lngLat)
-        map.flyTo({ center: lngLat })
-        console.log('draged it 2')
-      }
-      marker2.on('dragend', onDragEnd2)
-
-      map2.on('click', function(e) {
-        marker2.setLngLat(e.lngLat)
-        marker.setLngLat(e.lngLat)
-        map.flyTo({ center: e.lngLat })
-      })
-      map2.on('touch', function(e) {
-        marker2.setLngLat(e.lngLat)
-        marker.setLngLat(e.lngLat)
-        map.flyTo({ center: e.lngLat })
-      })
     }
   }
 }

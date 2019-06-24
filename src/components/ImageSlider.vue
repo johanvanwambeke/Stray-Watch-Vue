@@ -1,65 +1,74 @@
 <template>
   <div class="containerImg" v-touch:swipe="swipeHandler">
-    <transition-group
-      tag="div"
-      class="img-slider"
-      :name="direction"
-      v-if="images && images.length>0"
-    >
-      <div v-for="number in [counter-1]" v-bind:key="number">
-        <img :src="images[Math.abs(counter-1) % images.length].src">
-      </div>
-    </transition-group>
-    <input
-      type="file"
-      style="display:none"
-      ref="fileInput"
-      accept="image/*"
-      @change="addImage"
-      multiple
-    >
-    <v-toolbar flat dark dense class="actions" color="rgba(0, 0, 0, 0.0)">
-      <v-btn class="imgIcon" icon @click="pickFile" :disabled="images.length > 3">
-        <v-icon>add_a_photo</v-icon>
-      </v-btn>
-      <v-btn class="imgIcon" icon @click="setMain" :disabled="!this.images[0]">
-        <v-icon v-if="(this.images.length == 0)">outlined_flag</v-icon>
-        <v-icon v-if="(!this.images[0]? false :  !this.images[counter-1].main)">outlined_flag</v-icon>
-        <v-icon v-if="(!this.images[0]? false :  this.images[counter-1].main)">flag</v-icon>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-btn class="imgIcon" icon @click="showCropper" :disabled="!this.images[0]">
-        <v-icon>crop_rotate</v-icon>
-      </v-btn>
-      <v-btn class="imgIcon" icon @click="deleteImage" :disabled="!this.images[0]">
-        <v-icon>delete</v-icon>
-      </v-btn>
-      <!-- <v-btn icon @click="setCoords" >
-          <v-icon>map</v-icon>
-      </v-btn>-->
-    </v-toolbar>
-    <v-toolbar class="nav" flat dark dense color="rgba(0, 0, 0, 0)">
-      <v-btn icon flat @click="counter-=1; direction='left'" :disabled="counter < 2">
-        <v-icon>arrow_back_ios</v-icon>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-btn
-        icon
-        flat
-        @click="counter+=1; direction ='right'"
-        :disabled="counter > 3 || (images.length-1)<counter"
-      >
-        <v-icon>arrow_forward_ios</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <div class="dots">
-      <span
-        v-for="(image, imageIndex) in images"
-        :key="imageIndex"
-        v-bind:class="{ dotSelected:imageIndex+1==counter }"
-        class="dot"
-      ></span>
-    </div>
+    <no-ssr placeholder="Looking for puppies...">
+      <fullscreen ref="myFullscreen" @change="fullscreenChange">
+        <v-toolbar flat dark dense color="transparent">
+          <v-btn class="imgIcon" icon @click="pickFile" :disabled="images.length > 3">
+            <v-icon>add_a_photo</v-icon>
+          </v-btn>
+          <v-btn class="imgIcon" icon @click="setMain" :disabled="!this.images[0]">
+            <v-icon v-if="(this.images.length == 0)">outlined_flag</v-icon>
+            <v-icon v-if="(!this.images[0]? false :  !this.images[counter-1].main)">outlined_flag</v-icon>
+            <v-icon v-if="(!this.images[0]? false :  this.images[counter-1].main)">flag</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            v-if="!fullscreen"
+            class="imgIcon"
+            icon
+            @click="showCropper"
+            :disabled="!this.images[0]"
+          >
+            <v-icon>crop_rotate</v-icon>
+          </v-btn>
+          <v-btn class="imgIcon" icon @click="deleteImage" :disabled="!this.images[0]">
+            <v-icon>delete</v-icon>
+          </v-btn>
+          <v-btn class="imgIcon" icon @click="toggle" :disabled="!this.images[0]">
+            <v-icon v-if="!fullscreen">fullscreen</v-icon>
+            <v-icon v-if="fullscreen">fullscreen_exit</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <!-- <div @dblclick="toggle" v-for="number in [counter-1]" v-bind:key="number"> -->
+        <div
+          @dblclick="toggle"
+          class="imagediv"
+          v-if="images.length>0"
+          :style="{'background-image': 'url(' + (images[Math.abs(counter-1) % images.length].src) + ')'}"
+        ></div>
+        <!-- </div> -->
+        <input
+          type="file"
+          style="display:none"
+          ref="fileInput"
+          accept="image/*"
+          @change="addImage"
+          multiple
+        >
+        <v-toolbar class="nav" flat dark dense>
+          <v-btn icon flat @click="counter-=1; direction='left'" :disabled="counter < 2">
+            <v-icon>arrow_back_ios</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            icon
+            flat
+            @click="counter+=1; direction ='right'"
+            :disabled="counter > 3 || (images.length-1)<counter"
+          >
+            <v-icon>arrow_forward_ios</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <div class="dots">
+          <span
+            v-for="(image, imageIndex) in images"
+            :key="imageIndex"
+            v-bind:class="{ dotSelected:imageIndex+1==counter }"
+            class="dot"
+          ></span>
+        </div>
+      </fullscreen>
+    </no-ssr>
     <v-dialog v-model="dialog">
       <v-toolbar flat dark dense class="croppernavup" color="black">
         <v-btn icon flat @click="dialog = false">
@@ -92,81 +101,52 @@
 </template>
 <style scoped>
 .containerImg {
+  position: relative;
   overflow: hidden;
-}
-/* slide to the left */
-.left-leave-active,
-.left-enter-active {
-  transition: 0.4s ease-out;
-}
-.left-enter {
-  transform: translate(-100%, 0);
-}
-.left-leave-to {
-  transform: translate(100%, 0);
-}
-/* slide tot he right */
-.right-leave-active,
-.right-enter-active {
-  transition: 0.4s ease-out;
-}
-.right-enter {
-  transform: translate(100%, 0);
-}
-.right-leave-to {
-  transform: translate(-100%, 0);
+  width: 100%;
+  background-color: #777777;
+  height: 60vh;
 }
 
-.img-slider {
-  overflow: hidden;
-  position: absolute;
-  height: 100%;
+.imagediv {
   width: 100%;
-}
-
-.img-slider img {
-  object-fit: contain;
-  width: 100%;
-  height: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  height: 76%;
+  top: 12%;
   right: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  position: absolute;
 }
 
 .imgIcon {
-  background-color: rgba(27, 27, 27, 0.246);
-  margin-top: 20px;
+  /* background-color: rgba(27, 27, 27, 0.246); */
   padding: 10px;
   height: 42px;
   width: 42px;
   border-radius: 50%;
 }
-.containerImg {
-  width: 100%;
-  min-height: 60vh;
-  position: relative;
-  background-color: gray;
-}
-.image {
-  width: 90%;
-}
 
 .v-toolbar.nav {
-  position: absolute;
-  top: 85%;
+  background-color: transparent;
   z-index: 15;
-}
-.selected {
-  color: black;
+  height: 12%;
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 .dots {
   width: 100%;
   text-align: center;
   position: absolute;
-  top: 90%;
+  bottom: 4%;
+  z-index: 10;
 }
+
+.selected {
+  color: black;
+}
+
 .dot {
   height: 10px;
   width: 10px;
@@ -176,8 +156,9 @@
   background-color: rgba(255, 255, 255, 0.7);
 }
 .dotSelected {
-  background-color: #6fcdc7;
+  background-color: #ffffff;
 }
+
 .cropperStyle {
   height: 100vh;
   border-style: none;
@@ -202,10 +183,35 @@
   background: #44a4fc;
   border-left: 5px solid #187fe7;
 }
+
+/* slide to the left */
+.left-leave-active,
+.left-enter-active {
+  transition: 0.4s ease-out;
+}
+.left-enter {
+  transform: translate(-100%, 0);
+}
+.left-leave-to {
+  transform: translate(100%, 0);
+}
+/* slide tot he right */
+.right-leave-active,
+.right-enter-active {
+  transition: 0.4s ease-out;
+}
+.right-enter {
+  transform: translate(100%, 0);
+}
+.right-leave-to {
+  transform: translate(-100%, 0);
+}
 </style>
 <script>
+// import fullscreen from 'vue-fullscreen'
 import VueCropper from 'vue-cropperjs'
 import 'cropperjs/dist/cropper.css'
+
 export default {
   data() {
     return {
@@ -214,7 +220,9 @@ export default {
       cropperImg: '',
       dialog: false,
       snackmsg: '',
-      snackbar: false
+      snackbar: false,
+      fullscreen: false,
+      fullscreenObj: null
     }
   },
   components: {
@@ -228,21 +236,15 @@ export default {
       return this.$store.getters['images/counter']
     }
   },
-  mounted() {
-    window.addEventListener('keyup', function(event) {
-      console.log(event.key)
-      if (event.key.toString() === 'ArrowRight') {
-        console.log('didit')
-        this.counter = this.counter + 1
-        this.direction = 'right'
-      }
-      if (event.key.toString() === 'ArrowLeft') {
-        this.counter = this.counter - 1
-        this.direction = 'left'
-      }
-    })
-  },
+  mounted() {},
   methods: {
+    toggle() {
+      this.$refs.myFullscreen.toggle() // recommended
+      // this.fullscreen = !this.fullscreen // deprecated
+    },
+    fullscreenChange(fullscreen) {
+      this.fullscreen = fullscreen
+    },
     swipeHandler(e) {
       var amountofimg = this.images.length
       if (e == 'left' && amountofimg > this.counter) {

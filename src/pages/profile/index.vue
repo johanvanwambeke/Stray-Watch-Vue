@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="maindiv">
     <LoadingScreen :value="loading" progressColor="green" :message="loadingMessage"/>
     <v-stepper non-linear v-model="stepCount">
       <v-stepper-header class="sticky">
@@ -12,10 +12,8 @@
       <v-stepper-items>
         <v-stepper-content step="1">
           <h1>Picture time</h1>
-          <p>
-            <v-chip color="primary" text-color="white">Tip</v-chip>Use pictures that show us different angles
-          </p>
-          <ImageSlider class="mt-4"/>
+          <TipSpinner class="mt-3"></TipSpinner>
+          <ImageSlider class="imageSlider"/>
           <ul>
             <li>
               <v-icon>add_a_photo</v-icon>This allows you to add a picture
@@ -40,6 +38,16 @@
           <h1>Where ?!</h1>
           <p>You can move the map around and place the pin to indicate the location.</p>
           <p>X images with location tracking, i placed X pins on the map.</p>
+
+          <div
+            v-for="i in images"
+            :style="{'background-image': 'url(' + (i.src) + ')'}"
+            class="locationImages grow"
+            @click="setLocation(i.longlat)"
+          >
+            <!-- <img style="width:100px;height:100px;float:left" :src="i.src"> -->
+          </div>
+          {{longLat}}
           <MapBox class="mt-4"/>
           <p>This is amaizing, we know what he/she looks like! And where to find it.</p>
           <p>Now let's find out if it is in fact a He or a She.</p>
@@ -55,6 +63,31 @@
   </div>
 </template>
 <style scoped>
+.maindiv {
+  font-family: 'Source Sans Pro', sans-serif;
+  /* font-family: 'Playfair Display', serif; */
+  font-size: 25;
+}
+h1 {
+  font-family: 'Playfair Display', serif;
+}
+.locationImages {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: black;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.grow {
+  transition: all 0.2s ease-in-out;
+}
+
+.grow:hover {
+  transform: scale(1.1);
+}
 ul {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -66,13 +99,6 @@ li {
 li .v-icon {
   margin-right: 10px;
 }
-/* .sticky {
-  position: fixed;
-  top: 60px;
-  width: 100%;
-  background-color: white;
-  /* z-index: 5; */
-/* }  */
 .mapbox {
   padding: 15px;
   background-color: #e5897a;
@@ -83,14 +109,17 @@ li .v-icon {
   margin-left: -50vw;
   margin-right: -50vw;
 }
+.imageSlider {
+  border-radius: 10px;
+}
 </style>
-
 <script>
 import { mapState } from 'vuex'
 import ImageSlider from '~/components/ImageSlider.vue'
 import MapBox from '~/components/MapBox.vue'
 import LoadingScreen from '~/components/LoadingScreen.vue'
 import AnimalProfileForm from '~/components/AnimalProfileForm.vue'
+import TipSpinner from '~/components/TipSpinner.vue'
 export default {
   head: {
     script: [
@@ -120,17 +149,27 @@ export default {
     ImageSlider,
     MapBox,
     LoadingScreen,
-    AnimalProfileForm
+    AnimalProfileForm,
+    TipSpinner
   },
   computed: {
     ...mapState({
       imageOK: state => state.profiles.imageOK,
       locationOK: state => state.profiles.locationOK,
       dataOK: state => state.profiles.dataOK,
-      images: state => state.images.images
+      images: state => state.images.imagesWithLoc,
+      longLat: state => state.profiles.longLat
     })
   },
   methods: {
+    setLocation(payload) {
+      console.log(payload)
+      if (payload && payload.longitude)
+        this.$store.commit('profiles/setlongLat', [
+          payload.longitude,
+          payload.latitude
+        ])
+    },
     async saveProfile() {
       this.loading = true
       //I will wrap the form data in 1 object and send it to the backend to save
@@ -141,7 +180,6 @@ export default {
       console.log(profile)
       profile = {
         ...profile,
-        // 'location':this.longLat ? '' : this.longLat.tostring(),
         images64: imagesb64
       }
       console.log(profile)

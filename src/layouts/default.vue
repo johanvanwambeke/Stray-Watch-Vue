@@ -1,23 +1,18 @@
 <template>
   <v-app light class="appcss">
-    <notifications group="foo" position="bottom right" />
-    <v-toolbar
-      :clipped-left="clipped"
-      fixed
-      app
-      color = "#6FCDC7"
-    >    
-    <v-toolbar-items style="margin-left:auto;margin-right:auto;">
-    <!-- <nuxt-link to="/profile">CREATE</nuxt-link> -->
-    
-    <v-btn to="/profile" nuxt flat>CREATE</v-btn>
-    <v-btn to="/" nuxt flat>ABOUT US</v-btn>
-    <v-btn to="/donate" nuxt flat >DONATE</v-btn>
-    </v-toolbar-items>
+    <notifications group="foo" position="bottom right"/>
+    <v-toolbar :clipped-left="clipped" fixed app color="#6FCDC7">
+      <v-toolbar-items style="margin-left:auto;margin-right:auto;">
+        <!-- <nuxt-link to="/profile">CREATE</nuxt-link> -->
+
+        <v-btn to="/profile" nuxt flat>CREATE</v-btn>
+        <v-btn to="/" nuxt flat>ABOUT US</v-btn>
+        <v-btn to="/donate" nuxt flat>DONATE</v-btn>
+      </v-toolbar-items>
     </v-toolbar>
     <v-content>
       <!-- <v-container> -->
-        <nuxt />
+      <nuxt/>
       <!-- </v-container> -->
     </v-content>
     <!-- <v-footer
@@ -25,39 +20,56 @@
       app
     >
     <span>&copy; Stray-Watch 2019</span>
-    </v-footer> -->
-  </v-app>  
+    </v-footer>-->
+  </v-app>
 </template>
 <style scoped>
-
-.v-btn{
-  color:rgb(255, 255, 255)!important;
+.v-btn {
+  color: rgb(255, 255, 255) !important;
   font-size: 14px;
   padding: 0px 25px;
 }
-.v-btn:hover{
-  color:rgb(107, 107, 107)!important;
-  font-size: 14px ;
-  border-bottom:5px solid rgb(107, 107, 107);
+.v-btn:hover {
+  color: rgb(107, 107, 107) !important;
+  font-size: 14px;
+  border-bottom: 5px solid rgb(107, 107, 107);
 }
-.v-btn--active{
-  color:rgb(107, 107, 107)!important;
-  font-size: 14px ;
-  border-bottom:5px solid rgb(107, 107, 107);
-}
-
-.appcss{
-  background-image:    linear-gradient(to bottom, #ffffff 0%,#d2d2d2 100%)!important;
+.v-btn--active {
+  color: rgb(107, 107, 107) !important;
+  font-size: 14px;
+  border-bottom: 5px solid rgb(107, 107, 107);
 }
 
+.appcss {
+  background-image: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    #d2d2d2 100%
+  ) !important;
+}
 </style>
 
 <script>
 export default {
-  methods:{
-    goTo(link){      
-        this.$router.push({ path: `/`+link })
+  methods: {
+    goTo(link) {
+      this.$router.push({ path: `/` + link })
     }
+  },
+  head: {
+    // <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Source+Sans+Pro:300,400&display=swap" rel="stylesheet">
+
+    // script: [
+    //   { src: 'https://unpkg.com/vue-picture-input' },
+    //   { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' },
+    // ],
+    link: [
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css?family=Playfair+Display|Source+Sans+Pro:300,400&display=swap'
+      }
+    ]
   },
   data() {
     return {
