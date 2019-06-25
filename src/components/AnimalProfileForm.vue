@@ -22,6 +22,7 @@
     <v-flex>
       <v-textarea solo label="More info" v-model="info"></v-textarea>
     </v-flex>
+    <v-btn @click="getProfileAnimal"></v-btn>
   </div>
 </template>
 <script>
@@ -59,6 +60,12 @@ export default {
         'agressive',
         'unknown'
       ]
+    }
+  },
+  methods: {
+    getProfileAnimal() {
+      // return this.$store.state.profiles.animal
+      console.log(this.$store.getters['profiles/animal'])
     }
   },
   computed: {

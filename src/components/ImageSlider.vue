@@ -208,7 +208,6 @@
 }
 </style>
 <script>
-// import fullscreen from 'vue-fullscreen'
 import VueCropper from 'vue-cropperjs'
 import 'cropperjs/dist/cropper.css'
 
@@ -240,7 +239,6 @@ export default {
   methods: {
     toggle() {
       this.$refs.myFullscreen.toggle() // recommended
-      // this.fullscreen = !this.fullscreen // deprecated
     },
     fullscreenChange(fullscreen) {
       this.fullscreen = fullscreen

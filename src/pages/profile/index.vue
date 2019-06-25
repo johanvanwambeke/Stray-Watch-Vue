@@ -27,30 +27,23 @@
             <li>
               <v-icon>delete</v-icon>Ooops wrong image, delete!
             </li>
+            <li>
+              <v-icon>fullscreen</v-icon>Make it bigger!
+            </li>
           </ul>
-          <p>Chose or take up to 4 pictures.</p>
-          <p>encourage while uploading somehow...? Show good examples</p>
-          <p>You have no images ? Continue without adding any images ?</p>
-          <p>You have 4 images, nice! Next step :)</p>
           <v-btn @click="stepCount = 2">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
           <h1>Where ?!</h1>
-          <p>You can move the map around and place the pin to indicate the location.</p>
-          <p>X images with location tracking, i placed X pins on the map.</p>
-
+          <p>Share the animal's location.</p>
           <div
             v-for="i in images"
             :style="{'background-image': 'url(' + (i.src) + ')'}"
             class="locationImages grow"
             @click="setLocation(i.longlat)"
-          >
-            <!-- <img style="width:100px;height:100px;float:left" :src="i.src"> -->
-          </div>
+          ></div>
           {{longLat}}
           <MapBox class="mt-4"/>
-          <p>This is amaizing, we know what he/she looks like! And where to find it.</p>
-          <p>Now let's find out if it is in fact a He or a She.</p>
           <v-btn @click="stepCount =3">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="3">
@@ -176,8 +169,17 @@ export default {
       //It returns the ID of the profile
       //I navigate to the profile ID
       var imagesb64 = this.images.map(a => a.src)
-      var profile = this.$store.getters['profiles/profile']
-      console.log(profile)
+      var profile = {
+        animal: this.$store.getters['profiles/animal'],
+        age: this.$store.getters['profiles/age'],
+        needs: this.$store.getters['profiles/needs'],
+        medical: this.$store.getters['profiles/medical'],
+        urgency: this.$store.getters['profiles/urgency'],
+        behavior: this.$store.getters['profiles/behavior'],
+        info: this.$store.getters['profiles/info'],
+        longLat: this.$store.getters['profiles/longLat']
+      }
+      // console.log(profile)
       profile = {
         ...profile,
         images64: imagesb64

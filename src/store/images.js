@@ -37,6 +37,17 @@ export const mutations = {
   state.images[payload.nr].uploadUrl = payload.uri
   state.images[payload.nr].uploaded = true
   console.log(state.images[payload.nr].uploadUrl)
+ },
+ setImages(state, payload) {
+  payload.forEach((element, i) => {
+   if (state.images[i])
+    state.images[i].src = element
+   else
+    state.images.push({
+     src: element
+    })
+  });
+  console.log(state.images)
  }
 }
 
