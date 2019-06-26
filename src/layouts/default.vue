@@ -24,6 +24,9 @@
   </v-app>
 </template>
 <style scoped>
+h1 {
+  font-family: 'Playfair Display', serif;
+}
 .v-btn {
   color: rgb(255, 255, 255) !important;
   font-size: 14px;

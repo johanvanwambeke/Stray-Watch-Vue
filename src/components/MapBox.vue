@@ -94,12 +94,6 @@ export default {
       this.dialog = true
       map2.resize()
     },
-    // getstatus() {
-    //   var status = this.$store.state.profiles.longLat
-    //   console.log('coords')
-    //   console.log(status)
-    //   map.flyTo({ center: status })
-    // },
     init() {
       var self = this
       const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
@@ -126,14 +120,17 @@ export default {
       // Create marker Event
       function onDragEnd() {
         var lngLat = marker.getLngLat()
+        self.$store.commit('profiles/setlongLat', lngLat)
       }
       marker.on('dragend', onDragEnd)
 
       map.on('click', function(e) {
         marker.setLngLat(e.lngLat)
+        self.$store.commit('profiles/setlongLat', e.lngLat)
       })
       map.on('touch', function(e) {
         marker.setLngLat(e.lngLat)
+        self.$store.commit('profiles/setlongLat', e.lngLat)
       })
 
       // Current location

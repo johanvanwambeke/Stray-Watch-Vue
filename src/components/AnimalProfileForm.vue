@@ -1,28 +1,34 @@
 <template>
   <div>
-    <h1>{{sentense}}</h1>
-    <v-flex>
-      <v-select solo v-model="animal" :items="animalLst" label="Animal"></v-select>
-    </v-flex>
-    <v-flex>
-      <v-select solo v-model="age" :items="ageLst" label="age"></v-select>
-    </v-flex>
-    <v-flex>
-      <v-select solo v-model="needs" :items="needsLst" label="Purpose"></v-select>
-    </v-flex>
-    <v-flex v-if="needs=='medical'">
-      <v-select solo multiple chips v-model="medical" :items="medicalLst" label="Ailment"></v-select>
-    </v-flex>
-    <v-flex>
-      <v-select solo v-model="urgency" :items="urgencyLst" label="Urgency"></v-select>
-    </v-flex>
-    <v-flex>
-      <v-select solo v-model="behavior" :items="behaviorLst" label="Behavior"></v-select>
-    </v-flex>
-    <v-flex>
-      <v-textarea solo label="More info" v-model="info"></v-textarea>
-    </v-flex>
-    <v-btn @click="getProfileAnimal"></v-btn>
+    <div v-if="!editable">
+      <h1 class="mb-4">{{sentense}}</h1>
+      <p v-if="info">Message: {{info}}</p>
+    </div>
+    <div v-if="editable">
+      <h1 class="mb-4">{{sentense}}</h1>
+      <v-flex>
+        <v-select box v-model="animal" :items="animalLst" label="Animal"></v-select>
+      </v-flex>
+      <v-flex>
+        <v-select box v-model="age" :items="ageLst" label="age"></v-select>
+      </v-flex>
+      <v-flex>
+        <v-select box v-model="needs" :items="needsLst" label="Purpose"></v-select>
+      </v-flex>
+      <v-flex v-if="needs=='medical'">
+        <v-select box multiple chips v-model="medical" :items="medicalLst" label="Ailment"></v-select>
+      </v-flex>
+      <v-flex>
+        <v-select box v-model="urgency" :items="urgencyLst" label="Urgency"></v-select>
+      </v-flex>
+      <v-flex>
+        <v-select box v-model="behavior" :items="behaviorLst" label="Behavior"></v-select>
+      </v-flex>
+      <v-flex>
+        <v-textarea box label="More info" v-model="info"></v-textarea>
+      </v-flex>
+      <!-- <v-btn @click="getProfileAnimal"></v-btn> -->
+    </div>
   </div>
 </template>
 <script>
@@ -61,6 +67,9 @@ export default {
         'unknown'
       ]
     }
+  },
+  props: {
+    editable: true
   },
   methods: {
     getProfileAnimal() {
@@ -134,15 +143,15 @@ export default {
       }
     },
     sentense() {
-      if (this.animalType === '') return 'Please fill in the profile'
+      if (this.animal === '') return 'Please fill in the profile'
       return (
-        this.healthStatus +
+        this.behavior +
         ' ' +
-        this.animalType +
+        this.age +
+        ' ' +
+        this.animal +
         ' needs ' +
-        this.purpose +
-        ' ' +
-        this.urgency
+        this.needs
       )
     }
   }

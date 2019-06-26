@@ -8,6 +8,8 @@
         <v-stepper-step editable step="2">Location</v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step editable step="3">Crusial info</v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step editable step="4">Share</v-stepper-step>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
@@ -16,13 +18,13 @@
           <ImageSlider class="imageSlider"/>
           <ul>
             <li>
-              <v-icon>add_a_photo</v-icon>This allows you to add a picture
+              <v-icon>add_a_photo</v-icon>This allows you to add a picture.
             </li>
             <li>
-              <v-icon>crop_rotate</v-icon>Cut off some part? Use this button
+              <v-icon>crop_rotate</v-icon>Cut off some part? Use this button.
             </li>
             <li>
-              <v-icon>outlined_flag</v-icon>Press the flag on your favorite image
+              <v-icon>outlined_flag</v-icon>Flagged image wil be used as the main image when sharing.
             </li>
             <li>
               <v-icon>delete</v-icon>Ooops wrong image, delete!
@@ -34,10 +36,10 @@
           <v-btn @click="stepCount = 2">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <h1>Where ?!</h1>
-          <p>Share the animal's location.</p>
+          <h1>Location</h1>
+          <p>Either for finding the animal to help, or to know where to place it back after helping, a location is a crusial starting point.</p>
           <div
-            v-for="i in images"
+            v-for="i in images.filter(x=>x.longlat != null)"
             :style="{'background-image': 'url(' + (i.src) + ')'}"
             class="locationImages grow"
             @click="setLocation(i.longlat)"
@@ -47,23 +49,53 @@
           <v-btn @click="stepCount =3">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <AnimalProfileForm/>
-          <p>This was the last step, now save and you get a unique profile, sharable anywhere and everywhere.</p>
+          <AnimalProfileForm :editable="true"/>
+          <v-btn @click="stepCount =4">Continue</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="4">
+          <AnimalProfileForm :editable="false"/>
+          <div
+            class="imagediv"
+            v-if="images.length>0"
+            :style="{'background-image': 'url(' + (images.filter(x=>x.main === true)[0].src) + ')'}"
+          ></div>
+          <p>Location: {{longLat}}</p>
           <v-btn @click="saveProfile">Complete</v-btn>
+          <v-text-field
+            append-icon="file_copy"
+            ref="copyUrl"
+            value="https://app.straywatch/profiles/..."
+            @click:append="copyText"
+          ></v-text-field>
+          <iframe
+            :src="`https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.stray-watch.com%2Fprofile%2F${10}&layout=button_count&size=large&appId=1985973471691447&width=84&height=28`"
+            width="84"
+            height="28"
+            style="border:none;overflow:hidden"
+            scrolling="no"
+            frameborder="0"
+            allowtransparency="true"
+            allow="encrypted-media"
+          ></iframe>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
   </div>
 </template>
 <style scoped>
+.imagediv {
+  width: 100%;
+  height: 300px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
 .maindiv {
   font-family: 'Source Sans Pro', sans-serif;
   /* font-family: 'Playfair Display', serif; */
   font-size: 25;
 }
-h1 {
-  font-family: 'Playfair Display', serif;
-}
+
 .locationImages {
   background-repeat: no-repeat;
   background-position: center;
@@ -91,16 +123,6 @@ li {
 }
 li .v-icon {
   margin-right: 10px;
-}
-.mapbox {
-  padding: 15px;
-  background-color: #e5897a;
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
 }
 .imageSlider {
   border-radius: 10px;
@@ -162,6 +184,10 @@ export default {
           payload.longitude,
           payload.latitude
         ])
+    },
+    copyText() {
+      this.$refs.copyUrl.select()
+      document.execCommand('copy')
     },
     async saveProfile() {
       this.loading = true

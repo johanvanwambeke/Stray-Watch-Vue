@@ -104,8 +104,12 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  background-color: #777777;
+  background-color: #6e6e6e;
+  /* background-color: rgb(226, 226, 226); */
   height: 60vh;
+
+  /* border */
+  /* border: rgba(19, 19, 19, 0.822) solid 1px; */
 }
 
 .imagediv {
@@ -125,6 +129,7 @@
   height: 42px;
   width: 42px;
   border-radius: 50%;
+  /* color: black; */
 }
 
 .v-toolbar.nav {
@@ -223,6 +228,9 @@ export default {
       fullscreen: false,
       fullscreenObj: null
     }
+  },
+  props: {
+    bgColor: '#777777'
   },
   components: {
     VueCropper
