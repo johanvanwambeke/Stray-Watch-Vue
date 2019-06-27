@@ -120,17 +120,17 @@ export default {
       // Create marker Event
       function onDragEnd() {
         var lngLat = marker.getLngLat()
-        self.$store.commit('profiles/setlongLat', lngLat)
+        self.$store.commit('profiles/setlongLat', [lngLat.lng, lngLat.lat])
       }
       marker.on('dragend', onDragEnd)
 
       map.on('click', function(e) {
         marker.setLngLat(e.lngLat)
-        self.$store.commit('profiles/setlongLat', e.lngLat)
+        self.$store.commit('profiles/setlongLat', [e.lngLat.lng, e.lngLat.lat])
       })
       map.on('touch', function(e) {
         marker.setLngLat(e.lngLat)
-        self.$store.commit('profiles/setlongLat', e.lngLat)
+        self.$store.commit('profiles/setlongLat', [e.lngLat.lng, e.lngLat.lat])
       })
 
       // Current location

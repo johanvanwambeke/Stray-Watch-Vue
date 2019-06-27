@@ -2,7 +2,7 @@
   <div class="containerImg" v-touch:swipe="swipeHandler">
     <no-ssr placeholder="Looking for puppies...">
       <fullscreen ref="myFullscreen" @change="fullscreenChange">
-        <v-toolbar flat dark dense color="transparent">
+        <v-toolbar v-if="!hideTopNav" flat dark dense color="transparent">
           <v-btn class="imgIcon" icon @click="pickFile" :disabled="images.length > 3">
             <v-icon>add_a_photo</v-icon>
           </v-btn>
@@ -230,7 +230,8 @@ export default {
     }
   },
   props: {
-    bgColor: '#777777'
+    bgColor: '#777777',
+    hideTopNav: false
   },
   components: {
     VueCropper

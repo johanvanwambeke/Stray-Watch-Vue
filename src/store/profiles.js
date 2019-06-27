@@ -80,20 +80,27 @@ export const actions = {
  async getProfile({
   commit
  }, payload) {
-  this.$axios.get(
-    // 'https://localhost:44352/api/AnimalProfile/get/' + payload , 
-    'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/' + payload,
-   )
-   .then((response) => {
-    console.log(response.data)
-    commit('setProfile', response.data)
-    commit('images/setImages', response.data.url, {
-     root: true
+  return new Promise((resolve, reject) => {
+
+   this.$axios.get(
+     // 'https://localhost:44352/api/AnimalProfile/get/' + payload , 
+     'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/' + payload,
+    )
+    .then((response) => {
+     // console.log(response.data)
+     commit('setProfile', response.data)
+     resolve(response.data)
+     commit('images/setImages', response.data.url, {
+      root: true
+     })
     })
-   })
-   .catch((error) => {
-    console.log(error);
-   });
+    .catch((error) => {
+     console.log(error);
+    });
+
+  })
+
+
  },
  async saveProfile({
   commit

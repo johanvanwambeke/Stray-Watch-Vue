@@ -54,41 +54,38 @@
         </v-stepper-content>
         <v-stepper-content step="4">
           <AnimalProfileForm :editable="false"/>
-          <div
-            class="imagediv"
-            v-if="images.length>0"
-            :style="{'background-image': 'url(' + (images.filter(x=>x.main === true)[0].src) + ')'}"
-          ></div>
-          <p>Location: {{longLat}}</p>
-          <v-btn @click="saveProfile">Complete</v-btn>
-          <v-text-field
-            append-icon="file_copy"
-            ref="copyUrl"
-            value="https://app.straywatch/profiles/..."
-            @click:append="copyText"
-          ></v-text-field>
-          <iframe
-            :src="`https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.stray-watch.com%2Fprofile%2F${10}&layout=button_count&size=large&appId=1985973471691447&width=84&height=28`"
-            width="84"
-            height="28"
-            style="border:none;overflow:hidden"
-            scrolling="no"
-            frameborder="0"
-            allowtransparency="true"
-            allow="encrypted-media"
-          ></iframe>
+          <div class="imgAndLoc">
+            <div
+              class="imagediv"
+              v-if="images.length>0"
+              :style="{'background-image': 'url(' + (images.filter(x=>x.main === true)[0].src) + ')'}"
+            ></div>
+            <img class="locationImg" alt="Animal location" :src="mapUrl">
+          </div>
+          <v-btn class="mt-2" @click="saveProfile">Complete</v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
   </div>
 </template>
 <style scoped>
+.imgAndLoc {
+  border-radius: 10px;
+  /* border: solid 1px black; */
+  overflow: hidden;
+}
+.locationImg {
+  /* width: 100vh; */
+  height: 150px;
+}
 .imagediv {
   width: 100%;
   height: 300px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+
+  background-color: rgb(49, 49, 49);
 }
 .maindiv {
   font-family: 'Source Sans Pro', sans-serif;
@@ -160,6 +157,7 @@ export default {
       stepCount: 1
     }
   },
+  mounted() {},
   components: {
     ImageSlider,
     MapBox,
@@ -174,7 +172,23 @@ export default {
       dataOK: state => state.profiles.dataOK,
       images: state => state.images.imagesWithLoc,
       longLat: state => state.profiles.longLat
-    })
+    }),
+    mapUrl() {
+      if (!this.longLat) return
+
+      var location = this.longLat
+      console.log(location)
+      // let marker =
+      return (
+        `https://api.mapbox.com/styles/v1/mapbox/` +
+        `outdoors-v11/static/` +
+        `pin-l-veterinary+482(${location[0]},${location[1]})/` +
+        `${location[0]},${location[1]},11,0,0/500x200?` +
+        // `-77.0397,38.8974,7,0,0/300x200?` +
+        `access_token=` +
+        process.env.MAP_TOKEN
+      )
+    }
   },
   methods: {
     setLocation(payload) {
@@ -184,10 +198,6 @@ export default {
           payload.longitude,
           payload.latitude
         ])
-    },
-    copyText() {
-      this.$refs.copyUrl.select()
-      document.execCommand('copy')
     },
     async saveProfile() {
       this.loading = true
