@@ -1,15 +1,14 @@
 <template>
   <v-app light class="appcss">
     <notifications group="foo" position="bottom right"/>
-    <v-toolbar :clipped-left="clipped" fixed app color="#6FCDC7">
+    <!-- <v-toolbar :clipped-left="clipped" fixed app color="#6FCDC7">
       <v-toolbar-items style="margin-left:auto;margin-right:auto;">
-        <!-- <nuxt-link to="/profile">CREATE</nuxt-link> -->
 
         <v-btn to="/profile" nuxt flat>CREATE</v-btn>
         <v-btn to="/" nuxt flat>ABOUT US</v-btn>
         <v-btn to="/donate" nuxt flat>DONATE</v-btn>
       </v-toolbar-items>
-    </v-toolbar>
+    </v-toolbar>-->
     <v-content>
       <!-- <v-container> -->
       <nuxt/>

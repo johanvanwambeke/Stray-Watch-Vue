@@ -103,10 +103,16 @@ export default {
       // document.execCommand('copy')
     },
     openMaps() {
-      console.log(this.profile)
-      return
+      // return
       var latitude = 10
       var longitude = 10
+      var ll = JSON.parse(this.profile.longLat)
+      console.log(ll)
+
+      if (ll) {
+        latitude = ll[1]
+        longitude = ll[0]
+      }
       window.open(
         `https://maps.google.com/maps?daddr=${latitude},${longitude}&amp;ll=`
       )

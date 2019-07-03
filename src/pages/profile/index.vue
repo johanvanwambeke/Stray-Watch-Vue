@@ -204,6 +204,7 @@ export default {
       //I will wrap the form data in 1 object and send it to the backend to save
       //It returns the ID of the profile
       //I navigate to the profile ID
+      var mylonlat = this.$store.getters['profiles/longLat']
       var imagesb64 = this.images.map(a => a.src)
       var profile = {
         animal: this.$store.getters['profiles/animal'],
@@ -213,7 +214,7 @@ export default {
         urgency: this.$store.getters['profiles/urgency'],
         behavior: this.$store.getters['profiles/behavior'],
         info: this.$store.getters['profiles/info'],
-        longLat: this.$store.getters['profiles/longLat']
+        longLat: '[' + mylonlat[0] + ', ' + mylonlat[1] + ']'
       }
       // console.log(profile)
       profile = {

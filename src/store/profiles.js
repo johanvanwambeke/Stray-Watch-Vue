@@ -69,8 +69,7 @@ export const mutations = {
   state.medical = payload.medical
   state.urgency = payload.urgency
   state.behavior = payload.behavior
-  state.infolongLat = payload.infolongLat
-  state.longLat = payload.longLat
+  // state.longLat = payload.longLat
 
   console.log(state.animal)
  }
@@ -87,7 +86,7 @@ export const actions = {
      'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/get/' + payload,
     )
     .then((response) => {
-     // console.log(response.data)
+     console.log(response.data)
      commit('setProfile', response.data)
      resolve(response.data)
      commit('images/setImages', response.data.url, {
@@ -105,6 +104,7 @@ export const actions = {
  async saveProfile({
   commit
  }, payload) {
+  console.log(payload)
   return new Promise((resolve, reject) => {
    this.$axios.post(
      //  'https://localhost:44352/api/AnimalProfile/Create',
