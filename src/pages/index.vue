@@ -24,13 +24,6 @@
       <v-btn class="mainButton" block depressed :color="accentColor" to="profile">Help an animal</v-btn>
       <v-btn class="mainButton" block depressed outline color="white" to="web">About {{appName}}</v-btn>
     </div>
-    <style>
-  :root {
-    --accent-color: {{ accentColor }};
-    --main-color: {{ mainColor }};
-    --background-color: {{ backgroundColor }};
-  }
-    </style>
   </div>
 </template>
 

@@ -51,7 +51,7 @@ module.exports = {
   description: 'collaborate on saving and suporting local stray animals',
   display: "standalone",
   orientation: "portrait",
-  theme_color: "#66A39E",
+  theme_color: "#2B7EC9",
  },
  /*
   ** Customize the progress-bar color

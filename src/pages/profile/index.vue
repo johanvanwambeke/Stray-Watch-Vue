@@ -1,6 +1,6 @@
 <template>
   <div class="maindiv">
-    <LoadingScreen :value="loading" progressColor="green" :message="loadingMessage"/>
+    <LoadingScreen :value="loading" progressColor="green" :message="loadingMessage" />
     <v-stepper non-linear v-model="stepCount">
       <v-stepper-header class="sticky">
         <v-stepper-step editable step="1">Pictures</v-stepper-step>
@@ -15,25 +15,14 @@
         <v-stepper-content step="1">
           <h1>Picture time</h1>
           <TipSpinner class="mt-3"></TipSpinner>
-          <ImageSlider class="imageSlider"/>
-          <ul>
-            <li>
-              <v-icon>add_a_photo</v-icon>This allows you to add a picture.
-            </li>
-            <li>
-              <v-icon>crop_rotate</v-icon>Cut off some part? Use this button.
-            </li>
-            <li>
-              <v-icon>outlined_flag</v-icon>Flagged image wil be used as the main image when sharing.
-            </li>
-            <li>
-              <v-icon>delete</v-icon>Ooops wrong image, delete!
-            </li>
-            <li>
-              <v-icon>fullscreen</v-icon>Make it bigger!
-            </li>
-          </ul>
-          <v-btn @click="stepCount = 2">Continue</v-btn>
+          <ImageSlider class="imageSlider" />
+          <v-btn
+            class="mainButton mt-2"
+            block
+            depressed
+            :color="mainColor"
+            @click="stepCount=2"
+          >Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
           <h1>Location</h1>
@@ -45,30 +34,44 @@
             @click="setLocation(i.longlat)"
           ></div>
           {{longLat}}
-          <MapBox class="mt-4"/>
-          <v-btn @click="stepCount =3">Continue</v-btn>
+          <MapBox class="mt-4" />
+          <v-btn class="mainButton" block depressed :color="mainColor" @click="stepCount=3">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <AnimalProfileForm :editable="true"/>
-          <v-btn @click="stepCount =4">Continue</v-btn>
+          <AnimalProfileForm :editable="true" />
+          <v-btn class="mainButton" block depressed :color="mainColor" @click="stepCount=4">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="4">
-          <AnimalProfileForm :editable="false"/>
+          <AnimalProfileForm :editable="false" />
           <div class="imgAndLoc">
             <div
               class="imagediv"
               v-if="images.length>0"
               :style="{'background-image': 'url(' + (images.filter(x=>x.main === true)[0].src) + ')'}"
             ></div>
-            <img class="locationImg" alt="Animal location" :src="mapUrl">
+            <img class="locationImg" alt="Animal location" :src="mapUrl" />
           </div>
-          <v-btn class="mt-2" @click="saveProfile">Complete</v-btn>
+          <v-btn
+            class="mainButton"
+            block
+            depressed
+            :color="mainColor"
+            @click="saveProfile"
+          >Create profile</v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
   </div>
 </template>
 <style scoped>
+.v-stepper__content {
+  /* min-height: 100vh; */
+}
+.mainButton {
+  color: white;
+  border-radius: 10px;
+  height: 40px;
+}
 .imgAndLoc {
   border-radius: 10px;
   /* border: solid 1px black; */
@@ -122,10 +125,11 @@ li .v-icon {
   margin-right: 10px;
 }
 .imageSlider {
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 </style>
 <script>
+import config from '@/config.js'
 import { mapState } from 'vuex'
 import ImageSlider from '~/components/ImageSlider.vue'
 import MapBox from '~/components/MapBox.vue'
@@ -152,6 +156,9 @@ export default {
   },
   data() {
     return {
+      accentColor: config.colors.accentColor,
+      mainColor: config.colors.mainColor,
+      backgroundColor: config.colors.backgroundColor,
       loadingMessage: 'Saving profile',
       loading: false,
       stepCount: 1

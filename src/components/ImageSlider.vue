@@ -2,7 +2,7 @@
   <div class="containerImg" v-touch:swipe="swipeHandler">
     <no-ssr placeholder="Looking for puppies...">
       <fullscreen ref="myFullscreen" @change="fullscreenChange">
-        <v-toolbar v-if="!hideTopNav" flat dark dense color="transparent">
+        <v-toolbar v-if="!hideTopNav" flat dense color="transparent">
           <v-btn class="imgIcon" icon @click="pickFile" :disabled="images.length > 3">
             <v-icon>add_a_photo</v-icon>
           </v-btn>
@@ -33,6 +33,15 @@
         <div
           @dblclick="toggle"
           class="imagediv"
+          v-if="images.length===0"
+          :style="{'background-image': 'url(/addPhoto.svg)',
+          'background-repeat': 'no-repeat',
+           'background-size':'300px 100px',
+           }"
+        ></div>
+        <div
+          @dblclick="toggle"
+          class="imagediv"
           v-if="images.length>0"
           :style="{'background-image': 'url(' + (images[Math.abs(counter-1) % images.length].src) + ')'}"
         ></div>
@@ -44,13 +53,20 @@
           accept="image/*"
           @change="addImage"
           multiple
-        >
-        <v-toolbar class="nav" flat dark dense>
-          <v-btn icon flat @click="counter-=1; direction='left'" :disabled="counter < 2">
+        />
+        <v-toolbar class="nav" flat dense v-if="images.length>1">
+          <v-btn
+            class="imgIcon"
+            icon
+            flat
+            @click="counter-=1; direction='left'"
+            :disabled="counter < 2"
+          >
             <v-icon>arrow_back_ios</v-icon>
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
+            class="imgIcon"
             icon
             flat
             @click="counter+=1; direction ='right'"
@@ -59,7 +75,7 @@
             <v-icon>arrow_forward_ios</v-icon>
           </v-btn>
         </v-toolbar>
-        <div class="dots">
+        <div class="dots" v-if="images.length>1">
           <span
             v-for="(image, imageIndex) in images"
             :key="imageIndex"
@@ -104,12 +120,8 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  background-color: #6e6e6e;
-  /* background-color: rgb(226, 226, 226); */
+  background-color: #e5eff9;
   height: 60vh;
-
-  /* border */
-  /* border: rgba(19, 19, 19, 0.822) solid 1px; */
 }
 
 .imagediv {
@@ -129,7 +141,7 @@
   height: 42px;
   width: 42px;
   border-radius: 50%;
-  /* color: black; */
+  color: #2b7ec9;
 }
 
 .v-toolbar.nav {
@@ -161,7 +173,7 @@
   background-color: rgba(255, 255, 255, 0.7);
 }
 .dotSelected {
-  background-color: #ffffff;
+  background-color: #2b7ec9;
 }
 
 .cropperStyle {
@@ -187,29 +199,6 @@
   color: #ffffff;
   background: #44a4fc;
   border-left: 5px solid #187fe7;
-}
-
-/* slide to the left */
-.left-leave-active,
-.left-enter-active {
-  transition: 0.4s ease-out;
-}
-.left-enter {
-  transform: translate(-100%, 0);
-}
-.left-leave-to {
-  transform: translate(100%, 0);
-}
-/* slide tot he right */
-.right-leave-active,
-.right-enter-active {
-  transition: 0.4s ease-out;
-}
-.right-enter {
-  transform: translate(100%, 0);
-}
-.right-leave-to {
-  transform: translate(-100%, 0);
 }
 </style>
 <script>

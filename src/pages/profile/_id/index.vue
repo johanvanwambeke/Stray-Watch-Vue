@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <AnimalProfileForm></AnimalProfileForm>
-    <ImageSlider class="mt-4 imageSlider"/>
+    <ImageSlider :hideTopNav="true" class="mt-4 imageSlider" />
     <!-- <MapBox class="mt-4"/> -->
     <v-btn @click="openMaps">Open in google maps</v-btn>
     <iframe
@@ -24,7 +24,7 @@
 </template>
 <style scoped>
 .imageSlider {
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 </style>
 
