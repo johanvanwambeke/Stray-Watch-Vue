@@ -36,7 +36,7 @@
           v-if="images.length===0"
           :style="{'background-image': 'url(/addPhoto.svg)',
           'background-repeat': 'no-repeat',
-           'background-size':'300px 100px',
+          'background-size':'200px 200px',
            }"
         ></div>
         <div
@@ -117,22 +117,14 @@
 </template>
 <style scoped>
 .containerImg {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
   background-color: #e5eff9;
-  height: 60vh;
 }
 
 .imagediv {
-  width: 100%;
-  height: 76%;
-  top: 12%;
-  right: 0;
+  height: 200px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  position: absolute;
 }
 
 .imgIcon {
@@ -147,17 +139,14 @@
 .v-toolbar.nav {
   background-color: transparent;
   z-index: 15;
-  height: 12%;
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  height: 20px;
 }
+
 .dots {
   width: 100%;
   text-align: center;
-  position: absolute;
-  bottom: 4%;
   z-index: 10;
+  padding-bottom: 10px;
 }
 
 .selected {
@@ -193,9 +182,7 @@
   z-index: 12;
   padding: 10px;
   margin: 0 5px 5px;
-
   font-size: 12px;
-
   color: #ffffff;
   background: #44a4fc;
   border-left: 5px solid #187fe7;

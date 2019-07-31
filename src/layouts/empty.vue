@@ -1,9 +1,11 @@
 <template>
   <v-app>
     <v-content>
-      <!-- <v-container> -->
-      <nuxt />
-      <!-- </v-container> -->
+      <div class="backgroundImage">
+        <div class="maxwidth">
+          <nuxt />
+        </div>
+      </div>
       <style>
   :root {
     --accent-color: {{ accentColor }};
@@ -28,5 +30,24 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.backgroundImage {
+  background: #314755; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #26a0da,
+    #314755
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #26a0da,
+    #314755
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.maxwidth {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 100vh;
+}
 </style>

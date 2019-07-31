@@ -73,7 +73,7 @@
   height: 40px;
 }
 .imgAndLoc {
-  border-radius: 10px;
+  /* border-radius: 10px; */
   /* border: solid 1px black; */
   overflow: hidden;
 }
@@ -87,8 +87,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-
-  background-color: rgb(49, 49, 49);
+  background-color: #b4d2ee;
 }
 .maindiv {
   font-family: 'Source Sans Pro', sans-serif;

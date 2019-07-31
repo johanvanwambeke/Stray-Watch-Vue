@@ -10,24 +10,39 @@
     >Help a stray animal in three simple steps</h2>
     <div style="height:30px;width:100%"></div>
     <div class="stepBlock" v-for="step in steps">
-      <div class="circle">
-        <div class="icon">
-          <v-icon :color="mainColor">{{step.icon}}</v-icon>
+      <nuxt-link to="profile" class="removeLinkStyle">
+        <div class="circle">
+          <div class="icon">
+            <v-icon :color="mainColor">{{step.icon}}</v-icon>
+          </div>
+          <div class="smallcircle">{{step.number}}</div>
         </div>
-        <div class="smallcircle">{{step.number}}</div>
-      </div>
+      </nuxt-link>
       <div>
         <h2 class="stepH2">{{step.title}}</h2>
       </div>
     </div>
     <div class="buttonblock">
-      <v-btn class="mainButton" block depressed :color="accentColor" to="profile">Help an animal</v-btn>
+      <v-btn
+        class="mainButton"
+        block
+        depressed
+        dark
+        :color="accentColor"
+        to="profile"
+      >Help an animal</v-btn>
       <v-btn class="mainButton" block depressed outline color="white" to="web">About {{appName}}</v-btn>
     </div>
   </div>
 </template>
 
 <style scoped>
+a {
+  text-decoration: none;
+}
+/* .removeLinkStyle {
+  text-decoration: none !important;
+} */
 .buttonblock {
   margin-top: 50px;
   width: 100%;
@@ -63,7 +78,8 @@
 .icon {
   width: 24px;
   height: 24px;
-  margin: 18px;
+  margin: auto;
+  padding-top: 18px;
 }
 .smallcircle {
   background-color: white;
