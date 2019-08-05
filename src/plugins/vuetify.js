@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 import colors from 'vuetify/es5/util/colors'
+import 'assets/css/animate.css'
 
 Vue.use(Vuetify, {
  theme: {

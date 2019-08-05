@@ -1,15 +1,17 @@
 <template>
   <div class="container">
     <h1
+      class="animated slideInDown"
       style="text-align:center;margin-top:10%;margin-bottom:15px;font-size:3em"
       :color="mainColor"
     >{{appName}}</h1>
     <h2
+      class="animated slideInDown"
       style="text-align:center; padding-left: 15%; padding-right:15%"
       :color="mainColor"
     >Help a stray animal in three simple steps</h2>
     <div style="height:30px;width:100%"></div>
-    <div class="stepBlock" v-for="step in steps">
+    <div class="animated slideInLeft stepBlock" v-for="step in steps">
       <nuxt-link to="profile" class="removeLinkStyle">
         <div class="circle">
           <div class="icon">
@@ -22,7 +24,7 @@
         <h2 class="stepH2">{{step.title}}</h2>
       </div>
     </div>
-    <div class="buttonblock">
+    <div class="buttonblock animated slideInUp">
       <v-btn
         class="mainButton"
         block
@@ -31,7 +33,14 @@
         :color="accentColor"
         to="profile"
       >Help an animal</v-btn>
-      <v-btn class="mainButton" block depressed outline color="white" to="web">About {{appName}}</v-btn>
+      <v-btn
+        class="mainButton animated slideInUp"
+        block
+        depressed
+        outline
+        color="white"
+        to="web"
+      >About {{appName}}</v-btn>
     </div>
   </div>
 </template>
