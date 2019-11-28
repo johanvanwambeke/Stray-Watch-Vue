@@ -1,5 +1,6 @@
 <template>
   <div class="maindiv">
+    <v-btn @click="randomCreate">Createsmth</v-btn>
     <LoadingScreen :value="loading" progressColor="green" :message="loadingMessage" />
     <v-stepper non-linear v-model="stepCount">
       <v-stepper-header class="sticky">
@@ -64,9 +65,6 @@
   </div>
 </template>
 <style scoped>
-.v-stepper__content {
-  /* min-height: 100vh; */
-}
 .mainButton {
   color: white;
   border-radius: 10px;
@@ -122,9 +120,6 @@ li {
 }
 li .v-icon {
   margin-right: 10px;
-}
-.imageSlider {
-  /* border-radius: 10px; */
 }
 </style>
 <script>
@@ -197,6 +192,14 @@ export default {
     }
   },
   methods: {
+    randomCreate() {
+      var obj = {
+        Animal: 'Johan',
+        Age: '10',
+        Needs: 'foster'
+      }
+      this.$store.dispatch('profiles/saveProfile', obj)
+    },
     setLocation(payload) {
       console.log(payload)
       if (payload && payload.longitude)

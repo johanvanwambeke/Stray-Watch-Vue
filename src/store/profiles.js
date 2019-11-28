@@ -102,14 +102,18 @@ export const actions = {
 
  },
  async saveProfile({
-  commit
+  commit,
+  rootState
  }, payload) {
   console.log(payload)
   return new Promise((resolve, reject) => {
    this.$axios.post(
-     //  'https://localhost:44352/api/AnimalProfile/Create',
-     'https://stray-watch-api.azurewebsites.net/api/AnimalProfile/Create/',
-     payload)
+     'https://localhost:44352/api/animalprofile/create', JSON.stringify(payload), {
+      headers: {
+       "Authorization": 'Bearer ' + rootState.user.token,
+       "Content-Type": 'application/json',
+      }
+     })
     .then(result => resolve(result.data.id))
   })
  }

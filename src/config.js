@@ -1,6 +1,6 @@
 export default {
  settings: {
-  appName: 'Stray Watch',
+  appName: 'Stray Hero',
 
  },
  colors: {

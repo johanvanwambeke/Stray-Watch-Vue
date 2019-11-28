@@ -71,3 +71,6 @@ public/_nuxt
 
 # PWA
 sw.*
+
+#onesignal
+OneSignalSDK*

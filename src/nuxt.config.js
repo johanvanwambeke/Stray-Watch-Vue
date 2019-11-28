@@ -72,6 +72,7 @@ module.exports = {
   */
  plugins: [
   '@/plugins/vuetify',
+  '@/plugins/os',
   '@/plugins/vue2-touch-events',
   '@/plugins/notifications',
   {
@@ -86,10 +87,26 @@ module.exports = {
   */
  modules: [
   // Doc: https://axios.nuxtjs.org/usage
+  '@nuxtjs/onesignal',
   '@nuxtjs/axios',
   '@nuxtjs/dotenv',
   '@nuxtjs/pwa'
  ],
+
+ //  Options
+ oneSignal: {
+  init: {
+   appId: '6cb0060c-70d4-48bc-9b2e-7962017edb74',
+   allowLocalhostAsSecureOrigin: true,
+   welcomeNotification: {
+    disable: true
+   },
+   // Use CDN
+   cdn: true,
+   // Use any custom URL
+   //  OneSignalSDK: 'https://cdn.onesignal.com/sdks/OneSignalSDK.js'
+  }
+ },
  /*
   ** Axios module configuration
   */

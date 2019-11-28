@@ -11,7 +11,8 @@
     </v-toolbar>-->
     <v-content>
       <!-- <v-container> -->
-      <div class="backgroundImage">
+      <!-- class="backgroundImage" -->
+      <div>
         <div class="maxwidth">
           <nuxt />
         </div>
