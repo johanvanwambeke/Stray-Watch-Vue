@@ -72,7 +72,6 @@ module.exports = {
   */
  plugins: [
   '@/plugins/vuetify',
-  '@/plugins/os',
   '@/plugins/vue2-touch-events',
   '@/plugins/notifications',
   {
@@ -89,6 +88,7 @@ module.exports = {
   // Doc: https://axios.nuxtjs.org/usage
   '@nuxtjs/onesignal',
   '@nuxtjs/axios',
+  "cookie-universal-nuxt",
   '@nuxtjs/dotenv',
   '@nuxtjs/pwa'
  ],

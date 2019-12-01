@@ -76,6 +76,32 @@ export const mutations = {
 }
 
 export const actions = {
+
+ async search({
+  commit,
+  rootState
+ }, payload) {
+  return new Promise((resolve, reject) => {
+
+   this.$axios.get(
+     'https://localhost:44352/api/AnimalProfile/search', {
+      headers: {
+       Authorization: "Bearer " + rootState.user.token,
+       "Content-Type": "application/json"
+      }
+     }
+    )
+    .then((response) => {
+     resolve(response.data)
+    })
+    .catch((error) => {
+     console.log(error);
+    });
+
+  })
+
+
+ },
  async getProfile({
   commit
  }, payload) {

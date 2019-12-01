@@ -10,6 +10,7 @@ export const getters = {
 
 export const mutations = {
  token(state, payload) {
+  this.$cookies.set("token", payload);
   state.token = payload
  },
 }

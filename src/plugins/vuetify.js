@@ -13,13 +13,4 @@ Vue.use(Vuetify, {
   error: colors.deepOrange.accent4,
   success: colors.green.accent3
  },
- // theme:{
- //   primary: '#009688',
- //   secondary: '#e91e63',
- //   accent: '#ffc107',
- //   error: '#f44336',
- //   warning: '#ff5722',
- //   info: '#00bcd4',
- //   success: '#4caf50'
- //   }
 })
