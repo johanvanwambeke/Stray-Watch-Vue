@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <!-- <ImageSlider :hideTopNav="true" class="imageSlider" /> -->
+    <ImageSlider :hideTopNav="true" class="imageSlider" />
     <!-- <vue-flux :options="fluxOptions" :images="images" :transitions="fluxTransitions" ref="slider"></vue-flux> -->
 
     <button @click="$refs.slider.showImage('next')">NEXT</button>
@@ -98,11 +98,12 @@ import ImageSlider from '~/components/ImageSlider.vue'
 import MapBox from '~/components/MapBox.vue'
 export default {
   async asyncData({ app, params, store }) {
+    console.log(params)
     let data = await store.dispatch('profiles/getProfile', params.id)
     return {
       profile: data,
       sentense:
-        data.behavior.trim() +
+        data.behavior +
         ' ' +
         data.age +
         ' ' +

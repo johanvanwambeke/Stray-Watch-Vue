@@ -1,12 +1,9 @@
 export const actions = {
- nuxtServerInit({
-  commit,
- }) {
+ nuxtServerInit({ commit }) {
   const token = this.$cookies.get('token')
-  //   console.log('Nuxt init: ', token)
-
+  this.$axios.setToken(token, 'Bearer')
   if (token) {
    commit('user/token', token)
   }
- },
+ }
 }

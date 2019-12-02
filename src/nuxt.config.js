@@ -1,16 +1,20 @@
-const pkg = require('./package.json');
+const pkg = require('./package.json')
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 // export default {
 module.exports = {
  mode: 'universal',
-
+ env: {
+  baseUrl: process.env.VUE_APP_BASE_URL,
+  dev: process.env.VUE_APP_DEV || false
+ },
  /*
   ** Headers of the page
   */
  head: {
   title: pkg.name,
-  meta: [{
+  meta: [
+   {
     charset: 'utf-8'
    },
    {
@@ -23,23 +27,27 @@ module.exports = {
     content: pkg.description
    }
   ],
-  link: [{
+  link: [
+   {
     rel: 'icon',
     type: 'image/x-icon',
     href: '/favicon.ico'
    },
    {
     rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
+    href:
+     'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
    }
   ]
  },
  router: {
-  routes: [{
-   name: 'profile-id',
-   path: '/profile/:id?',
-   component: 'pages/profile/_id.vue'
-  }]
+  routes: [
+   {
+    name: 'profile-id',
+    path: '/profile/:id?',
+    component: 'pages/profile/_id.vue'
+   }
+  ]
  },
 
  // PWA
@@ -49,9 +57,9 @@ module.exports = {
  manifest: {
   name: 'Stray-Watch',
   description: 'collaborate on saving and suporting local stray animals',
-  display: "standalone",
-  orientation: "portrait",
-  theme_color: "#2B7EC9",
+  display: 'standalone',
+  orientation: 'portrait',
+  theme_color: '#2B7EC9'
  },
  /*
   ** Customize the progress-bar color
@@ -63,9 +71,7 @@ module.exports = {
  /*
   ** Global CSS
   */
- css: [
-  '~/assets/style/app.styl'
- ],
+ css: ['~/assets/style/app.styl'],
 
  /*
   ** Plugins to load before mounting the App
@@ -77,7 +83,7 @@ module.exports = {
   {
    src: '@/plugins/vue-fullscreen',
    ssr: false
-  },
+  }
   // '@/plugins/vue2-google-maps'
  ],
 
@@ -88,7 +94,7 @@ module.exports = {
   // Doc: https://axios.nuxtjs.org/usage
   '@nuxtjs/onesignal',
   '@nuxtjs/axios',
-  "cookie-universal-nuxt",
+  'cookie-universal-nuxt',
   '@nuxtjs/dotenv',
   '@nuxtjs/pwa'
  ],
@@ -102,7 +108,7 @@ module.exports = {
     disable: true
    },
    // Use CDN
-   cdn: true,
+   cdn: true
    // Use any custom URL
    //  OneSignalSDK: 'https://cdn.onesignal.com/sdks/OneSignalSDK.js'
   }
@@ -112,6 +118,7 @@ module.exports = {
   */
  axios: {
   // See https://github.com/nuxt-community/axios-module#options
+  baseURL: 'https://localhost:44352/'
  },
 
  /*
@@ -121,9 +128,7 @@ module.exports = {
  build: {
   transpile: ['vuetify/lib'],
   vendor: ['vue2-google-maps'],
-  plugins: [
-   new VuetifyLoaderPlugin()
-  ],
+  plugins: [new VuetifyLoaderPlugin()],
   loaders: {
    stylus: {
     import: ['~assets/style/variables.styl']
@@ -132,6 +137,6 @@ module.exports = {
   /*
    ** You can extend webpack config here
    */
-  extend(config, ctx) {},
+  extend(config, ctx) {}
  }
 }

@@ -137,9 +137,6 @@ export default {
     longLat: {
       get() {
         return this.$store.state.profiles.longLat
-      },
-      set(value) {
-        this.$store.commit('profiles/setlongLat', value)
       }
     },
     sentense() {
