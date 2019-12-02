@@ -1,53 +1,12 @@
 <template>
-  <v-app light class="appcss">
+  <v-app light>
     <notifications group="foo" position="bottom right" />
-    <!-- <v-toolbar :clipped-left="clipped" fixed app color="#6FCDC7">
-      <v-toolbar-items style="margin-left:auto;margin-right:auto;">
-
-        <v-btn to="/profile" nuxt flat>CREATE</v-btn>
-        <v-btn to="/" nuxt flat>ABOUT US</v-btn>
-        <v-btn to="/donate" nuxt flat>DONATE</v-btn>
-      </v-toolbar-items>
-    </v-toolbar>-->
     <v-content>
-      <!-- <v-container> -->
-      <!-- class="backgroundImage" -->
-      <div>
-        <div class="maxwidth">
-          <nuxt />
-        </div>
-      </div>
-      <!-- </v-container> -->
+      <nuxt />
     </v-content>
-    <!-- <v-footer
-      :fixed="fixed"
-      app
-    >
-    <span>&copy; Stray-Watch 2019</span>
-    </v-footer>-->
   </v-app>
 </template>
 <style scoped>
-.backgroundImage {
-  background: #314755; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #26a0da,
-    #314755
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #26a0da,
-    #314755
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-.maxwidth {
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  min-height: 100vh;
-}
-
 h1 {
   font-family: 'Playfair Display', serif;
 }

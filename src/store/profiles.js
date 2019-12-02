@@ -6,9 +6,7 @@ export const state = () => ({
  urgency: '',
  behavior: '',
  info: '',
- longLat: [10, 10],
- long: '',
- lat: ''
+ longLat: [10, 10]
 })
 
 export const getters = {
@@ -73,7 +71,6 @@ export const mutations = {
   state.medical = payload.medical
   state.urgency = payload.urgency
   state.behavior = payload.behavior
-  // state.longLat = payload.longLat
 
   console.log(state.animal)
  }
@@ -118,7 +115,14 @@ export const actions = {
   })
  },
  async saveProfile({ commit, rootState }, payload) {
+  if (payload.longLat != null) {
+   var array = JSON.parse(payload.longLat)
+   payload.long = array[0]
+   payload.lat = array[1]
+  }
+
   console.log(payload)
+
   return new Promise((resolve, reject) => {
    this.$axios
     .post('api/animalprofile/create', JSON.stringify(payload), {

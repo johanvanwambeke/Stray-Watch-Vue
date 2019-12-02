@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-content>
-      <div class="backgroundImage">
-        <div class="maxwidth">
+      <div>
+        <div>
           <nuxt />
         </div>
       </div>

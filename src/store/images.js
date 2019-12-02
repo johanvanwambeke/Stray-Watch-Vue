@@ -1,6 +1,6 @@
 export const state = () => ({
  images: [],
- imagesWithLoc: [],
+ imagesWithLoc: []
 })
 
 export const getters = {
@@ -22,15 +22,15 @@ export const mutations = {
   state.imagesWithLoc = state.images
  },
  replaceImage(state, payload) {
-  var myimage = state.images[payload.nr];
+  var myimage = state.images[payload.nr]
   myimage.src = payload.imgForUpload
   state.images.splice(payload.nr, 1, myimage)
   state.imagesWithLoc = state.images
  },
  setMainImage(state, payload) {
-  state.images.forEach(function (entry) {
-   entry.main = false;
-  });
+  state.images.forEach(function(entry) {
+   entry.main = false
+  })
   state.images[payload].main = true
  },
  setUrl(state, payload) {
@@ -40,79 +40,71 @@ export const mutations = {
  },
  setImages(state, payload) {
   payload.forEach((element, i) => {
-   if (state.images[i])
-    state.images[i].src = element
+   if (state.images[i]) state.images[i].src = element
    else
     state.images.push({
      src: element
     })
-  });
+  })
   console.log(state.images)
  }
 }
 
 export const actions = {
- async add({
-  commit,
-  state
- }, payload) {
+ async add({ commit, state }, payload) {
   commit('addImage', payload)
  },
- async delete({
-  commit
- }, payload) {
+ async delete({ commit }, payload) {
   commit('deleteImage', payload)
  },
- async replace({
-  commit
- }, payload) {
+ async replace({ commit }, payload) {
   commit('replaceImage', payload)
  },
- async setMain({
-  commit
- }, payload) {
+ async setMain({ commit }, payload) {
   commit('setMainImage', payload)
  },
- uploadImages({
-  dispatch
- }, payload) {
+ uploadImages({ dispatch }, payload) {
   return new Promise((resolve, reject) => {
    payload.forEach((image, i) => {
     dispatch('uploadImage', {
      image: image.imgForUpload,
      nr: i
     })
-   });
+   })
    resolve(r)
   })
  },
- uploadImage({
-  commit
- }, payload) {
+ uploadImage({ commit }, payload) {
   return new Promise((resolve, reject) => {
-   this.$axios.post(
-     // 'https://localhost:44352/api/Image/SaveFile',
-     'https://stray-watch-api.azurewebsites.net/api/Image/savefile', {
-      'imgString': payload.image,
-      'smth': 'tekst'
-     }, {
+   this.$axios
+    .post(
+     'api/Image/savefile',
+     {
+      imgString: payload.image,
+      smth: 'tekst'
+     },
+     {
       onUploadProgress: uploadEvent => {
-       console.log('uploaded: ' + Math.round(uploadEvent.loaded / uploadEvent.total) * 100 + '%')
+       console.log(
+        'uploaded: ' +
+         Math.round(uploadEvent.loaded / uploadEvent.total) * 100 +
+         '%'
+       )
       }
      }
     )
-    .then((response) => {
-     console.log(response.data.uri);
+    .then(response => {
+     console.log(response.data.uri)
      commit('setUrl', {
       url: response.data.uri,
       nr: payload.nr
      })
      resolve('ok')
     })
-    .catch((error) => {
-     console.log(error);
+    .catch(error => {
+     console.log(error)
      reject('fail')
-    });
+    })
   })
  }
 }
