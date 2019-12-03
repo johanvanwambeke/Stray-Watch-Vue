@@ -24,16 +24,18 @@
 export default {
  data() {
   return {
-   profileId: 120,
    messages: [],
-   remark: 'Some new text'
+   remark: 'Some new text',
+   profileId: 50
   }
  },
  mounted() {
+  this.profileId = this.$store.state.profiles.profileId
   this.$store
-   .dispatch('messages/get', 120)
+   .dispatch('messages/get', this.profileId)
    .then(res => {
     this.messages = res
+    console.log('result')
     console.log(res)
    })
    .catch(err => {
@@ -44,7 +46,7 @@ export default {
   createRemark() {
    var msg = {
     remark: this.remark,
-    profileId: 120
+    profileId: this.profileId
    }
    this.$store.dispatch('messages/create', msg)
    this.messages.push(msg)

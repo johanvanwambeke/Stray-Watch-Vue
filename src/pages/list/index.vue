@@ -1,28 +1,53 @@
 <template>
  <v-layout rows wrap>
   <v-flex xs12>
-   <nuxt-link to="profile/edit">Create</nuxt-link>
+   <div class=" d-flex justify-center">
+    <v-flex>
+     <nuxt-link to="profile/edit"><v-btn>Create</v-btn></nuxt-link>
+    </v-flex>
+   </div>
   </v-flex>
   <v-flex xs12>
-   <div v-for="(profile, i) in profiles" :key="i">
-    <v-card>
-     <v-flex>
-      <p>{{ profile.animal }}</p>
-      <p>{{ profile.distance }}</p>
-      <img height="200" width="200" :src="profile.pic" />
-      <v-btn @click="openProfile(profile.animalProfileId)">more</v-btn>
+   <div
+    v-for="(profile, i) in profiles"
+    :key="i"
+    class=" d-flex justify-center"
+   >
+    <v-layout pa-2 style="max-width:600px">
+     <v-flex md6 xs12 class="d-flex align-stretch">
+      <div class="profileDescription">
+       <h1>{{ profile.age }} {{ profile.animal }}</h1>
+       <h3>{{ profile.needs }}</h3>
+       <p style="color:light-gray">{{ profile.distance | twocomma }} Km</p>
+       <v-btn @click="openProfile(profile.animalProfileId)">more</v-btn>
+      </div>
      </v-flex>
-    </v-card>
+     <v-flex md6 xs12 class="d-flex align-stretch">
+      <img height="200" width="200" :src="profile.pic" />
+     </v-flex>
+    </v-layout>
    </div>
   </v-flex>
  </v-layout>
 </template>
-
+<style>
+.profileDescription {
+ background-color: rgb(68, 68, 68);
+ padding: 20px;
+ padding-left: 30px;
+ color: white;
+}
+</style>
 <script>
 export default {
  data() {
   return {
    profiles: []
+  }
+ },
+ filters: {
+  twocomma: function(value) {
+   return value.toFixed(2)
   }
  },
  mounted() {
@@ -39,7 +64,7 @@ export default {
  methods: {
   search() {},
   openProfile(id) {
-   this.$router.push({ path: `/profile/` + id })
+   this.$router.push({ path: `/profile/edit/` + id })
   }
  }
 }

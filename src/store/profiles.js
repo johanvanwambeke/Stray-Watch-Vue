@@ -6,7 +6,8 @@ export const state = () => ({
  urgency: '',
  behavior: '',
  info: '',
- longLat: [10, 10]
+ longLat: [10, 10],
+ profileId: ''
 })
 
 export const getters = {
@@ -33,6 +34,9 @@ export const getters = {
  },
  longLat(state) {
   return state.longLat
+ },
+ profileId(state) {
+  return state.profileId
  }
 }
 
@@ -58,6 +62,9 @@ export const mutations = {
  },
  setInfo(state, payload) {
   state.info = payload
+ },
+ profileId(state, payload) {
+  state.profileId = payload
  },
  setlongLat(state, payload) {
   state.longLat = payload

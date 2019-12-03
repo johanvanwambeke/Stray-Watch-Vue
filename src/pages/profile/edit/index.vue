@@ -21,7 +21,6 @@
   <v-flex xs12 lg6 pa-4>
    <AnimalProfileForm :editable="true" />
   </v-flex xs12 lg6 pa-4>
-  <ProfileMessages></ProfileMessages>
  </v-layout>
 </template>
 <style>
