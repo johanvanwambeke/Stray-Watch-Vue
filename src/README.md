@@ -1,10 +1,10 @@
 # stray-watch
 
-> Creating a sharable animal profile that is Stray-Watch conform.
+> Creating a sharable animal profile that is Stray Hero conform.
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 $ npm install
 

@@ -1,5 +1,5 @@
 <template>
-  <iframe src="https://stray-watch.com"></iframe>
+  <iframe src="https://strayhero.com"></iframe>
 </template>
 <style scoped>
 iframe {

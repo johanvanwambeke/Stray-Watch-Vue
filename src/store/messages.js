@@ -25,7 +25,7 @@ export const actions = {
       'Content-Type': 'application/json'
      }
     })
-    .then(result => console.log(result))
+    .then(result => resolve())
     .catch(err => console.log(err))
   })
  }

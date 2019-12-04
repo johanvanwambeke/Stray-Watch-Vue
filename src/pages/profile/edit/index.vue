@@ -1,14 +1,9 @@
 <template>
- <v-layout row wrap>
-     <v-flex xs12 pa-4>
-         <div ><v-btn @click="save">save</v-btn></div>
-     </v-flex>
+ <v-layout col wrap>
   <v-flex xs12 lg6 pa-4>
       <!-- <FileUploader></FileUploader> -->
    <ImageSlider class="imageSlider" />
-  </v-flex>
-  <v-flex xs12 lg6 pa-4>
-   <h1>Location</h1>
+    <h1>Location</h1>
              <div
             v-for="i in images.filter(x=>x.longlat != null)"
             :style="{'background-image': 'url(' + (i.src) + ')'}"
@@ -20,7 +15,8 @@
   </v-flex>
   <v-flex xs12 lg6 pa-4>
    <AnimalProfileForm :editable="true" />
-  </v-flex xs12 lg6 pa-4>
+      <div ><v-btn class="primary" @click="save">save</v-btn></div>
+  </v-flex xs12 lg6 pa-4>  
  </v-layout>
 </template>
 <style>
@@ -62,6 +58,11 @@ export default {
     type: 'text/css'
    }
   ]
+ },
+ mounted(){
+   //reset the profile & images
+   //create a new one and load that one?
+   this.$store.dispatch('profiles/clear');
  },
  computed:{
     ...mapState({
@@ -113,7 +114,7 @@ export default {
         .dispatch('profiles/saveProfile', profile)
         .then(profileId => {
           console.log(profileId)
-          this.$router.push({ path: '/list' })
+          this.$router.push({ path: '/profiles' })
         })
         .catch(error => {
           console.log(error)

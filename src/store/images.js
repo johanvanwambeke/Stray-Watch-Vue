@@ -47,6 +47,9 @@ export const mutations = {
     })
   })
   console.log(state.images)
+ },
+ clear(state, payload) {
+  state.images = []
  }
 }
 

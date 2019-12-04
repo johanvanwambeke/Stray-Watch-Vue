@@ -1,20 +1,13 @@
 <template>
  <v-layout rows wrap>
   <v-flex xs12>
-   <div class=" d-flex justify-center">
-    <v-flex>
-     <nuxt-link to="profile/edit"><v-btn>Create</v-btn></nuxt-link>
-    </v-flex>
-   </div>
-  </v-flex>
-  <v-flex xs12>
    <div
     v-for="(profile, i) in profiles"
     :key="i"
     class=" d-flex justify-center"
    >
-    <v-layout pa-2 style="max-width:600px">
-     <v-flex md6 xs12 class="d-flex align-stretch">
+    <v-layout pa-2>
+     <v-flex md8 xs12 class="d-flex align-stretch">
       <div class="profileDescription">
        <h1>{{ profile.age }} {{ profile.animal }}</h1>
        <h3>{{ profile.needs }}</h3>
@@ -22,7 +15,7 @@
        <v-btn @click="openProfile(profile.animalProfileId)">more</v-btn>
       </div>
      </v-flex>
-     <v-flex md6 xs12 class="d-flex align-stretch">
+     <v-flex md4 xs12 class="d-flex align-stretch">
       <img height="200" width="200" :src="profile.pic" />
      </v-flex>
     </v-layout>

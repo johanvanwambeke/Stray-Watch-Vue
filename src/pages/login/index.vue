@@ -1,14 +1,16 @@
 <template>
- <v-layout>
-  <v-flex>
-   <h1>Hi, login or register?</h1>
-   <input v-model="email" placeholder="email" />
-   <input v-model="password" type="password" placeholder="password" />
-   <v-btn @click="login">Login</v-btn>
-   <v-btn @click="logout">Logout</v-btn>
-   <nuxt-link to="register">Register</nuxt-link>
-  </v-flex>
- </v-layout>
+ <v-container>
+  <v-layout col wrap align-center>
+   <v-flex>
+    <h1>Hi, login or register?</h1>
+    <input v-model="email" placeholder="email" />
+    <input v-model="password" type="password" placeholder="password" />
+    <v-btn @click="login">Login</v-btn>
+    <v-btn @click="logout">Logout</v-btn>
+    <nuxt-link to="register">Register</nuxt-link>
+   </v-flex>
+  </v-layout>
+ </v-container>
 </template>
 <script>
 export default {

@@ -78,12 +78,29 @@ export const mutations = {
   state.medical = payload.medical
   state.urgency = payload.urgency
   state.behavior = payload.behavior
+  state.profileId = payload.profileId
 
   console.log(state.animal)
  }
 }
 
 export const actions = {
+ clear({ commit }) {
+  commit('setProfile', {
+   animal: '',
+   age: '',
+   needs: '',
+   medical: '',
+   urgency: '',
+   behavior: '',
+   profileId: ''
+  })
+  commit('setlongLat', [10, 10])
+  commit('images/clear', null, {
+   root: true
+  })
+ },
+
  async search({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
    this.$axios
@@ -102,6 +119,7 @@ export const actions = {
  },
  async getProfile({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
+   console.log(payload)
    this.$axios
     .get('api/AnimalProfile/get/' + payload, {
      headers: {

@@ -1,7 +1,7 @@
 {
- "name": "stray-watch",
+ "name": "stray-Hero",
  "version": "1.0.0",
- "description": "Creating a sharable animal profile that is Stray-Watch conform.",
+ "description": "Creating a sharable animal profile that is Stray Hero conform.",
  "author": "Johan Van Wambeke",
  "private": true,
  "scripts": {
