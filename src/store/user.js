@@ -52,5 +52,22 @@ export const actions = {
      reject(error.response.data.message)
     })
   })
+ },
+ async me({ rootState }, payload) {
+  return new Promise((resolve, reject) => {
+   this.$axios
+    .get('api/users/get', {
+     headers: {
+      Authorization: 'Bearer ' + rootState.user.token
+     }
+    })
+    .then(res => {
+     resolve(res.data)
+    })
+    .catch(error => {
+     console.log(error)
+     reject(error.response.data.message)
+    })
+  })
  }
 }

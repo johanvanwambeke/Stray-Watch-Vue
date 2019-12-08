@@ -1,23 +1,23 @@
 <template>
- <v-layout col wrap>
-  <v-flex xs12 lg6 pa-4>
-      <!-- <FileUploader></FileUploader> -->
-   <ImageSlider class="imageSlider" />
-    <h1>Location</h1>
-             <div
-            v-for="i in images.filter(x=>x.longlat != null)"
-            :style="{'background-image': 'url(' + (i.src) + ')'}"
-            class="locationImages grow"
-            @click="setLocation(i.longlat)"
-          ></div>
-          {{longLat}}
-   <MapBox class="mt-4" />
-  </v-flex>
-  <v-flex xs12 lg6 pa-4>
-   <AnimalProfileForm :editable="true" />
-      <div ><v-btn class="primary" @click="save">save</v-btn></div>
-  </v-flex xs12 lg6 pa-4>  
- </v-layout>
+  <v-layout row wrap>
+    <v-flex xs12 md6 pa-4>
+      <ImageSlider class="imageSlider" />
+    </v-flex>
+    <v-flex xs12 md6 pa-4>
+      <h1>Location</h1>
+      <div
+        v-for="i in images.filter(x=>x.longlat != null)"
+        :style="{'background-image': 'url(' + (i.src) + ')'}"
+        class="locationImages grow"
+        @click="setLocation(i.longlat)"
+      ></div>
+      <p>{{longLat}}</p>
+      <MapBox class="mt-4" />
+    </v-flex>
+    <v-flex xs12 pa-4>
+      <AnimalProfileForm :editable="true" />
+    </v-flex>
+  </v-layout>
 </template>
 <style>
 .locationImages {
@@ -42,46 +42,46 @@ import ImageSlider from '~/components/ImageSlider.vue'
 import MapBox from '~/components/MapBox.vue'
 import AnimalProfileForm from '~/components/AnimalProfileForm.vue'
 export default {
- head: {
-         script: [
+  head: {
+    script: [
       { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' }
     ],
-  link: [
-   {
-    href: 'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css',
-    rel: 'stylesheet'
-   },
-   {
-    href:
-     'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.css',
-    rel: 'stylesheet',
-    type: 'text/css'
-   }
-  ]
- },
- mounted(){
-   //reset the profile & images
-   //create a new one and load that one?
-   this.$store.dispatch('profiles/clear');
- },
- computed:{
+    link: [
+      {
+        href: 'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css',
+        rel: 'stylesheet'
+      },
+      {
+        href:
+          'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.css',
+        rel: 'stylesheet',
+        type: 'text/css'
+      }
+    ]
+  },
+  mounted() {
+    //reset the profile & images
+    //create a new one and load that one?
+    this.$store.dispatch('profiles/clear')
+  },
+  computed: {
     ...mapState({
       imageOK: state => state.profiles.imageOK,
       locationOK: state => state.profiles.locationOK,
       dataOK: state => state.profiles.dataOK,
       images: state => state.images.imagesWithLoc,
       longLat: state => state.profiles.longLat
-    }),
- },
- components: {
-  FileUploader,
-  ProfileMessages,
-  ImageSlider,
-  MapBox,
-  AnimalProfileForm
- },
- methods:{
-     setLocation(payload) {
+    })
+  },
+  components: {
+    FileUploader,
+    ProfileMessages,
+    ImageSlider,
+    MapBox,
+    AnimalProfileForm
+  },
+  methods: {
+    setLocation(payload) {
       console.log(payload)
       if (payload && payload.longitude)
         this.$store.commit('profiles/setlongLat', [
@@ -89,12 +89,14 @@ export default {
           payload.latitude
         ])
     },
-      async save() {
+    async save() {
       //I will wrap the form data in 1 object and send it to the backend to save
       //It returns the ID of the profile
       //I navigate to the profile ID
-      var mylonlat = this.$store.getters['profiles/longLat']      
-      var imagesb64arr = this.$store.state.images.images.map(a => a.imgForUpload)      
+      var mylonlat = this.$store.getters['profiles/longLat']
+      var imagesb64arr = this.$store.state.images.images.map(
+        a => a.imgForUpload
+      )
 
       var profile = {
         animal: this.$store.getters['profiles/animal'],
@@ -120,6 +122,6 @@ export default {
           console.log(error)
         })
     }
- }
+  }
 }
 </script>

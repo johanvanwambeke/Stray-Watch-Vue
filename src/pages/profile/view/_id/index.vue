@@ -1,9 +1,9 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 md6 pa-4>
+    <v-flex xs12 lg6 pa-4>
       <ImageSlider class="imageSlider" />
     </v-flex>
-    <v-flex xs12 md6 pa-4>
+    <v-flex xs12 lg6 pa-4>
       <h1>Location</h1>
       <div
         v-for="i in images.filter(x=>x.longlat != null)"
@@ -17,6 +17,7 @@
     <v-flex xs12 pa-4>
       <AnimalProfileForm :editable="true" />
     </v-flex>
+    <ProfileMessages />
   </v-layout>
 </template>
 <style>
