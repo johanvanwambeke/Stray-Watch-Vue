@@ -1,5 +1,11 @@
 <template>
   <v-layout row wrap>
+    <v-flex>
+      <!-- <ogImage /> -->
+    </v-flex>
+    <v-flex>
+      <v-btn v-if="thisIsMine" @click="editProfile">edit</v-btn>
+    </v-flex>
     <v-flex xs12 lg6 pa-4>
       <ImageSlider class="imageSlider" />
     </v-flex>
@@ -42,10 +48,12 @@ import ProfileMessages from '~/components/ProfileMessages.vue'
 import ImageSlider from '~/components/ImageSlider.vue'
 import MapBox from '~/components/MapBox.vue'
 import AnimalProfileForm from '~/components/AnimalProfileForm.vue'
+import ogImage from '~/components/ogImage.vue'
 export default {
   data() {
     return {
-      profileId: 10
+      profileId: 10,
+      thisIsMine: true
     }
   },
   mounted() {
@@ -98,9 +106,13 @@ export default {
     ProfileMessages,
     ImageSlider,
     MapBox,
-    AnimalProfileForm
+    AnimalProfileForm,
+    ogImage
   },
   methods: {
+    editProfile() {
+      this.$router.push('/profile/edit/' + this.$route.params.id)
+    },
     setLocation(payload) {
       console.log(payload)
       if (payload && payload.longitude)

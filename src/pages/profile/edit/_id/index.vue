@@ -1,5 +1,8 @@
 <template>
   <v-layout row wrap>
+    <v-flex>
+      <v-btn @click="updateProfile">Save</v-btn>
+    </v-flex>
     <v-flex xs12 md6 pa-4>
       <ImageSlider class="imageSlider" />
     </v-flex>
@@ -108,7 +111,7 @@ export default {
           payload.latitude
         ])
     },
-    async save() {
+    async updateProfile() {
       //I will wrap the form data in 1 object and send it to the backend to save
       //It returns the ID of the profile
       //I navigate to the profile ID
@@ -125,6 +128,7 @@ export default {
         urgency: this.$store.getters['profiles/urgency'],
         behavior: this.$store.getters['profiles/behavior'],
         info: this.$store.getters['profiles/info'],
+        animalProfileId: this.$store.getters['profiles/profileId'],
         longLat: '[' + mylonlat[0] + ', ' + mylonlat[1] + ']',
         images64: imagesb64arr
       }
@@ -132,7 +136,7 @@ export default {
       console.log(profile)
 
       this.$store
-        .dispatch('profiles/saveProfile', profile)
+        .dispatch('profiles/updateProfile', profile)
         .then(profileId => {
           console.log(profileId)
           this.$router.push({ path: '/list' })

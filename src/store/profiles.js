@@ -78,7 +78,7 @@ export const mutations = {
   state.medical = payload.medical
   state.urgency = payload.urgency
   state.behavior = payload.behavior
-  state.profileId = payload.profileId
+  state.profileId = payload.animalProfileId
 
   console.log(state.animal)
  }
@@ -145,12 +145,26 @@ export const actions = {
    payload.long = array[0]
    payload.lat = array[1]
   }
-
-  console.log(payload)
-
   return new Promise((resolve, reject) => {
    this.$axios
     .post('api/animalprofile/create', JSON.stringify(payload), {
+     headers: {
+      Authorization: 'Bearer ' + rootState.user.token,
+      'Content-Type': 'application/json'
+     }
+    })
+    .then(result => resolve(result.data.id))
+  })
+ },
+ async updateProfile({ commit, rootState }, payload) {
+  if (payload.longLat != null) {
+   var array = JSON.parse(payload.longLat)
+   payload.long = array[0]
+   payload.lat = array[1]
+  }
+  return new Promise((resolve, reject) => {
+   this.$axios
+    .post('api/animalprofile/Update', JSON.stringify(payload), {
      headers: {
       Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
