@@ -88,8 +88,9 @@ export default {
           needs: this.needsFilter,
           deviceLong: success.coords.longitude,
           deviceLat: success.coords.latitude,
-          myprofiles: this.myprofiles
+          myprofiles: this.myProfiles
         }
+        console.log(payload)
 
         this.$store
           .dispatch('profiles/search', payload)
