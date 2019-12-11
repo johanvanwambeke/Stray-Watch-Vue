@@ -72,15 +72,18 @@ export const mutations = {
   state.lat = payload.lat
  },
  setProfile(state, payload) {
+  console.log('setProfile')
+  console.log(payload)
   state.animal = payload.animal
   state.age = payload.age
   state.needs = payload.needs
   state.medical = payload.medical
   state.urgency = payload.urgency
   state.behavior = payload.behavior
+  state.info = payload.info
   state.profileId = payload.animalProfileId
 
-  console.log(state.animal)
+  console.log(state.longlat)
  }
 }
 
@@ -93,7 +96,8 @@ export const actions = {
    medical: '',
    urgency: '',
    behavior: '',
-   profileId: ''
+   profileId: '',
+   info: ''
   })
   commit('setlongLat', [10, 10])
   commit('images/clear', null, {
@@ -104,11 +108,13 @@ export const actions = {
  async search({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
    this.$axios
-    .get('api/AnimalProfile/search', {
+    .post('api/AnimalProfile/search', JSON.stringify(payload), {
      headers: {
-      Authorization: 'Bearer ' + rootState.user.token
+      Authorization: 'Bearer ' + rootState.user.token,
+      'Content-Type': 'application/json'
      }
     })
+
     .then(response => {
      resolve(response.data)
     })
@@ -128,6 +134,7 @@ export const actions = {
     })
     .then(response => {
      console.log(response.data)
+     commit('setlongLat', [response.data.long, response.data.lat])
      commit('setProfile', response.data)
      resolve(response.data)
      commit('images/setImages', response.data.url, {
@@ -137,6 +144,29 @@ export const actions = {
     .catch(error => {
      console.log(error)
     })
+  })
+ },
+ async create({ commit, rootState }, payload) {
+  return new Promise((resolve, reject) => {
+   var profile = {
+    animal: '',
+    age: '',
+    needs: '',
+    medical: '',
+    urgency: '',
+    behavior: '',
+    info: '',
+    longLat: '',
+    images64: []
+   }
+   this.$axios
+    .post('api/animalprofile/create', JSON.stringify(profile), {
+     headers: {
+      Authorization: 'Bearer ' + rootState.user.token,
+      'Content-Type': 'application/json'
+     }
+    })
+    .then(result => resolve(result.data.id))
   })
  },
  async saveProfile({ commit, rootState }, payload) {

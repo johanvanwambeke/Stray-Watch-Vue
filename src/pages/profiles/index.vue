@@ -1,5 +1,17 @@
 <template>
   <v-layout rows wrap>
+    <v-layout cols wrap>
+      <v-flex xs6 md4 pa-2>
+        <v-select clearable box v-model="animalFilter" :items="animalLst" label="Animal"></v-select>
+      </v-flex>
+      <v-flex xs6 md4 pa-2>
+        <v-select clearable box v-model="needsFilter" :items="needsLst" label="Purpose"></v-select>
+      </v-flex>
+      <v-flex xs6 md4 pa-2>
+        <v-switch color="black" v-model="myProfiles" label="My animals"></v-switch>
+      </v-flex>
+    </v-layout>
+    <v-flex cols xs12></v-flex>
     <v-flex xs12>
       <div v-for="(profile, i) in profiles" :key="i" class="d-flex justify-center">
         <v-layout pa-2>
@@ -31,7 +43,20 @@
 export default {
   data() {
     return {
-      profiles: []
+      profiles: [],
+      myProfiles: false,
+      animalFilter: '',
+      needsFilter: '',
+      animalLst: ['cat', 'dog'],
+      needsLst: [
+        'fosterhome',
+        'funding',
+        'adoption',
+        'finding new owner',
+        'medical',
+        'feeding',
+        'driver'
+      ]
     }
   },
   filters: {
@@ -39,19 +64,44 @@ export default {
       return value.toFixed(2)
     }
   },
+  watch: {
+    animalFilter() {
+      this.search()
+    },
+    needsFilter() {
+      this.search()
+    },
+    myProfiles() {
+      this.search()
+    }
+  },
   mounted() {
-    this.$store
-      .dispatch('profiles/search')
-      .then(res => {
-        console.log(res)
-        this.profiles = res
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.search()
   },
   methods: {
-    search() {},
+    search() {
+      navigator.geolocation.getCurrentPosition(success => {
+        console.log(success.coords.longitude)
+        console.log(success.coords.latitude)
+        var payload = {
+          animal: this.animalFilter,
+          needs: this.needsFilter,
+          deviceLong: success.coords.longitude,
+          deviceLat: success.coords.latitude,
+          myprofiles: this.myprofiles
+        }
+
+        this.$store
+          .dispatch('profiles/search', payload)
+          .then(res => {
+            console.log(res)
+            this.profiles = res
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+    },
     openProfile(id) {
       this.$router.push({ path: `/profile/view/` + id })
     }

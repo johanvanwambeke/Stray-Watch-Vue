@@ -1,9 +1,9 @@
 <template>
   <v-layout row wrap>
-    <v-flex>
-      <!-- <ogImage /> -->
-    </v-flex>
-    <v-flex>
+    <!-- <v-flex>
+      <ogImage />
+    </v-flex>-->
+    <v-flex xs12>
       <v-btn v-if="thisIsMine" @click="editProfile">edit</v-btn>
     </v-flex>
     <v-flex xs12 lg6 pa-4>

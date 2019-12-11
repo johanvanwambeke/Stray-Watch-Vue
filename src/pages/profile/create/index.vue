@@ -17,6 +17,9 @@
     <v-flex xs12 pa-4>
       <AnimalProfileForm :editable="true" />
     </v-flex>
+    <v-flex>
+      <v-btn @click="save">Save</v-btn>
+    </v-flex>
   </v-layout>
 </template>
 <style>

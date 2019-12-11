@@ -68,6 +68,8 @@ var marker = null
 export default {
   watch: {
     longLat: function(val) {
+      console.log('coord change')
+      console.log(val)
       map.flyTo({ center: val })
       marker.setLngLat(val)
     }

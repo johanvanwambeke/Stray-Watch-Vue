@@ -5,7 +5,9 @@
       <v-layout rows wrap>
         <v-flex>
           <nuxt-link to="/profiles">List</nuxt-link>
-          <nuxt-link to="/profile/create">Create</nuxt-link>
+          <!-- <nuxt-link to="/profile/create">Create</nuxt-link> -->
+          <!-- <nuxt-link to="/" @click.native="create">Create</nuxt-link> -->
+          <a @click="create">create</a>
           <nuxt-link to="/donate">Donate</nuxt-link>
           <div style="float:right">
             <nuxt-link v-if="loggedIn" to="/user">user</nuxt-link>
@@ -83,6 +85,14 @@ export default {
     logout() {
       this.$cookies.remove('token')
       this.$store.commit('user/token', null)
+    },
+    create() {
+      //create a new profile
+      this.$store.dispatch('profiles/clear').then(x => {
+        this.$store.dispatch('profiles/create').then(x => {
+          this.$router.push('/profile/edit/' + x)
+        })
+      })
     }
   }
 }

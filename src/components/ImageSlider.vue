@@ -38,7 +38,7 @@
           :style="{
       'background-image': 'url(/addPhoto.svg)',
       'background-repeat': 'no-repeat',
-      'background-size': '200px 200px'
+      'background-size': '150px 150px'
      }"
         ></div>
         <div
@@ -226,12 +226,8 @@ export default {
   computed: {
     images() {
       return this.$store.getters['images/images']
-    },
-    imgCounter() {
-      return this.$store.getters['images/counter']
     }
   },
-  mounted() {},
   methods: {
     toggle() {
       this.$refs.myFullscreen.toggle() // recommended
@@ -311,12 +307,13 @@ export default {
     async addImageLooped(file) {
       var self = this
       //Get the mata-data image info
-      var imgInfo = await this.getImageInfo(file)
-      console.log('resized')
+      var coords = await this.getImageInfo(file)
+      console.log('get coords')
 
       //resize the image
       var imgResized = await this.resizeImg(file, 1000)
       console.log('resized')
+
       //resize the image for upload
       var imgResizedUpload = await this.resizeImg(file, 600)
       console.log('resized for upload')
@@ -326,13 +323,20 @@ export default {
         uploaded: false,
         img: imgResized,
         imgForUpload: imgResizedUpload,
-        longlat: imgInfo,
-        main: this.images.length == 0 ? true : false
+        longlat: coords,
+        main: this.images.length == 0 ? true : false,
+        url: '',
+        guid:
+          'id-' +
+          Math.random()
+            .toString(36)
+            .substr(2, 16)
       }
       console.log('object created')
       console.log(myimg)
       this.$store.dispatch('images/add', myimg)
       this.counter = this.images.length
+      this.startUpload(myimg)
     },
     showCropper() {
       this.dialog = true
@@ -394,39 +398,12 @@ export default {
       var dataurl = myCanvas.toDataURL()
       return dataurl
     },
-    async upload() {
-      var dataurl = this.resizeImg(this.images[this.counter - 1].img, 600)
-      await this.onFilePicked(dataurl)
-    },
-    async onFilePicked(image) {
-      console.log('startupload')
-      let filename = image.name
-      // await this.$store.dispatch('images/uploadImage',image,nr)
-      // console.log(this.$store.images.images)
-      this.$axios
-        .post(
-          'api/FileUpload/savefile',
-          {
-            imgString: image,
-            type: filename
-          },
-          {
-            onUploadProgress: uploadEvent => {
-              console.log(
-                'uploaded: ' +
-                  Math.round(uploadEvent.loaded / uploadEvent.total) * 100 +
-                  '%'
-              )
-            }
-          }
-        )
-        .then(response => {
-          console.log(response.data.uri)
-          console.log('laat zien dat ' + nr + ' is geupload')
-        })
-        .catch(error => {
-          console.log(error)
-        })
+    async startUpload(image) {
+      this.$store.dispatch('images/uploadImage', {
+        src: image.imgForUpload,
+        image: image,
+        AnimalProfileID: this.$route.params.id
+      })
     }
   }
 }

@@ -1,24 +1,24 @@
 <template>
   <v-layout row wrap>
-    <v-flex>
-      <v-btn @click="updateProfile">Save</v-btn>
-    </v-flex>
     <v-flex xs12 md6 pa-4>
       <ImageSlider class="imageSlider" />
     </v-flex>
     <v-flex xs12 md6 pa-4>
       <h1>Location</h1>
-      <div
+      <!-- <div
         v-for="i in images.filter(x=>x.longlat != null)"
         :style="{'background-image': 'url(' + (i.src) + ')'}"
         class="locationImages grow"
         @click="setLocation(i.longlat)"
       ></div>
-      <p>{{longLat}}</p>
+      <p>{{longLat}}</p>-->
       <MapBox class="mt-4" />
     </v-flex>
     <v-flex xs12 pa-4>
       <AnimalProfileForm :editable="true" />
+    </v-flex>
+    <v-flex>
+      <v-btn @click="updateProfile">Save</v-btn>
     </v-flex>
   </v-layout>
 </template>
@@ -51,6 +51,9 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$route.params.id)
+    this.$store.dispatch('images/clear')
+    this.$store.dispatch('profiles/clear')
     this.$store
       .dispatch('profiles/getProfile', this.$route.params.id)
       .then(res => {
@@ -139,7 +142,7 @@ export default {
         .dispatch('profiles/updateProfile', profile)
         .then(profileId => {
           console.log(profileId)
-          this.$router.push({ path: '/list' })
+          this.$router.push({ path: '/profile/view/' + this.$route.params.id })
         })
         .catch(error => {
           console.log(error)

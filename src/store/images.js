@@ -34,9 +34,15 @@ export const mutations = {
   state.images[payload].main = true
  },
  setUrl(state, payload) {
-  state.images[payload.nr].uploadUrl = payload.uri
-  state.images[payload.nr].uploaded = true
-  console.log(state.images[payload.nr].uploadUrl)
+  console.log(payload)
+  console.log(state.images)
+  var image = state.images.filter(x => x.guid == payload.guid)[0]
+  if (image == null) return
+  console.log(image)
+  var index = state.images.indexOf(image)
+  console.log(index)
+  state.images[index].url = payload.url
+  state.images[index].uploaded = true
  },
  setImages(state, payload) {
   payload.forEach((element, i) => {
@@ -54,6 +60,9 @@ export const mutations = {
 }
 
 export const actions = {
+ clear({ commit }) {
+  commit('clear')
+ },
  async add({ commit, state }, payload) {
   commit('addImage', payload)
  },
@@ -66,41 +75,40 @@ export const actions = {
  async setMain({ commit }, payload) {
   commit('setMainImage', payload)
  },
- uploadImages({ dispatch }, payload) {
+
+ uploadImage({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
-   payload.forEach((image, i) => {
-    dispatch('uploadImage', {
-     image: image.imgForUpload,
-     nr: i
-    })
-   })
-   resolve(r)
-  })
- },
- uploadImage({ commit }, payload) {
-  return new Promise((resolve, reject) => {
+   var obj = {
+    imgString: payload.src,
+    smth: 'tekst',
+    AnimalProfileID: parseInt(payload.AnimalProfileID)
+   }
    this.$axios
     .post(
      'api/Image/savefile',
+     JSON.stringify(obj),
      {
-      imgString: payload.image,
-      smth: 'tekst'
-     },
-     {
-      onUploadProgress: uploadEvent => {
-       console.log(
-        'uploaded: ' +
-         Math.round(uploadEvent.loaded / uploadEvent.total) * 100 +
-         '%'
-       )
+      headers: {
+       Authorization: 'Bearer ' + rootState.user.token,
+       'Content-Type': 'application/json'
       }
      }
+     // , {
+     //  onUploadProgress: uploadEvent => {
+     //   console.log(
+     //    'uploaded: ' +
+     //     Math.round(uploadEvent.loaded / uploadEvent.total) * 100 +
+     //     '%'
+     //   )
+     //  }
+     // }
     )
     .then(response => {
-     console.log(response.data.uri)
+     console.log('success')
+     console.log(response.data)
      commit('setUrl', {
       url: response.data.uri,
-      nr: payload.nr
+      guid: payload.image.guid
      })
      resolve('ok')
     })
