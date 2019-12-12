@@ -67,9 +67,11 @@ export const mutations = {
   state.profileId = payload
  },
  setlongLat(state, payload) {
+  console.log('setting longlat')
+  console.log(payload)
   state.longLat = payload
-  state.long = payload.long
-  state.lat = payload.lat
+  state.long = payload[0]
+  state.lat = payload[1]
  },
  setProfile(state, payload) {
   console.log('setProfile')

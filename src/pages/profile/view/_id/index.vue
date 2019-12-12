@@ -1,12 +1,23 @@
 <template>
  <v-layout row wrap>
+  <v-layout cols wrap>
+   <iframe
+    :src="
+     `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.stray-watch.com%2Fprofile%2F${$route.params.id}&layout=button_count&size=large&appId=1985973471691447&width=84&height=28`
+    "
+    style="border:none;overflow:hidden"
+    scrolling="no"
+    frameborder="0"
+    allowtransparency="true"
+    allow="encrypted-media"
+   ></iframe>
+   <v-btn @click="openMaps">Open in google maps</v-btn>
+   <v-btn v-if="thisIsMine" @click="editProfile">edit</v-btn>
+  </v-layout>
   <!-- <v-flex>
       <ogImage />
     </v-flex>-->
 
-  <v-flex xs12>
-   <v-btn v-if="thisIsMine" @click="editProfile">edit</v-btn>
-  </v-flex>
   <v-flex xs12 lg6 pa-4>
    <!-- Slider main container -->
    <div class="swiper-container">
@@ -19,15 +30,22 @@
       </div>
      </div>
     </div>
-
     <!-- If we need pagination -->
     <div class="swiper-pagination"></div>
-
     <!-- If we need navigation buttons -->
     <div class="swiper-button-prev"></div>
     <div class="swiper-button-next"></div>
    </div>
   </v-flex>
+  <v-flex xs12 lg6 pa-4>
+   <div class="imgcontainer">
+    <img class="locationImg" alt="Animal location" :src="mapUrl" />
+    <div class="overlay" @click="openMaps">
+     <div class="text">Open in google</div>
+    </div>
+   </div>
+  </v-flex>
+  <v-flex>
    <MapBox class="mt-4" />
   </v-flex>
   <v-flex xs12 pa-4>
@@ -38,6 +56,46 @@
 </template>
 <style scoped>
 @import '@/node_modules/swiper/css/swiper.css';
+
+.overlay {
+ position: absolute;
+ top: 0;
+ bottom: 0;
+ left: 0;
+ right: 0;
+ height: 100%;
+ width: 100%;
+ opacity: 0;
+ transition: 0.5s ease;
+ background-color: #5353535e;
+ cursor: pointer;
+}
+
+.imgcontainer:hover .overlay {
+ opacity: 1;
+}
+
+.text {
+ color: white;
+ font-size: 40px;
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ -webkit-transform: translate(-50%, -50%);
+ -ms-transform: translate(-50%, -50%);
+ transform: translate(-50%, -50%);
+ text-align: center;
+}
+
+.imgcontainer {
+ position: relative;
+ width: 100%;
+ height: 100%;
+}
+
+.locationImg {
+ width: 100%;
+}
 .swiper-container {
  width: 100%;
  height: 40vh;
@@ -75,7 +133,8 @@ export default {
   return {
    profileId: 10,
    thisIsMine: true,
-   urls: []
+   urls: [],
+   mapUrl: ''
   }
  },
  mounted() {
@@ -86,7 +145,7 @@ export default {
     console.log(data)
     this.urls = data.url
     this.initialiseSwiper()
-    mySwiper.init()
+    this.getMapUrl()
    })
  },
  head: {
@@ -105,9 +164,9 @@ export default {
  },
  computed: {
   ...mapState({
-   images: state => state.images.imagesWithLoc,
-   longLat: state => state.profiles.longLat,
-   imagelst: state => state.images.images
+   imagelst: state => state.images.images,
+   long: state => state.profiles.long,
+   lat: state => state.profiles.lat
   })
  },
  components: {
@@ -117,6 +176,22 @@ export default {
   ogImage
  },
  methods: {
+  getMapUrl() {
+   console.log('mapurl')
+   console.log(this.long)
+   if (!this.long) return
+
+   console.log(this.long)
+   // let marker =
+   this.mapUrl =
+    `https://api.mapbox.com/styles/v1/mapbox/` +
+    `light-v9/static/` +
+    `pin-l-veterinary+482(${this.long},${this.lat})/` +
+    `${this.long},${this.lat},11,0,0/900x600?` +
+    // `-77.0397,38.8974,7,0,0/300x200?` +
+    `access_token=` +
+    process.env.MAP_TOKEN
+  },
   initialiseSwiper() {
    var mySwiper = new Swiper('.swiper-container', {
     // grab cursor
@@ -148,7 +223,17 @@ export default {
    mySwiper.pagination.render()
    mySwiper.pagination.update()
   },
+  editProfile() {
+   this.$router.push('/profile/edit/' + this.$route.params.id)
+  },
+  openMaps() {
+   console.log(this.lat)
+   console.log(this.long)
 
+   window.open(
+    `https://maps.google.com/maps?daddr=${this.lat},${this.long}&amp;ll=`
+   )
+  }
  }
 }
 </script>
