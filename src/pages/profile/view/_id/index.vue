@@ -1,159 +1,154 @@
 <template>
-  <v-layout row wrap>
-    <!-- <v-flex>
+ <v-layout row wrap>
+  <!-- <v-flex>
       <ogImage />
     </v-flex>-->
-    <v-flex xs12>
-      <v-btn v-if="thisIsMine" @click="editProfile">edit</v-btn>
-    </v-flex>
-    <v-flex xs12 lg6 pa-4>
-      <ImageSlider class="imageSlider" />
-    </v-flex>
-    <v-flex xs12 lg6 pa-4>
-      <h1>Location</h1>
-      <div
-        v-for="i in images.filter(x=>x.longlat != null)"
-        :style="{'background-image': 'url(' + (i.src) + ')'}"
-        class="locationImages grow"
-        @click="setLocation(i.longlat)"
-      ></div>
-      <p>{{longLat}}</p>
-      <MapBox class="mt-4" />
-    </v-flex>
-    <v-flex xs12 pa-4>
-      <AnimalProfileForm :editable="true" />
-    </v-flex>
-    <ProfileMessages />
-  </v-layout>
+
+  <v-flex xs12>
+   <v-btn v-if="thisIsMine" @click="editProfile">edit</v-btn>
+  </v-flex>
+  <v-flex xs12 lg6 pa-4>
+   <!-- Slider main container -->
+   <div class="swiper-container">
+    <!-- Additional required wrapper -->
+    <div class="swiper-wrapper">
+     <!-- Slides -->
+     <div v-for="(url, i) in imagelst" :key="i" class="swiper-slide">
+      <div class="swiper-zoom-container">
+       <img :src="url.src" alt="" />
+      </div>
+     </div>
+    </div>
+
+    <!-- If we need pagination -->
+    <div class="swiper-pagination"></div>
+
+    <!-- If we need navigation buttons -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+   </div>
+  </v-flex>
+   <MapBox class="mt-4" />
+  </v-flex>
+  <v-flex xs12 pa-4>
+   <AnimalProfileForm :editable="true" />
+  </v-flex>
+  <ProfileMessages />
+ </v-layout>
 </template>
-<style>
-.locationImages {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  background-color: black;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  border-radius: 50%;
+<style scoped>
+@import '@/node_modules/swiper/css/swiper.css';
+.swiper-container {
+ width: 100%;
+ height: 40vh;
 }
+.swiper-button-prev {
+ color: rgba(255, 255, 255, 0.7);
+ font-size: 25px;
+ background-color: rgba(114, 114, 114, 0.15);
+ border-radius: 50px;
+ margin-top: -20px;
+ padding: 10px 20px 10px 20px;
+}
+.swiper-button-next {
+ color: rgba(255, 255, 255, 0.7);
+ font-size: 25px;
+ background-color: rgba(114, 114, 114, 0.15);
+ border-radius: 50px;
+ margin-top: -20px;
+ padding: 10px 20px 10px 20px;
+}
+
 .grow {
-  transition: all 0.2s ease-in-out;
+ transition: all 0.2s ease-in-out;
 }
 </style>
 <script>
+import Swiper from 'swiper'
 import { mapState } from 'vuex'
-import FileUploader from '~/components/FileUploader.vue'
 import ProfileMessages from '~/components/ProfileMessages.vue'
-import ImageSlider from '~/components/ImageSlider.vue'
 import MapBox from '~/components/MapBox.vue'
 import AnimalProfileForm from '~/components/AnimalProfileForm.vue'
 import ogImage from '~/components/ogImage.vue'
 export default {
-  data() {
-    return {
-      profileId: 10,
-      thisIsMine: true
-    }
-  },
-  mounted() {
-    this.$store
-      .dispatch('profiles/getProfile', this.$route.params.id)
-      .then(res => {
-        var data = res
-        console.log(data)
-        return {
-          profile: data,
-          sentense:
-            data.behavior +
-            ' ' +
-            data.age +
-            ' ' +
-            data.animal +
-            ' needs ' +
-            data.needs
-        }
-      })
-  },
-  head: {
-    script: [
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' }
-    ],
-    link: [
-      {
-        href: 'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css',
-        rel: 'stylesheet'
-      },
-      {
-        href:
-          'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.css',
-        rel: 'stylesheet',
-        type: 'text/css'
-      }
-    ]
-  },
-  computed: {
-    ...mapState({
-      imageOK: state => state.profiles.imageOK,
-      locationOK: state => state.profiles.locationOK,
-      dataOK: state => state.profiles.dataOK,
-      images: state => state.images.imagesWithLoc,
-      longLat: state => state.profiles.longLat
-    })
-  },
-  components: {
-    FileUploader,
-    ProfileMessages,
-    ImageSlider,
-    MapBox,
-    AnimalProfileForm,
-    ogImage
-  },
-  methods: {
-    editProfile() {
-      this.$router.push('/profile/edit/' + this.$route.params.id)
-    },
-    setLocation(payload) {
-      console.log(payload)
-      if (payload && payload.longitude)
-        this.$store.commit('profiles/setlongLat', [
-          payload.longitude,
-          payload.latitude
-        ])
-    },
-    async save() {
-      //I will wrap the form data in 1 object and send it to the backend to save
-      //It returns the ID of the profile
-      //I navigate to the profile ID
-      var mylonlat = this.$store.getters['profiles/longLat']
-      var imagesb64arr = this.$store.state.images.images.map(
-        a => a.imgForUpload
-      )
-
-      var profile = {
-        animal: this.$store.getters['profiles/animal'],
-        age: this.$store.getters['profiles/age'],
-        needs: this.$store.getters['profiles/needs'],
-        medical: this.$store.getters['profiles/medical'],
-        urgency: this.$store.getters['profiles/urgency'],
-        behavior: this.$store.getters['profiles/behavior'],
-        info: this.$store.getters['profiles/info'],
-        longLat: '[' + mylonlat[0] + ', ' + mylonlat[1] + ']',
-        images64: imagesb64arr
-      }
-
-      console.log(profile)
-
-      this.$store
-        .dispatch('profiles/saveProfile', profile)
-        .then(profileId => {
-          console.log(profileId)
-          this.$router.push({ path: '/list' })
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    }
+ data() {
+  return {
+   profileId: 10,
+   thisIsMine: true,
+   urls: []
   }
+ },
+ mounted() {
+  this.$store
+   .dispatch('profiles/getProfile', this.$route.params.id)
+   .then(res => {
+    var data = res
+    console.log(data)
+    this.urls = data.url
+    this.initialiseSwiper()
+    mySwiper.init()
+   })
+ },
+ head: {
+  link: [
+   {
+    href: 'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css',
+    rel: 'stylesheet'
+   },
+   {
+    href:
+     'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.css',
+    rel: 'stylesheet',
+    type: 'text/css'
+   }
+  ]
+ },
+ computed: {
+  ...mapState({
+   images: state => state.images.imagesWithLoc,
+   longLat: state => state.profiles.longLat,
+   imagelst: state => state.images.images
+  })
+ },
+ components: {
+  ProfileMessages,
+  MapBox,
+  AnimalProfileForm,
+  ogImage
+ },
+ methods: {
+  initialiseSwiper() {
+   var mySwiper = new Swiper('.swiper-container', {
+    // grab cursor
+    grabCursor: true,
+    // zoom into image
+    zoom: true,
+    // Optional parameters
+    direction: 'horizontal',
+    loop: true,
+
+    //auto play
+    autoplay: {
+     delay: 2500,
+     disableOnInteraction: true
+    },
+
+    // If we need pagination
+    pagination: {
+     el: '.swiper-pagination',
+     type: 'bullets'
+    },
+
+    // Navigation arrows
+    navigation: {
+     nextEl: '.swiper-button-next',
+     prevEl: '.swiper-button-prev'
+    }
+   })
+   mySwiper.pagination.render()
+   mySwiper.pagination.update()
+  },
+
+ }
 }
 </script>
