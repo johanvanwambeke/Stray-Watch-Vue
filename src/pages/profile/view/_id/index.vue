@@ -1,24 +1,34 @@
 <template>
  <v-layout row wrap>
-  <v-layout cols wrap>
-   <iframe
-    :src="
-     `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.stray-watch.com%2Fprofile%2F${$route.params.id}&layout=button_count&size=large&appId=1985973471691447&width=84&height=28`
-    "
-    style="border:none;overflow:hidden"
-    scrolling="no"
-    frameborder="0"
-    allowtransparency="true"
-    allow="encrypted-media"
-   ></iframe>
-   <v-btn @click="openMaps">Open in google maps</v-btn>
-   <v-btn v-if="thisIsMine" @click="editProfile">edit</v-btn>
-  </v-layout>
   <!-- <v-flex>
       <ogImage />
     </v-flex>-->
 
-  <v-flex xs12 lg6 pa-4>
+  <!-- titel en edit button -->
+  <v-flex xs12 mb-4>
+   <v-layout cols wrap>
+    <h1>Dit is de titel van het profiel</h1>
+    <v-btn @click="editProfile" fab small color="gray">
+     <v-icon>edit</v-icon>
+    </v-btn>
+    <v-spacer></v-spacer>
+    <iframe
+     :src="
+      `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.stray-watch.com%2Fprofile%2Fview%2F${$route.params.id}&layout=button_count&size=small&appId=1985973471691447&width=84&height=28`
+     "
+     style="border:none;overflow:hidden;position:relative;right:0px;"
+     scrolling="no"
+     frameborder="0"
+     allowtransparency="true"
+     allow="encrypted-media"
+     height="20px;"
+     width="80px"
+    ></iframe>
+   </v-layout>
+  </v-flex>
+
+  <!-- Slider -->
+  <v-flex xs12 md6>
    <!-- Slider main container -->
    <div class="swiper-container">
     <!-- Additional required wrapper -->
@@ -37,26 +47,27 @@
     <div class="swiper-button-next"></div>
    </div>
   </v-flex>
-  <v-flex xs12 lg6 pa-4>
+  <!-- locatie -->
+  <v-flex xs12 md6>
    <div class="imgcontainer">
     <img class="locationImg" alt="Animal location" :src="mapUrl" />
     <div class="overlay" @click="openMaps">
-     <div class="text">Open in google</div>
+     <div class="text">open in Google</div>
     </div>
    </div>
   </v-flex>
-  <v-flex>
-   <MapBox class="mt-4" />
+  <!-- form -->
+  <v-flex xs12 md6>
+   <AnimalProfileForm :editable="false" />
   </v-flex>
-  <v-flex xs12 pa-4>
-   <AnimalProfileForm :editable="true" />
+  <!-- messages  -->
+  <v-flex xs12 md6>
+   <ProfileMessages />
   </v-flex>
-  <ProfileMessages />
  </v-layout>
 </template>
 <style scoped>
 @import '@/node_modules/swiper/css/swiper.css';
-
 .overlay {
  position: absolute;
  top: 0;
@@ -70,11 +81,9 @@
  background-color: #5353535e;
  cursor: pointer;
 }
-
 .imgcontainer:hover .overlay {
  opacity: 1;
 }
-
 .text {
  color: white;
  font-size: 40px;
@@ -86,11 +95,10 @@
  transform: translate(-50%, -50%);
  text-align: center;
 }
-
 .imgcontainer {
  position: relative;
- width: 100%;
- height: 100%;
+ margin-top: auto;
+ margin-bottom: auto;
 }
 
 .locationImg {
@@ -185,9 +193,9 @@ export default {
    // let marker =
    this.mapUrl =
     `https://api.mapbox.com/styles/v1/mapbox/` +
-    `light-v9/static/` +
+    `streets-v11/static/` +
     `pin-l-veterinary+482(${this.long},${this.lat})/` +
-    `${this.long},${this.lat},11,0,0/900x600?` +
+    `${this.long},${this.lat},9,0,0/900x600?` +
     // `-77.0397,38.8974,7,0,0/300x200?` +
     `access_token=` +
     process.env.MAP_TOKEN
