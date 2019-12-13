@@ -12,7 +12,6 @@
   </v-flex>
   <v-flex mt-3 xs12 class="messageblock">
    <v-textarea
-    style="max-width:600px"
     solo
     v-model="remark"
     name="input-7-4"

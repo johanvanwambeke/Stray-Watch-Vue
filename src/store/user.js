@@ -53,7 +53,7 @@ export const actions = {
     })
   })
  },
- async me({ rootState }, payload) {
+ async me({ rootState, commit }, payload) {
   return new Promise((resolve, reject) => {
    this.$axios
     .get('api/users/get', {
@@ -65,6 +65,9 @@ export const actions = {
      resolve(res.data)
     })
     .catch(error => {
+     commit('utils/snackmsg', error, {
+      root: true
+     })
      console.log(error)
      reject(error.response.data.message)
     })

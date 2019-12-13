@@ -118,7 +118,7 @@ module.exports = {
   */
  axios: {
   // See https://github.com/nuxt-community/axios-module#options
-  baseURL: 'https://stray-watch-api.azurewebsites.net/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
+  baseURL: 'https://localhost:44352/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
  },
 
  /*

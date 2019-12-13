@@ -5,7 +5,7 @@
     </v-flex>-->
 
   <!-- titel en edit button -->
-  <v-flex xs12 mb-4>
+  <v-flex xs12>
    <v-layout cols wrap>
     <h1>Dit is de titel van het profiel</h1>
     <v-btn @click="editProfile" fab small color="gray">
@@ -26,9 +26,8 @@
     ></iframe>
    </v-layout>
   </v-flex>
-
   <!-- Slider -->
-  <v-flex xs12 md6>
+  <v-flex xs12 md6 pa-2>
    <!-- Slider main container -->
    <div class="swiper-container">
     <!-- Additional required wrapper -->
@@ -48,7 +47,7 @@
    </div>
   </v-flex>
   <!-- locatie -->
-  <v-flex xs12 md6>
+  <v-flex xs12 md6 pa-2>
    <div class="imgcontainer">
     <img class="locationImg" alt="Animal location" :src="mapUrl" />
     <div class="overlay" @click="openMaps">
@@ -57,11 +56,11 @@
    </div>
   </v-flex>
   <!-- form -->
-  <v-flex xs12 md6>
+  <v-flex xs12 md6 pa-2>
    <AnimalProfileForm :editable="false" />
   </v-flex>
   <!-- messages  -->
-  <v-flex xs12 md6>
+  <v-flex xs12 md6 pa-2>
    <ProfileMessages />
   </v-flex>
  </v-layout>

@@ -1,10 +1,15 @@
 <template>
  <v-app light>
-  <notifications group="foo" position="bottom right" />
   <v-container style="max-height:50px;">
    <v-layout rows wrap>
+    <v-snackbar v-model="snackbar" bottom color="black">
+     <center>
+      <p style="color:red">{{ snackmsg }}</p>
+     </center>
+    </v-snackbar>
     <v-flex xs12>
      <nuxt-link to="/">List</nuxt-link>
+     <nuxt-link to="/test">test</nuxt-link>
      <a @click="create" class="underline">Create</a>
      <nuxt-link to="/donate">Donate</nuxt-link>
      <div style="float:right">
@@ -77,11 +82,16 @@ export default {
   ]
  },
  data() {
-  return {}
+  return { snackbar: false }
  },
  computed: {
   loggedIn() {
    return this.$store.state.user.token
+  },
+  snackmsg() {
+   var message = this.$store.state.utils.snackmsg
+   if (message != '') this.snackbar = true
+   return message
   }
  },
  methods: {
@@ -92,9 +102,12 @@ export default {
   create() {
    //create a new profile
    this.$store.dispatch('profiles/clear').then(x => {
-    this.$store.dispatch('profiles/create').then(x => {
-     this.$router.push('/profile/edit/' + x)
-    })
+    this.$store
+     .dispatch('profiles/create')
+     .then(x => {
+      this.$router.push('/profile/edit/' + x)
+     })
+     .catch(err => {})
    })
   }
  }

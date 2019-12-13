@@ -121,6 +121,9 @@ export const actions = {
      resolve(response.data)
     })
     .catch(error => {
+     commit('utils/snackmsg', error, {
+      root: true
+     })
      console.log(error)
     })
   })
@@ -169,6 +172,17 @@ export const actions = {
      }
     })
     .then(result => resolve(result.data.id))
+    .catch(err => {
+     if (err.response.status == 401) {
+      commit('utils/snackmsg', 'You have to log in before creating a profile', {
+       root: true
+      })
+     } else {
+      commit('utils/snackmsg', err, {
+       root: true
+      })
+     }
+    })
   })
  },
  async saveProfile({ commit, rootState }, payload) {
