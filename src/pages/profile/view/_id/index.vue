@@ -3,10 +3,6 @@
     <!-- <v-flex>
       <ogImage />
     </v-flex>-->
-    <!-- <v-flex>
-      <v-btn @click="addpic">add</v-btn>
-    </v-flex>-->
-    <!-- titel en edit button -->
     <v-flex xs12>
       <v-layout cols wrap>
         <h1>Dit is de titel van het profiel</h1>
@@ -38,11 +34,14 @@
           <div v-for="(url, i) in imagelst" :key="i" class="swiper-slide">
             <!-- <div class="swiper-zoom-container"> -->
             <!-- <img :src="url.src" alt /> -->
-            <div
+            <div class="swiper-slide-container">
+              <div class="swiper-slide-image" :style="`background-image: url(${url.src}); `"></div>
+            </div>
+            <!-- <div
               data-v-c28cb864
               class="swiper-slide swiper-slide"
               :style="`background-image: url(${url.src}); `"
-            ></div>
+            ></div>-->
             <!-- </div> -->
           </div>
         </div>
@@ -72,8 +71,27 @@
     </v-flex>
   </v-layout>
 </template>
-<style scoped>
+<style>
 @import '@/node_modules/swiper/css/swiper.css';
+.swiper-pagination-bullet {
+  color: green;
+  background-color: white;
+}
+,
+.swiper-slide-container {
+  width: 100%;
+  padding-bottom: 75%;
+  position: relative;
+  height: 0;
+}
+.swiper-slide-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-size: cover;
+}
 .overlay {
   position: absolute;
   top: 0;
@@ -106,13 +124,8 @@
   margin-top: auto;
   margin-bottom: auto;
 }
-
 .locationImg {
   width: 100%;
-}
-.swiper-container {
-  width: 100%;
-  height: 40vh;
 }
 .swiper-button-prev {
   color: rgba(255, 255, 255, 0.7);
@@ -130,7 +143,6 @@
   margin-top: -20px;
   padding: 10px 20px 10px 20px;
 }
-
 .grow {
   transition: all 0.2s ease-in-out;
 }
@@ -206,12 +218,19 @@ export default {
         `https://api.mapbox.com/styles/v1/mapbox/` +
         `streets-v11/static/` +
         `pin-l-veterinary+482(${this.long},${this.lat})/` +
-        `${this.long},${this.lat},9,0,0/900x600?` +
-        // `-77.0397,38.8974,7,0,0/300x200?` +
+        `${this.long},${this.lat},9,0,0/900x675?` +
         `access_token=` +
         process.env.MAP_TOKEN
     },
     initialiseSwiper() {
+      console.log(this.$vuetify.breakpoint.name)
+      //xs :1
+      //sm: 2
+      var spv = 1
+      if (this.$vuetify.breakpoint.name == 'sm') {
+        spv = 2
+      }
+
       mySwiper = new Swiper('.swiper-container', {
         // grab cursor
         grabCursor: true,
@@ -226,6 +245,7 @@ export default {
           delay: 2500,
           disableOnInteraction: true
         },
+        slidesPerView: spv,
 
         // If we need pagination
         pagination: {

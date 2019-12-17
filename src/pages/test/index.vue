@@ -19,10 +19,14 @@
             class="swiper-slide"
             :style="'background-image:url('+url+')'"
           ></div>-->
-          <!-- <div
-            class="swiper-slide"
-            style="background-image:url(https://images.unsplash.com/photo-1558981420-87aa9dad1c89?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80)"
-          ></div>-->
+          <!-- <div data-v-c28cb864 v-for="(img,i) in imagelst" :key="i" class="swiper-slide">
+            <div class="swiper-slide-container">
+              <div
+                class="swiper-slide-image"
+                style="background-image:url(https://images.unsplash.com/photo-1558981420-87aa9dad1c89?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80)"
+              ></div>
+            </div>
+          </div>-->
         </div>
         <!-- If we need pagination -->
         <div class="swiper-pagination">
@@ -60,6 +64,20 @@
   </v-layout>
 </template>
 <style>
+.swiper-slide-container {
+  width: 100%;
+  padding-bottom: 75%;
+  position: relative;
+  height: 0;
+}
+.swiper-slide-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-size: cover;
+}
 .sliderbutton {
   float: left;
   background-color: transparent;
@@ -173,9 +191,9 @@ export default {
 </script>
 <style scoped>
 @import '@/node_modules/swiper/css/swiper.css';
+
 .swiper-container {
   width: 100%;
-  height: 30vh;
 }
 .swiper-button-prev {
   color: rgba(255, 255, 255, 0.7);

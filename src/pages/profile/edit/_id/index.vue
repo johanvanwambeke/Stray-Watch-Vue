@@ -31,6 +31,7 @@
         multiple
       />
     </v-flex>
+    <!-- location map -->
     <v-flex xs12 md6 pa-4>
       <h1>Location</h1>
       <!-- <div
@@ -42,9 +43,11 @@
       <p>{{longLat}}</p>-->
       <MapBox class="mt-4" />
     </v-flex>
+    <!-- animal profile form -->
     <v-flex xs12 pa-4>
       <AnimalProfileForm :editable="true" />
     </v-flex>
+    <!-- bottom buttons -->
     <v-flex xs12>
       <v-btn @click="updateProfile">Save</v-btn>
     </v-flex>
@@ -62,21 +65,7 @@
     />
   </v-layout>
 </template>
-<style>
-.locationImages {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  background-color: black;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  border-radius: 50%;
-}
-.grow {
-  transition: all 0.2s ease-in-out;
-}
-</style>
+
 <script>
 import { DokaModal, toURL } from '~/vue-doka/'
 import { mapState } from 'vuex'
@@ -93,9 +82,10 @@ export default {
       profileId: null,
       imagelst: [],
       counter: 0,
-      arrayTemp: [],
+      arraytemp: [],
       src: '',
-      enabled: false
+      enabled: false,
+      editingSlide: null
     }
   },
   mounted() {
@@ -145,18 +135,38 @@ export default {
       console.log(this.imagelst[mySwiper.activeIndex])
       this.src = this.imagelst[mySwiper.activeIndex]
       this.enabled = true
-      //this needs to also remove the edited slide and pref. add this one in the spot where it was removed :/
+      this.editingSlide = mySwiper.activeIndex
+      //this needs to also remove the edited slide
+      //pref. add this one in the spot where it was removed :/
     },
     addSlide(src) {
       mySwiper.appendSlide([
-        `<div data-v-c28cb864="" class="swiper-slide swiper-slide" style="background-image: url(&quot;` +
+        `   <div class="swiper-slide" data-v-c28cb864="" >
+            <div class="swiper-slide-container">
+              <div
+                class="swiper-slide-image"
+                style="background-image: url(&quot;` +
           src +
-          `&quot;); "></div>`
+          `&quot;); "></div>
+            </div>
+          </div>`
       ])
       this.imagelst.push(src)
     },
     removeSlide() {
-      mySwiper.removeSlide(mySwiper.activeIndex)
+      console.log(this.imagelst)
+      if (this.editingSlide != null) {
+        this.$store.dispatch('images/delete', {
+          animalprofileid: this.$route.params.id,
+          uri: imagelst[this.editingSlide]
+        })
+        //remove from they array
+        imagelst.pop(imagelst[this.editingSlide])
+        mySwiper.removeSlide(this.editingSlide)
+        console.log(this.imagelst)
+      }
+
+      // mySwiper.removeSlide(mySwiper.activeIndex)
     },
     toBase64(file) {
       return new Promise((resolve, reject) => {
@@ -167,10 +177,18 @@ export default {
       })
     },
     async handleDokaConfirm(output) {
+      //delete the slide we changed
+      if (this.editingSlide != null) {
+        mySwiper.removeSlide(this.editingSlide)
+        console.log(this.imagelst)
+        // this.$store.dispatch('images/delete',{animalprofileid: this.$route.params.id, imageid:})
+      }
+
       this.toBase64(output.file).then(res => {
-        console.log(res)
         //they keep there coordinates info
-        this.addSlide(toURL(output.file))
+        var currentUrl = toURL(output.file)
+        console.log(currentUrl)
+        this.addSlide(currentUrl)
         //they are saved and url-replaced
         this.$store
           .dispatch('images/uploadImage', {
@@ -179,12 +197,19 @@ export default {
             AnimalProfileID: this.$route.params.id
           })
           .then(res => {
-            console.log(res)
+            //replace
+            var index = this.imagelst.indexOf(currentUrl)
+
+            if (index !== -1) {
+              this.imagelst[index] = res.uri
+            }
+
+            console.log(res.uri)
           })
 
         //launch next image
         this.counter += 1
-        if (this.counter < this.arraytemp.length) {
+        if (this.arraytemp != null && this.counter < this.arraytemp.length) {
           console.log('next', this.counter)
           this.src = this.arraytemp[this.counter]
           this.enabled = true
@@ -255,6 +280,8 @@ export default {
         })
     },
     addPictures(e) {
+      //clear editing slide to prevent deleting smth wrong
+      this.editingSlide = null
       //put pictures in a list.
       this.counter = 0
       this.arraytemp = e.target.files
@@ -308,11 +335,39 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
+.locationImages {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: black;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.grow {
+  transition: all 0.2s ease-in-out;
+}
+</style>
+<style>
 @import '@/node_modules/swiper/css/swiper.css';
+.swiper-slide-container {
+  width: 100%;
+  padding-bottom: 75%;
+  position: relative;
+  height: 0;
+}
+.swiper-slide-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-size: cover;
+}
 .swiper-container {
   width: 100%;
-  height: 50vh;
 }
 .swiper-button-prev {
   color: rgba(255, 255, 255, 0.7);
