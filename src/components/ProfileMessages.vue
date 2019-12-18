@@ -1,6 +1,6 @@
 <template>
  <v-layout rows wrap>
-  <v-flex xs12>
+  <v-flex xs12 mb-3 v-if="messages.length > 0">
    <div class="messageblock" v-for="(message, i) in messages" :key="i">
     <p class="username">{{ message.userName }}</p>
     <v-card mb-2>
@@ -10,14 +10,14 @@
     </v-card>
    </div>
   </v-flex>
-  <v-flex mt-3 xs12 class="messageblock">
+  <v-flex xs12 class="messageblock">
    <v-textarea
     solo
     v-model="remark"
     name="input-7-4"
     label="Join the conversation"
    ></v-textarea>
-   <v-btn @click="createRemark">react</v-btn>
+   <v-btn flat style="margin:0px" @click="createRemark">react</v-btn>
   </v-flex>
  </v-layout>
 </template>
@@ -55,6 +55,7 @@ export default {
     remark: this.remark,
     profileId: parseInt(this.$route.params.id)
    }
+   this.remark = ''
    this.$store.dispatch('messages/create', msg).then(res => {
     this.getLatestRemarks()
    })

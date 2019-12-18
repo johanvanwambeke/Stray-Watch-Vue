@@ -1,38 +1,46 @@
 <template>
  <v-app light>
-  <v-container style="max-height:50px;">
-   <v-layout rows wrap>
-    <v-snackbar v-model="snackbar" bottom color="black">
-     <center>
-      <p style="color:red">{{ snackmsg }}</p>
-     </center>
-    </v-snackbar>
-    <v-flex xs12>
-     <nuxt-link to="/">List</nuxt-link>
-     <nuxt-link to="/test">test</nuxt-link>
-     <a @click="create" class="underline">Create</a>
-     <nuxt-link to="/donate">Donate</nuxt-link>
-     <div style="float:right">
-      <nuxt-link v-if="loggedIn" to="/user">User</nuxt-link>
-      <nuxt-link v-if="loggedIn" to="/login" @click.native="logout"
-       >Logout</nuxt-link
-      >
-      <nuxt-link v-if="!loggedIn" to="/register">Register</nuxt-link>
-      <nuxt-link v-if="!loggedIn" to="/login">Log in</nuxt-link>
-     </div>
+  <v-container>
+   <!-- snackbar -->
+   <v-snackbar v-model="snackbar" bottom color="black">
+    <center>
+     <p style="color:red">{{ snackmsg }}</p>
+    </center>
+   </v-snackbar>
+   <!-- navigatie -->
+   <v-layout cols wrap mb-3>
+    <v-flex xs4 sm2> <v-btn small flat to="/">List</v-btn> </v-flex>
+    <v-flex xs4 sm2> <v-btn small flat @click="create">Create</v-btn> </v-flex>
+    <v-flex xs4 sm2>
+     <v-btn small flat to="/donate">Donate</v-btn>
     </v-flex>
-    <v-flex xs12 pt-3> <v-divider></v-divider></v-flex>
+    <v-flex xs4 offset-xs4 sm2 offset-sm2>
+     <v-btn small flat v-if="loggedIn" to="/user">User</v-btn>
+    </v-flex>
+    <v-flex xs4 sm2>
+     <v-btn small flat v-if="loggedIn" @click="logout">Logout</v-btn>
+    </v-flex>
+    <v-flex xs4 sm2>
+     <v-btn small flat v-if="!loggedIn" to="/register">Register</v-btn>
+    </v-flex>
+    <v-flex xs4 sm2>
+     <v-btn small flat v-if="!loggedIn" to="/login">Log in</v-btn>
+    </v-flex>
    </v-layout>
+   <v-divider style="margin-bottom:20px;"></v-divider>
+   <nuxt />
   </v-container>
-
-  <v-content>
-   <v-container>
-    <nuxt />
-   </v-container>
-  </v-content>
  </v-app>
 </template>
 <style scoped>
+.align-right {
+ display: flex;
+ justify-content: flex-end;
+}
+.align-left {
+ display: flex;
+ justify-content: flex-start;
+}
 .underline {
  text-decoration: underline;
 }
@@ -40,19 +48,20 @@ h1 {
  font-family: 'Playfair Display', serif;
 }
 .v-btn {
- color: rgb(255, 255, 255) !important;
+ color: rgb(41, 41, 41) !important;
  font-size: 14px;
  padding: 0px 25px;
 }
 .v-btn:hover {
  color: rgb(107, 107, 107) !important;
  font-size: 14px;
- border-bottom: 5px solid rgb(107, 107, 107);
+ /* border-bottom: 5px solid rgb(107, 107, 107); */
 }
 .v-btn--active {
  color: rgb(107, 107, 107) !important;
  font-size: 14px;
- border-bottom: 5px solid rgb(107, 107, 107);
+ /* border-bottom: 5px solid rgb(107, 107, 107); */
+ background-color: transparent !important;
 }
 
 .appcss {

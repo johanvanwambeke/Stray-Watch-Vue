@@ -89,6 +89,7 @@ export default {
    needsFilter: '',
    animalLst: ['cat', 'dog'],
    needsLst: [
+       'capture',
     'fosterhome',
     'funding',
     'adoption',

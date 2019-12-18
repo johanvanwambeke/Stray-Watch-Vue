@@ -41,7 +41,6 @@ export const mutations = {
      src: element
     })
   })
-  console.log(state.images)
  },
  clear(state, payload) {
   state.images = []
@@ -57,6 +56,21 @@ export const actions = {
  },
  async delete({ commit }, payload) {
   commit('deleteImage', payload)
+ },
+ async deleteFs({ commit, rootState }, payload) {
+  this.$axios
+   .post('api/Image/deletefile', JSON.stringify(payload), {
+    headers: {
+     Authorization: 'Bearer ' + rootState.user.token,
+     'Content-Type': 'application/json'
+    }
+   })
+   .then(response => {
+    console.log('success')
+   })
+   .catch(error => {
+    console.log('fail')
+   })
  },
  async replace({ commit }, payload) {
   commit('replaceImage', payload)

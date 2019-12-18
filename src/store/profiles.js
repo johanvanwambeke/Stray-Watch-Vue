@@ -7,10 +7,38 @@ export const state = () => ({
  behavior: '',
  info: '',
  longLat: [10, 10],
- profileId: ''
+ profileId: '',
+ chip: '',
+ color: '',
+ captureStatus: '',
+ eartip: null,
+ vaccinated: null,
+ sterile: null,
+ healthCheck: null
 })
 
 export const getters = {
+ healthCheck(state) {
+  return state.healthCheck
+ },
+ eartip(state) {
+  return state.eartip
+ },
+ vaccinated(state) {
+  return state.vaccinated
+ },
+ sterile(state) {
+  return state.sterile
+ },
+ chip(state) {
+  return state.chip
+ },
+ color(state) {
+  return state.color
+ },
+ captureStatus(state) {
+  return state.captureStatus
+ },
  animal(state) {
   return state.animal
  },
@@ -41,6 +69,27 @@ export const getters = {
 }
 
 export const mutations = {
+ healthCheck(state, payload) {
+  state.healthCheck = payload
+ },
+ eartip(state, payload) {
+  state.eartip = payload
+ },
+ vaccinated(state, payload) {
+  state.vaccinated = payload
+ },
+ sterile(state, payload) {
+  state.sterile = payload
+ },
+ chip(state, payload) {
+  state.chip = payload
+ },
+ color(state, payload) {
+  state.color = payload
+ },
+ captureStatus(state, payload) {
+  state.captureStatus = payload
+ },
  animal(state, payload) {
   state.animal = payload
   console.log('animal updated ' + payload)
@@ -67,15 +116,11 @@ export const mutations = {
   state.profileId = payload
  },
  setlongLat(state, payload) {
-  console.log('setting longlat')
-  console.log(payload)
   state.longLat = payload
   state.long = payload[0]
   state.lat = payload[1]
  },
  setProfile(state, payload) {
-  console.log('setProfile')
-  console.log(payload)
   state.animal = payload.animal
   state.age = payload.age
   state.needs = payload.needs
@@ -84,6 +129,14 @@ export const mutations = {
   state.behavior = payload.behavior
   state.info = payload.info
   state.profileId = payload.animalProfileId
+
+  state.chip = payload.chip
+  state.color = payload.color
+  state.captureStatus = payload.captureStatus
+  state.eartip = payload.eartip
+  state.vaccinated = payload.vaccinated
+  state.sterile = payload.sterile
+  state.healthCheck = payload.healthCheck
 
   console.log(state.longlat)
  }
@@ -99,7 +152,14 @@ export const actions = {
    urgency: '',
    behavior: '',
    profileId: '',
-   info: ''
+   info: '',
+
+   chip: '',
+   color: '',
+   captureStatus: '',
+   eartip: null,
+   vaccinated: null,
+   sterile: null
   })
   commit('setlongLat', [10, 10])
   commit('images/clear', null, {
@@ -128,26 +188,30 @@ export const actions = {
     })
   })
  },
- async getProfile({ commit, rootState }, payload) {
+ async getProfile({ commit, rootState, https }, payload) {
   return new Promise((resolve, reject) => {
-   console.log(payload)
+   const https = require('https')
+   const agent = new https.Agent({
+    rejectUnauthorized: false
+   })
    this.$axios
     .get('api/AnimalProfile/get/' + payload, {
      headers: {
       Authorization: 'Bearer ' + rootState.user.token
-     }
+     },
+     httpsAgent: agent
     })
-    .then(response => {
-     console.log(response.data)
-     commit('setlongLat', [response.data.long, response.data.lat])
-     commit('setProfile', response.data)
-     resolve(response.data)
-     commit('images/setImages', response.data.url, {
+    .then(res => {
+     resolve(res.data)
+     commit('setlongLat', [res.data.long, res.data.lat])
+     commit('setProfile', res.data)
+     commit('images/setImages', res.data.url, {
       root: true
      })
     })
     .catch(error => {
-     console.log(error)
+     console.log('fail')
+     reject(error.response)
     })
   })
  },
