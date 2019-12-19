@@ -4,6 +4,7 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 // export default {
 module.exports = {
  mode: 'universal',
+ debug: true,
  env: {
   baseUrl: process.env.VUE_APP_BASE_URL,
   dev: process.env.VUE_APP_DEV || false

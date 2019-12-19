@@ -4,6 +4,7 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 // export default {
 module.exports = {
  mode: 'universal',
+ debug: true,
  env: {
   baseUrl: process.env.VUE_APP_BASE_URL,
   dev: process.env.VUE_APP_DEV || false
@@ -118,7 +119,7 @@ module.exports = {
   */
  axios: {
   // See https://github.com/nuxt-community/axios-module#options
-  baseURL: 'https://localhost:44352/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
+  baseURL: 'https://stray-watch-api.azurewebsites.net/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
  },
 
  /*
