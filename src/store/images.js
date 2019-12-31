@@ -20,12 +20,12 @@ export const mutations = {
   myimage.src = payload.imgForUpload
   state.images.splice(payload.nr, 1, myimage)
  },
- setMainImage(state, payload) {
-  state.images.forEach(function(entry) {
-   entry.main = false
-  })
-  state.images[payload].main = true
- },
+ //  setMainImage(state, payload) {
+ //   state.images.forEach(function(entry) {
+ //    entry.main = false
+ //   })
+ //   state.images[payload].main = true
+ //  },
  setUrl(state, payload) {
   var image = state.images.filter(x => x.guid == payload.guid)[0]
   if (image == null) return
@@ -61,7 +61,22 @@ export const actions = {
   this.$axios
    .post('api/Image/deletefile', JSON.stringify(payload), {
     headers: {
-     Authorization: 'Bearer ' + rootState.user.token,
+     //  Authorization: 'Bearer ' + rootState.user.token,
+     'Content-Type': 'application/json'
+    }
+   })
+   .then(response => {
+    console.log('success')
+   })
+   .catch(error => {
+    console.log('fail')
+   })
+ },
+ async setMain({ commit, rootState }, payload) {
+  console.log(payload)
+  this.$axios
+   .post('api/Image/setmain', JSON.stringify(payload), {
+    headers: {
      'Content-Type': 'application/json'
     }
    })
@@ -75,10 +90,6 @@ export const actions = {
  async replace({ commit }, payload) {
   commit('replaceImage', payload)
  },
- async setMain({ commit }, payload) {
-  commit('setMainImage', payload)
- },
-
  uploadImage({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
    var obj = {
@@ -89,7 +100,7 @@ export const actions = {
    this.$axios
     .post('api/Image/savefile', JSON.stringify(obj), {
      headers: {
-      Authorization: 'Bearer ' + rootState.user.token,
+      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })

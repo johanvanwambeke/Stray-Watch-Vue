@@ -1,10 +1,14 @@
 export const state = () => ({
- token: ''
+ token: '',
+ username: ''
 })
 
 export const getters = {
  token(state) {
   return state.token
+ },
+ username(state) {
+  return state.username
  }
 }
 
@@ -12,6 +16,9 @@ export const mutations = {
  token(state, payload) {
   this.$cookies.set('token', payload)
   state.token = payload
+ },
+ username(state, payload) {
+  state.username = payload
  }
 }
 
@@ -42,7 +49,15 @@ export const actions = {
      }
     })
     .then(res => {
-     console.log(res)
+     console.log('result', res.data.token)
+     var token = res.data.token
+     this.$axios.onRequest(config => {
+      config.headers.common['Authorization'] = `Bearer ${token}`
+     })
+     commit('setAuth', token, {
+      root: true
+     })
+
      commit('token', res.data.token)
      this.$axios.setToken(res.data.token, 'Bearer')
      resolve(res.data.message)
@@ -57,9 +72,9 @@ export const actions = {
   return new Promise((resolve, reject) => {
    this.$axios
     .get('api/users/get', {
-     headers: {
-      Authorization: 'Bearer ' + rootState.user.token
-     }
+     //  headers: {
+     //   Authorization: 'Bearer ' + rootState.user.token
+     //  }
     })
     .then(res => {
      resolve(res.data)
@@ -72,5 +87,8 @@ export const actions = {
      reject(error.response.data.message)
     })
   })
+ },
+ setToken({ commit }, payload) {
+  commit('token', payload)
  }
 }

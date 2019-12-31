@@ -1,11 +1,13 @@
 <template>
   <v-container>
-    <v-layout col wrap align-center>
+    <v-layout rows wrap align-center>
       <v-flex>
-        <h1>Hi, login or register?</h1>
-        <input v-model="email" placeholder="email" />
-        <input v-model="password" type="password" placeholder="password" />
-        <v-btn @click="login">Login</v-btn>
+        <v-form>
+          <h2>Please log in</h2>
+          <v-text-field v-model="email" placeholder="email"></v-text-field>
+          <v-text-field v-model="password" type="password" placeholder="password"></v-text-field>
+          <v-btn @click="login">Login</v-btn>
+        </v-form>
       </v-flex>
     </v-layout>
   </v-container>
@@ -14,8 +16,8 @@
 export default {
   data() {
     return {
-      email: 'johan.van.wambeke@gmail.com',
-      password: 'voetjes'
+      email: '',
+      password: ''
     }
   },
   methods: {

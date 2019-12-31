@@ -13,7 +13,9 @@
   "precommit": "npm run lint"
  },
  "dependencies": {
+  "@aspnet/signalr": "^1.1.4",
   "@mapbox/mapbox-gl-geocoder": "^4.5.0",
+  "@nuxtjs/auth": "^4.8.5",
   "@nuxtjs/axios": "^5.8.0",
   "@nuxtjs/dotenv": "^1.4.1",
   "@nuxtjs/onesignal": "^3.0.0-beta.16",

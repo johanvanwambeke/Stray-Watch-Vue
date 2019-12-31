@@ -172,7 +172,7 @@ export const actions = {
    this.$axios
     .post('api/AnimalProfile/search', JSON.stringify(payload), {
      headers: {
-      Authorization: 'Bearer ' + rootState.user.token,
+      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })
@@ -197,7 +197,7 @@ export const actions = {
    this.$axios
     .get('api/AnimalProfile/get/' + payload, {
      headers: {
-      Authorization: 'Bearer ' + rootState.user.token
+      // Authorization: 'Bearer ' + rootState.user.token
      },
      httpsAgent: agent
     })
@@ -231,7 +231,7 @@ export const actions = {
    this.$axios
     .post('api/animalprofile/create', JSON.stringify(profile), {
      headers: {
-      Authorization: 'Bearer ' + rootState.user.token,
+      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })
@@ -259,7 +259,7 @@ export const actions = {
    this.$axios
     .post('api/animalprofile/create', JSON.stringify(payload), {
      headers: {
-      Authorization: 'Bearer ' + rootState.user.token,
+      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })
@@ -276,7 +276,7 @@ export const actions = {
    this.$axios
     .post('api/animalprofile/Update', JSON.stringify(payload), {
      headers: {
-      Authorization: 'Bearer ' + rootState.user.token,
+      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })

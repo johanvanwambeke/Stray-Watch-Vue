@@ -4,9 +4,9 @@ export const actions = {
    console.log(payload)
    this.$axios
     .get('api/messages/get/' + payload, {
-     headers: {
-      Authorization: 'Bearer ' + rootState.user.token
-     }
+     //  headers: {
+     //   Authorization: 'Bearer ' + rootState.user.token
+     //  }
     })
     .then(ress => {
      resolve(ress.data)
@@ -21,7 +21,7 @@ export const actions = {
    this.$axios
     .post('api/messages/create', JSON.stringify(payload), {
      headers: {
-      Authorization: 'Bearer ' + rootState.user.token,
+      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })

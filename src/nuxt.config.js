@@ -56,7 +56,7 @@ module.exports = {
   // Icon options
  },
  manifest: {
-  name: 'Stray-Watch',
+  name: 'Stray-Hero',
   description: 'collaborate on saving and suporting local stray animals',
   display: 'standalone',
   orientation: 'portrait',
@@ -84,8 +84,15 @@ module.exports = {
   {
    src: '@/plugins/vue-fullscreen',
    ssr: false
+  },
+  {
+   src: '@/plugins/nuxt-client-init',
+   ssr: false
+  },
+  {
+   src: '@/plugins/signalr',
+   ssr: false
   }
-  // '@/plugins/vue2-google-maps'
  ],
 
  /*
@@ -95,6 +102,7 @@ module.exports = {
   // Doc: https://axios.nuxtjs.org/usage
   // '@nuxtjs/onesignal',
   '@nuxtjs/axios',
+  '@nuxtjs/auth',
   'cookie-universal-nuxt',
   '@nuxtjs/dotenv',
   '@nuxtjs/pwa'
@@ -119,7 +127,7 @@ module.exports = {
   */
  axios: {
   // See https://github.com/nuxt-community/axios-module#options
-  baseURL: 'https://stray-watch-api.azurewebsites.net/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
+  baseURL: 'https://localhost:44352/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
  },
 
  /*
