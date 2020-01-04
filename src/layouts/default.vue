@@ -18,19 +18,22 @@
         <v-flex xs4 sm2>
           <v-btn small flat to="/donate">Donate</v-btn>
         </v-flex>
-        <v-flex xs4 sm2 offset-sm2 v-if="loggedIn">
-          <v-btn small flat to="/user">User</v-btn>
-        </v-flex>
-        <v-flex xs4 sm2 v-if="loggedIn">
-          <v-btn small flat @click="logout">Logout</v-btn>
-        </v-flex>
-        <v-flex xs4 sm2 offset-sm2 v-if="!loggedIn">
-          <v-btn small flat to="/register">Register</v-btn>
-        </v-flex>
-        <v-flex xs4 sm2 v-if="!loggedIn">
-          <v-btn small flat to="/login">Log in</v-btn>
-        </v-flex>
+        <no-ssr>
+          <v-flex xs4 sm2 offset-sm2 v-if="$auth.loggedIn">
+            <v-btn small flat to="/user">User</v-btn>
+          </v-flex>
+          <v-flex xs4 sm2 v-if="$auth.loggedIn">
+            <v-btn small flat @click="logout">Logout</v-btn>
+          </v-flex>
+          <v-flex xs4 sm2 offset-sm2 v-if="!$auth.loggedIn">
+            <v-btn small flat to="/register">Register</v-btn>
+          </v-flex>
+          <v-flex xs4 sm2 v-if="!$auth.loggedIn">
+            <v-btn small flat to="/login">Log in</v-btn>
+          </v-flex>
+        </no-ssr>
       </v-layout>
+
       <v-divider style="margin-bottom:20px;"></v-divider>
       <nuxt />
     </v-container>
@@ -98,10 +101,6 @@ export default {
     return { snackbar: false }
   },
   computed: {
-    loggedIn() {
-      console.log('auth', this.$store.state.auth)
-      return this.$store.state.auth
-    },
     snackmsg() {
       var message = this.$store.state.utils.snackmsg
       if (message != '') this.snackbar = true
@@ -110,9 +109,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$cookies.remove('token')
-      this.$store.commit('setAuth', null)
-      this.$router.push('/login')
+      this.$auth.logout()
     },
     create() {
       //create a new profile

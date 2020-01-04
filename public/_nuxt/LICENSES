@@ -29,6 +29,13 @@
  */
 
 /*!
+ * cookie
+ * Copyright(c) 2012-2014 Roman Shtylman
+ * Copyright(c) 2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
+/*!
  * Determine if an object is a Buffer
  *
  * @author   Feross Aboukhadijeh <https://feross.org>
@@ -46,7 +53,7 @@
  */
 
 /*!
- * FilePond 4.9.2
+ * FilePond 4.9.3
  * Licensed under MIT, https://opensource.org/licenses/MIT/
  * Please visit https://pqina.nl/filepond/ for details.
  */
@@ -58,7 +65,7 @@
  */
 
 /*!
- * FilePondPluginImagePreview 4.5.0
+ * FilePondPluginImagePreview 4.6.0
  * Licensed under MIT, https://opensource.org/licenses/MIT/
  * Please visit https://pqina.nl/filepond/ for details.
  */
@@ -86,13 +93,6 @@
  * vue-client-only v2.0.0
  * (c) 2019-present egoist <0x142857@gmail.com>
  * Released under the MIT License.
- */
-
-/*!
- * cookie
- * Copyright(c) 2012-2014 Roman Shtylman
- * Copyright(c) 2015 Douglas Christopher Wilson
- * MIT Licensed
  */
 
 /*! https://mths.be/punycode v1.4.1 by @mathias */

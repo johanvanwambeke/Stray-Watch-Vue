@@ -22,15 +22,12 @@ export default {
   },
   methods: {
     login() {
-      this.$store
-        .dispatch('user/login', { email: this.email, password: this.password })
-        .then(res => {
-          alert.res
-          this.$router.push('/user')
-        })
-        .catch(err => {
-          alert.err
-        })
+      this.$auth.loginWith('local', {
+        data: {
+          email: this.email,
+          password: this.password
+        }
+      })
     }
   }
 }

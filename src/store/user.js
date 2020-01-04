@@ -39,35 +39,35 @@ export const actions = {
     })
   })
  },
- async login({ commit }, payload) {
-  return new Promise((resolve, reject) => {
-   console.log(payload)
-   this.$axios
-    .post('api/users/authenticate', JSON.stringify(payload), {
-     headers: {
-      'Content-Type': 'application/json'
-     }
-    })
-    .then(res => {
-     console.log('result', res.data.token)
-     var token = res.data.token
-     this.$axios.onRequest(config => {
-      config.headers.common['Authorization'] = `Bearer ${token}`
-     })
-     commit('setAuth', token, {
-      root: true
-     })
+ //  async login({ commit }, payload) {
+ //   return new Promise((resolve, reject) => {
+ //    console.log(payload)
+ //    this.$axios
+ //     .post('api/users/authenticate', JSON.stringify(payload), {
+ //      headers: {
+ //       'Content-Type': 'application/json'
+ //      }
+ //     })
+ //     .then(res => {
+ //      console.log('result', res.data.token)
+ //      var token = res.data.token
+ //      this.$axios.onRequest(config => {
+ //       config.headers.common['Authorization'] = `Bearer ${token}`
+ //      })
+ //      commit('setAuth', token, {
+ //       root: true
+ //      })
 
-     commit('token', res.data.token)
-     this.$axios.setToken(res.data.token, 'Bearer')
-     resolve(res.data.message)
-    })
-    .catch(error => {
-     console.log(error)
-     reject(error.response.data.message)
-    })
-  })
- },
+ //      commit('token', res.data.token)
+ //      this.$axios.setToken(res.data.token, 'Bearer')
+ //      resolve(res.data.message)
+ //     })
+ //     .catch(error => {
+ //      console.log(error)
+ //      reject(error.response.data.message)
+ //     })
+ //   })
+ //  },
  async me({ rootState, commit }, payload) {
   return new Promise((resolve, reject) => {
    this.$axios
