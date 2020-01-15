@@ -56,7 +56,7 @@ export default {
     console.log(this.$hubConnection)
     console.log(this.$hubConnection.connectionState)
     this.$hubConnection
-      .start()
+      .tryConnect()
       .then(x => {
         this.$hubConnection.on('ReceiveMessage', payload => {
           this.messages.push({

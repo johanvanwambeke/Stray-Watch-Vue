@@ -18,7 +18,7 @@
         <v-flex xs4 sm2>
           <v-btn small flat to="/donate">Donate</v-btn>
         </v-flex>
-        <no-ssr>
+        <client-only>
           <v-flex xs4 sm2 offset-sm2 v-if="$auth.loggedIn">
             <v-btn small flat to="/user">User</v-btn>
           </v-flex>
@@ -31,7 +31,7 @@
           <v-flex xs4 sm2 v-if="!$auth.loggedIn">
             <v-btn small flat to="/login">Log in</v-btn>
           </v-flex>
-        </no-ssr>
+        </client-only>
       </v-layout>
 
       <v-divider style="margin-bottom:20px;"></v-divider>
