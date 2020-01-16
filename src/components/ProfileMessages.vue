@@ -52,27 +52,19 @@ export default {
     }
   },
   mounted() {
-    console.log('connected state?')
-    console.log(this.$hubConnection)
-    console.log(this.$hubConnection.connectionState)
-    this.$hubConnection
-      .tryConnect()
-      .then(x => {
-        this.$hubConnection.on('ReceiveMessage', payload => {
-          this.messages.push({
-            remark: payload.message,
-            userName: payload.user
-          })
+    this.$hubConnected.then(() => {
+      this.$hubConnection.on('ReceiveMessage', payload => {
+        this.messages.push({
+          remark: payload.message,
+          userName: payload.user
         })
-        this.$hubConnection.invoke(
-          'JoinGroup',
-          this.$route.params.id,
-          'Johan Van Wambeke'
-        )
       })
-      .catch(function(e) {
-        console.log('Connection to hub failed ' + e)
-      })
+      this.$hubConnection.invoke(
+        'JoinGroup',
+        this.$route.params.id,
+        'Johan Van Wambeke'
+      )
+    })
   },
   methods: {
     createRemark() {
@@ -87,9 +79,6 @@ export default {
         'Johan'
       )
       this.remark = ''
-      // this.$store.dispatch('messages/create', msg).then(res => {
-      //   this.getLatestRemarks()
-      // })
     }
   }
 }

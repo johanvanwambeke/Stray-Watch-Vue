@@ -109,6 +109,7 @@ module.exports = {
  ],
 
  auth: {
+  plugins: [],
   strategies: {
    local: {
     endpoints: {

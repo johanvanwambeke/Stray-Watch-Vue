@@ -1,31 +1,50 @@
 import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
 import Vue from 'vue'
 
-console.log('HubConnection Try')
+export default function({ app }) {
+ Vue.prototype.$hubConnected = new Promise((resolve, reject) => {
+  // Provide methods to connect/disconnect from the SignalR hub
+  let startedPromise = null
+  let manuallyClosed = false
+  let jwtToken = null
+  //  if (app.$auth.loggedIn) {
+  //   jwtToken = app.$auth.getToken('local')
+  //  }
 
-Vue.prototype.$hubConnection = new HubConnectionBuilder()
- .withUrl('https://stray-watch-api.azurewebsites.net/chathub')
- .configureLogging(LogLevel.Information)
- .build()
+  var connection = new HubConnectionBuilder()
+   // .withUrl('https://stray-watch-api.azurewebsites.net/chathub')
+   .withUrl(
+    'https://localhost:44352/chathub'
+    // jwtToken ? { accessTokenFactory: () => jwtToken } : null
+   )
+   .configureLogging(LogLevel.Information)
+   .build()
 
-//  .start()
-//  .then(() => {
-//   console.log('Connection success')
-//  })
-//  .catch(e => {
-//   console.log('Connection failed ' + e)
-//  })
+  Vue.prototype.$hubConnection = connection
 
-Vue.prototype.$hubConnection.tryConnect = function() {
- return new Promise((resolve, reject) => {
-  Vue.prototype.$hubConnection
-   .start()
-   .then(x => {
-    resolve()
+  function start() {
+   startedPromise = connection.start().catch(err => {
+    console.error('Failed to connect with hub', err)
+    return new Promise((resolve, reject) =>
+     setTimeout(
+      () =>
+       start()
+        .then(resolve)
+        .catch(reject),
+      5000
+     )
+    )
    })
-   .catch(function(e) {
-    console.log('Connection to hub failed ' + e)
-    resolve()
-   })
+   return startedPromise
+  }
+  connection.onclose(() => {
+   if (!manuallyClosed) start()
+  })
+
+  // Start everything
+  manuallyClosed = false
+  start().then(d => {
+   resolve()
+  })
  })
 }
