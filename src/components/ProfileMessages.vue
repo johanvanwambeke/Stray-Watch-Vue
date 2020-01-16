@@ -10,16 +10,21 @@
         </v-card>
       </div>
     </v-flex>
-    <v-flex xs12 class="messageblock">
-      <v-textarea
-        v-on:keyup.enter="createRemark"
-        solo
-        v-model="remark"
-        name="input-7-4"
-        label="Join the conversation"
-      ></v-textarea>
-      <v-btn flat style="margin:0px" @click="createRemark">Send</v-btn>
-    </v-flex>
+    <client-only>
+      <v-flex v-if="$auth.loggedIn" xs12 class="messageblock">
+        <v-textarea
+          v-on:keyup.enter="createRemark"
+          solo
+          v-model="remark"
+          name="input-7-4"
+          label="Join the conversation"
+        ></v-textarea>
+        <v-btn flat style="margin:0px" @click="createRemark">Send</v-btn>
+      </v-flex>
+      <v-flex v-else>
+        <v-btn small flat to="/login">Log in to comment</v-btn>
+      </v-flex>
+    </client-only>
   </v-layout>
 </template>
 <style>
@@ -65,6 +70,7 @@ export default {
         'Johan Van Wambeke'
       )
     })
+    console.log(this.$auth.user)
   },
   methods: {
     createRemark() {
@@ -76,7 +82,7 @@ export default {
         'SendMessageToGroup',
         this.$route.params.id,
         this.remark,
-        'Johan'
+        this.$auth.getToken('local')
       )
       this.remark = ''
     }

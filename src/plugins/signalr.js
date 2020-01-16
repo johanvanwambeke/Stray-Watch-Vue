@@ -7,9 +7,10 @@ export default function({ app }) {
   let startedPromise = null
   let manuallyClosed = false
   let jwtToken = null
-  //  if (app.$auth.loggedIn) {
-  //   jwtToken = app.$auth.getToken('local')
-  //  }
+  // if (app.$auth.loggedIn) {
+  //  jwtToken = app.$auth.getToken('local')
+  //  //  console.log(jwtToken)
+  // }
 
   var connection = new HubConnectionBuilder()
    // .withUrl('https://stray-watch-api.azurewebsites.net/chathub')

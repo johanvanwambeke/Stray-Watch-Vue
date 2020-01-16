@@ -88,10 +88,6 @@ module.exports = {
   {
    src: '@/plugins/nuxt-client-init',
    ssr: false
-  },
-  {
-   src: '@/plugins/signalr',
-   ssr: false
   }
  ],
 
@@ -109,7 +105,12 @@ module.exports = {
  ],
 
  auth: {
-  plugins: [],
+  plugins: [
+   {
+    src: '@/plugins/signalr',
+    ssr: false
+   }
+  ],
   strategies: {
    local: {
     endpoints: {
