@@ -8,9 +8,15 @@
     <v-flex xs12>
       <v-layout cols wrap>
         <h1>{{ sentense }}</h1>
-        <v-btn @click="editProfile" fab small color="gray">
-          <v-icon>edit</v-icon>
+        <v-btn @click="editProfile" text icon>
+          <v-icon color="gray">edit</v-icon>
         </v-btn>
+        <client-only>
+          <v-btn v-if="$auth.loggedIn" @click="follow" text icon>
+            <v-icon v-if="!userfollow" color="gray">favorite_border</v-icon>
+            <v-icon v-else color="pink">favorite</v-icon>
+          </v-btn>
+        </client-only>
         <v-spacer></v-spacer>
         <iframe
           :src="
@@ -189,7 +195,8 @@ export default {
       thisIsMine: true,
       urls: [],
       mapUrl: '',
-      disposeComponent: false
+      disposeComponent: false,
+      userfollow: false
     }
   },
   mounted() {
@@ -199,6 +206,7 @@ export default {
       .then(res => {
         var data = res
         console.log(data)
+        this.userfollow = data.follow
         this.urls = data.url
         this.initialiseSwiper()
         this.getMapUrl()
@@ -301,6 +309,17 @@ export default {
     },
     editProfile() {
       this.$router.push('/profile/edit/' + this.$route.params.id)
+    },
+    follow() {
+      this.$store
+        .dispatch('user/follow', {
+          profileID: parseInt(this.$route.params.id),
+          userID: this.$auth.user.userID,
+          follow: this.userfollow
+        })
+        .then(res => {
+          this.userfollow = !this.userfollow
+        })
     },
     openMaps() {
       console.log(this.lat)

@@ -24,6 +24,7 @@
     "firebase-functions": "^2.1.0",
     "hash-sum": "^2.0.0",
     "mapbox-gl": "^1.0.0",
+    "mapbox-gl-multitouch": "^1.0.3",
     "moment": "^2.24.0",
     "nuxt": "^2.4.0",
     "swiper": "^5.2.1",

@@ -1,6 +1,7 @@
 export const state = () => ({
  token: '',
- username: ''
+ username: '',
+ userfollowsAlert: []
 })
 
 export const getters = {
@@ -9,6 +10,9 @@ export const getters = {
  },
  username(state) {
   return state.username
+ },
+ userfollowsAlert(state) {
+  return state.userfollowsAlert
  }
 }
 
@@ -19,6 +23,17 @@ export const mutations = {
  },
  username(state, payload) {
   state.username = payload
+ },
+ userfollowsAlert(state, payload) {
+  var result = state.userfollowsAlert.filter(obj => {
+   return obj.profileID === payload.profileID
+  })
+  console.log(result.length === 0)
+  if (result.length === 0) state.userfollowsAlert.push(payload)
+ },
+ userfollowsAlertRemove(state, payload) {
+  console.log(payload)
+  state.userfollowsAlert.pop(payload)
  }
 }
 
@@ -39,43 +54,13 @@ export const actions = {
     })
   })
  },
- //  async login({ commit }, payload) {
- //   return new Promise((resolve, reject) => {
- //    console.log(payload)
- //    this.$axios
- //     .post('api/users/authenticate', JSON.stringify(payload), {
- //      headers: {
- //       'Content-Type': 'application/json'
- //      }
- //     })
- //     .then(res => {
- //      console.log('result', res.data.token)
- //      var token = res.data.token
- //      this.$axios.onRequest(config => {
- //       config.headers.common['Authorization'] = `Bearer ${token}`
- //      })
- //      commit('setAuth', token, {
- //       root: true
- //      })
-
- //      commit('token', res.data.token)
- //      this.$axios.setToken(res.data.token, 'Bearer')
- //      resolve(res.data.message)
- //     })
- //     .catch(error => {
- //      console.log(error)
- //      reject(error.response.data.message)
- //     })
- //   })
- //  },
+ async newAlert({ commit }, payload) {
+  commit('userfollowsAlert', payload)
+ },
  async me({ rootState, commit }, payload) {
   return new Promise((resolve, reject) => {
    this.$axios
-    .get('api/users/get', {
-     //  headers: {
-     //   Authorization: 'Bearer ' + rootState.user.token
-     //  }
-    })
+    .get('api/users/get')
     .then(res => {
      resolve(res.data)
     })
@@ -85,6 +70,48 @@ export const actions = {
      })
      console.log(error)
      reject(error.response.data.message)
+    })
+  })
+ },
+ async follow({ rootState, commit }, payload) {
+  return new Promise((resolve, reject) => {
+   this.$axios
+    .post(
+     payload.follow ? 'api/userfollow/remove' : 'api/userfollow/create',
+     JSON.stringify(payload),
+     {
+      headers: {
+       'Content-Type': 'application/json'
+      }
+     }
+    )
+    .then(res => {
+     resolve(res.data)
+    })
+    .catch(error => {
+     commit('utils/snackmsg', error, {
+      root: true
+     })
+     console.log(error)
+     reject(error.response.data.message)
+    })
+  })
+ },
+ async removeAlert({ rootState, commit }, payload) {
+  return new Promise((resolve, reject) => {
+   this.$axios
+    .post('api/userfollow/removeAlert', JSON.stringify(payload), {
+     headers: {
+      'Content-Type': 'application/json'
+     }
+    })
+    .then(res => {
+     commit('userfollowsAlertRemove', payload)
+    })
+    .catch(error => {
+     commit('utils/snackmsg', error, {
+      root: true
+     })
     })
   })
  },

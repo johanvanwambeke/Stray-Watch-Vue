@@ -14,7 +14,16 @@
     </v-layout>
     <!-- map -->
     <v-flex xs12 pa-2>
-      <div id="map" ref="map" class="mapbox"></div>
+      <div class="mapcontainer">
+        <div v-if="hintOnTwoFingers" class="overlay">
+          <v-container fill-height fluid>
+            <v-flex align="center" justify="center">
+              <p>Use 2 fingers to move the map</p>
+            </v-flex>
+          </v-container>
+        </div>
+        <div id="map" ref="map" class="mapbox"></div>
+      </div>
     </v-flex>
     <!-- list of profiles -->
     <v-flex xs12>
@@ -40,6 +49,23 @@
   </v-layout>
 </template>
 <style scoped>
+.mapcontainer {
+  position: relative;
+}
+.overlay {
+  pointer-events: none;
+  background-color: rgba(112, 112, 112, 0.432);
+  text-align: center;
+  font-size: 24px;
+  color: white;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+}
 .mapbox {
   width: 100%;
   height: 300px;
@@ -59,6 +85,7 @@
 var map = null
 var marker = null
 var currentMarkers = []
+import MultiTouch from 'mapbox-gl-multitouch'
 export default {
   head: {
     link: [
@@ -77,6 +104,7 @@ export default {
   data() {
     return {
       profiles: [],
+      hintOnTwoFingers: false,
       myProfiles: false,
       animalFilter: '',
       needsFilter: '',
@@ -141,6 +169,7 @@ export default {
     createMap() {
       var self = this
       const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
+
       const MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder')
 
       console.log([this.location.long, this.location.lat])
@@ -153,6 +182,33 @@ export default {
         center: [this.location.long, this.location.lat],
         zoom: 10,
         attributionControl: false
+      })
+
+      //  map.addControl(new MultiTouch())
+      map.on('dragstart', event => {
+        console.log('dragstart')
+        const isTouchScreenDevice =
+          event.originalEvent && 'touches' in event.originalEvent
+        if (isTouchScreenDevice) {
+          const isTwoFingerTouch = event.originalEvent.touches.length >= 2
+          if (!isTwoFingerTouch) {
+            this.hintOnTwoFingers = true
+            map.dragPan.disable()
+          }
+        }
+      })
+
+      map.on('touchstart', event => {
+        console.log('dragstart')
+        const isTouchScreenDevice =
+          event.originalEvent && 'touches' in event.originalEvent
+        if (isTouchScreenDevice) {
+          const isTwoFingerTouch = event.originalEvent.touches.length >= 2
+          if (isTwoFingerTouch) {
+            this.hintOnTwoFingers = false
+            map.dragPan.enable()
+          }
+        }
       })
 
       // geoLocateControl

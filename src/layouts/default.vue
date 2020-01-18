@@ -19,17 +19,44 @@
           <v-btn small flat to="/donate">Donate</v-btn>
         </v-flex>
         <client-only>
-          <v-flex xs4 sm2 offset-sm2 v-if="$auth.loggedIn">
-            <v-btn small flat to="/user">User</v-btn>
+          <v-flex xs4 sm2 offset-sm2>
+            <v-menu offset-y v-if="alerts.length>0">
+              <v-btn small flat slot="activator">
+                alerts {{alerts.length}}
+                <v-icon>expand_more</v-icon>
+              </v-btn>
+              <v-flex style="background-color:white">
+                <v-flex v-for="(alert,i) in alerts" :key="i" xs12>
+                  <v-btn
+                    small
+                    flat
+                    @click="gotoProfile(alert.profileID)"
+                  >#{{alert.profileID}} has new messages</v-btn>
+                </v-flex>
+              </v-flex>
+            </v-menu>
           </v-flex>
-          <v-flex xs4 sm2 v-if="$auth.loggedIn">
-            <v-btn small flat @click="logout">Logout</v-btn>
-          </v-flex>
-          <v-flex xs4 sm2 offset-sm2 v-if="!$auth.loggedIn">
-            <v-btn small flat to="/register">Register</v-btn>
-          </v-flex>
-          <v-flex xs4 sm2 v-if="!$auth.loggedIn">
-            <v-btn small flat to="/login">Log in</v-btn>
+          <v-flex xs4 sm2>
+            <v-menu offset-y>
+              <v-btn small flat slot="activator">
+                User
+                <v-icon>expand_more</v-icon>
+              </v-btn>
+              <v-flex style="background-color:white">
+                <v-flex xs12 v-if="$auth.loggedIn">
+                  <v-btn small flat to="/user">User</v-btn>
+                </v-flex>
+                <v-flex xs12 v-if="$auth.loggedIn">
+                  <v-btn small flat @click="logout">Logout</v-btn>
+                </v-flex>
+                <v-flex xs12 v-if="!$auth.loggedIn">
+                  <v-btn small flat to="/register">Register</v-btn>
+                </v-flex>
+                <v-flex xs12 v-if="!$auth.loggedIn">
+                  <v-btn small flat to="/login">Log in</v-btn>
+                </v-flex>
+              </v-flex>
+            </v-menu>
           </v-flex>
         </client-only>
       </v-layout>
@@ -81,21 +108,13 @@ h1 {
 </style>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   middleware: 'authGuard',
   methods: {
     goTo(link) {
       this.$router.push({ path: `/` + link })
     }
-  },
-  head: {
-    link: [
-      {
-        rel: 'stylesheet',
-        href:
-          'https://fonts.googleapis.com/css?family=Playfair+Display|Source+Sans+Pro:300,400&display=swap'
-      }
-    ]
   },
   data() {
     return { snackbar: false }
@@ -105,11 +124,18 @@ export default {
       var message = this.$store.state.utils.snackmsg
       if (message != '') this.snackbar = true
       return message
-    }
+    },
+    ...mapState({
+      alerts: state => state.user.userfollowsAlert
+    })
   },
   methods: {
     logout() {
       this.$auth.logout()
+    },
+    gotoProfile(profileID) {
+      this.$store.dispatch('user/removeAlert', { profileID })
+      this.$router.push('/profile/view/' + profileID)
     },
     create() {
       //create a new profile
