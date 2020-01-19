@@ -20,7 +20,7 @@
         <v-spacer></v-spacer>
         <iframe
           :src="
-      `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.stray-watch.com%2Fprofile%2Fview%2F${$route.params.id}&layout=button_count&size=small&appId=1985973471691447&width=84&height=28`
+      `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.strayhero.com%2Fprofile%2Fview%2F${$route.params.id}&layout=button_count&size=small&appId=1985973471691447&width=84&height=28`
      "
           style="border:none;overflow:hidden;position:relative;right:0px;"
           scrolling="no"
@@ -155,36 +155,14 @@ import AnimalProfileForm from '~/components/AnimalProfileForm.vue'
 
 var mySwiper = null
 export default {
-  // beforeRouteLeave(to, from, next) {
-  //   //call a method inside the profilemessage component
-  //   this.disposeComponent = true
-  //   next()
-  // },
-  asyncData({ app, params, store }) {
-    return new Promise((resolve, reject) => {
-      store
-        .dispatch('profiles/getProfile', params.id)
-        .then(res => {
-          console.log(res)
-          resolve({
-            sentense:
-              '#' +
-              res.animalProfileId +
-              ' ' +
-              res.animal.replace(/^\w/, c => c.toUpperCase()) +
-              ' needs ' +
-              res.needs,
-            ogmImg: res.ogmImg
-          })
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }).then(res => {
-      return {
-        ogmImg: res.ogmImg,
-        sentense: res.sentense
-      }
+  beforeRouteLeave(to, from, next) {
+    //call a method inside the profilemessage component
+    this.disposeComponent = true
+    next()
+  },
+  asyncData({ params, store }) {
+    return store.dispatch('profiles/getMetaInfo', params.id).then(res => {
+      return res
     })
   },
   data() {
@@ -203,7 +181,6 @@ export default {
       .dispatch('profiles/getProfile', this.$route.params.id)
       .then(res => {
         var data = res
-        console.log(data)
         this.userfollow = data.follow
         this.urls = data.url
         this.initialiseSwiper()

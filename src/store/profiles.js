@@ -188,6 +188,11 @@ export const actions = {
     })
   })
  },
+ getMetaInfo({ commit }, payload) {
+  return this.$axios.get('api/AnimalProfile/getMeta/' + payload).then(res => {
+   return res.data
+  })
+ },
  async getProfile({ commit, rootState, https }, payload) {
   return new Promise((resolve, reject) => {
    const https = require('https')
