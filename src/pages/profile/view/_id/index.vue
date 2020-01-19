@@ -151,17 +151,15 @@
 import Swiper from 'swiper'
 import { mapState } from 'vuex'
 import ProfileMessages from '~/components/ProfileMessages.vue'
-import MapBox from '~/components/MapBox.vue'
 import AnimalProfileForm from '~/components/AnimalProfileForm.vue'
-import ogImage from '~/components/ogImage.vue'
 
 var mySwiper = null
 export default {
-  beforeRouteLeave(to, from, next) {
-    //call a method inside the profilemessage component
-    this.disposeComponent = true
-    next()
-  },
+  // beforeRouteLeave(to, from, next) {
+  //   //call a method inside the profilemessage component
+  //   this.disposeComponent = true
+  //   next()
+  // },
   asyncData({ app, params, store }) {
     return new Promise((resolve, reject) => {
       store
@@ -221,18 +219,6 @@ export default {
           content: `Stray Hero ${this.sentense}`
         },
         { hid: 'og-image', property: 'og:image', content: `${this.ogmImg}` }
-      ],
-      link: [
-        {
-          href: 'https://api.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css',
-          rel: 'stylesheet'
-        },
-        {
-          href:
-            'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.css',
-          rel: 'stylesheet',
-          type: 'text/css'
-        }
       ]
     }
   },
@@ -245,22 +231,12 @@ export default {
   },
   components: {
     ProfileMessages,
-    MapBox,
-    AnimalProfileForm,
-    ogImage
+    AnimalProfileForm
   },
   methods: {
-    addpic() {
-      this.$store.dispatch('images/add', this.imagelst[2])
-      mySwiper.update()
-    },
     getMapUrl() {
-      console.log('mapurl')
-      console.log(this.long)
       if (!this.long) return
 
-      console.log(this.long)
-      // let marker =
       this.mapUrl =
         `https://api.mapbox.com/styles/v1/mapbox/` +
         `streets-v11/static/` +
@@ -322,9 +298,6 @@ export default {
         })
     },
     openMaps() {
-      console.log(this.lat)
-      console.log(this.long)
-
       window.open(
         `https://maps.google.com/maps?daddr=${this.lat},${this.long}&amp;ll=`
       )

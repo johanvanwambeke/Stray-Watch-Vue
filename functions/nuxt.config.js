@@ -79,7 +79,6 @@ module.exports = {
   */
  plugins: [
   '@/plugins/vuetify',
-  '@/plugins/vue2-touch-events',
   '@/plugins/notifications',
   {
    src: '@/plugins/vue-fullscreen',
@@ -156,7 +155,6 @@ module.exports = {
  buildDir: 'nuxt',
  build: {
   transpile: ['vuetify/lib'],
-  vendor: ['vue2-google-maps'],
   plugins: [new VuetifyLoaderPlugin()],
   loaders: {
    stylus: {
