@@ -19,10 +19,10 @@
           name="input-7-4"
           label="Join the conversation"
         ></v-textarea>
-        <v-btn flat style="margin:0px" @click="createRemark">Send</v-btn>
+        <v-btn text style="margin:0px" @click="createRemark">Send</v-btn>
       </v-flex>
       <v-flex v-else>
-        <v-btn small flat to="/login">Log in to comment</v-btn>
+        <v-btn small text to="/login">Log in to comment</v-btn>
       </v-flex>
     </client-only>
   </v-layout>

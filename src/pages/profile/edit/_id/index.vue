@@ -18,10 +18,10 @@
     </div>
     <!-- buttons -->
     <div class="buttonnav">
-     <v-btn flat @click="$refs.fileInput.click()">add</v-btn>
-     <v-btn flat @click="editSlide">edit</v-btn>
-     <v-btn flat @click="removeSlide()">remove</v-btn>
-     <v-btn flat @click="setMain">set main</v-btn>
+     <v-btn text @click="$refs.fileInput.click()">add</v-btn>
+     <v-btn text @click="editSlide">edit</v-btn>
+     <v-btn text @click="removeSlide()">remove</v-btn>
+     <v-btn text @click="setMain">set main</v-btn>
     </div>
    </v-flex>
    <input

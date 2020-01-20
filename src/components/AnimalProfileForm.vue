@@ -41,14 +41,19 @@
   </div>
   <div v-if="editable">
    <v-flex>
-    <v-select box v-model="animal" :items="animalLst" label="Animal"></v-select>
+    <v-select
+     filled
+     v-model="animal"
+     :items="animalLst"
+     label="Animal"
+    ></v-select>
    </v-flex>
    <v-flex>
-    <v-select box v-model="age" :items="ageLst" label="age"></v-select>
+    <v-select filled v-model="age" :items="ageLst" label="age"></v-select>
    </v-flex>
    <v-flex v-if="needs == 'medical'">
     <v-select
-     box
+     filled
      multiple
      chips
      v-model="medical"
@@ -58,7 +63,7 @@
    </v-flex>
    <v-flex>
     <v-select
-     box
+     filled
      v-model="urgency"
      :items="urgencyLst"
      label="Urgency"
@@ -66,14 +71,19 @@
    </v-flex>
    <v-flex>
     <v-select
-     box
+     filled
      v-model="behavior"
      :items="behaviorLst"
      label="Behavior"
     ></v-select>
    </v-flex>
    <v-flex>
-    <v-select box v-model="needs" :items="needsLst" label="Purpose"></v-select>
+    <v-select
+     filled
+     v-model="needs"
+     :items="needsLst"
+     label="Purpose"
+    ></v-select>
    </v-flex>
    <div
     v-if="needs == 'capture'"
@@ -87,7 +97,7 @@
     </v-flex>
     <v-flex>
      <v-select
-      box
+      filled
       v-model="captureStatus"
       :items="captureStatusLst"
       label="Capture status"
@@ -102,12 +112,12 @@
       ></v-switch>
      </v-flex>
      <v-flex xs6>
-      <v-checkbox
+      <v-checkfilled
        v-if="sterileDef"
        :indeterminate="!sterileDef"
        v-model="sterile"
        label="Is sterile"
-      ></v-checkbox>
+      ></v-checkfilled>
      </v-flex>
     </v-layout>
     <!-- vaccinated -->
@@ -119,12 +129,12 @@
       ></v-switch>
      </v-flex>
      <v-flex xs6>
-      <v-checkbox
+      <v-checkfilled
        v-if="vaccinatedDef"
        :indeterminate="!vaccinatedDef"
        v-model="vaccinated"
        label="Is vaccinated"
-      ></v-checkbox>
+      ></v-checkfilled>
      </v-flex>
     </v-layout>
     <!-- eartip -->
@@ -136,12 +146,12 @@
       ></v-switch>
      </v-flex>
      <v-flex xs6>
-      <v-checkbox
+      <v-checkfilled
        v-if="eartipDef"
        :indeterminate="!eartipDef"
        v-model="eartip"
        label="The eartip is cut"
-      ></v-checkbox>
+      ></v-checkfilled>
      </v-flex>
     </v-layout>
     <!-- healthCheck -->
@@ -155,7 +165,7 @@
     </v-layout> -->
    </div>
    <v-flex>
-    <v-textarea box label="More info" v-model="info"></v-textarea>
+    <v-textarea filled label="More info" v-model="info"></v-textarea>
    </v-flex>
    <!-- <v-btn @click="getProfileAnimal"></v-btn> -->
   </div>

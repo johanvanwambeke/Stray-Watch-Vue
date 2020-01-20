@@ -3,7 +3,7 @@
   <h1>Image</h1>
   <no-ssr placeholder="Looking for puppies...">
    <fullscreen ref="myFullscreen" @change="fullscreenChange">
-    <v-toolbar v-if="!hideTopNav" flat dense color="transparent">
+    <v-toolbar v-if="!hideTopNav" text dense color="transparent">
      <v-btn
       class="imgIcon"
       icon
@@ -73,7 +73,7 @@
      @change="addImage"
      multiple
     />
-    <v-toolbar class="nav" flat dense v-if="images.length > 1">
+    <v-toolbar class="nav" text dense v-if="images.length > 1">
      <v-btn
       class="imgIcon"
       icon
@@ -111,15 +111,15 @@
    </fullscreen>
   </no-ssr>
   <v-dialog v-model="dialog">
-   <v-toolbar flat dark dense class="croppernavup" color="black">
-    <v-btn icon flat @click="dialog = false">
+   <v-toolbar text dark dense class="croppernavup" color="black">
+    <v-btn icon text @click="dialog = false">
      <v-icon>close</v-icon>
     </v-btn>
-    <v-btn icon flat @click="rotate">
+    <v-btn icon text @click="rotate">
      <v-icon>rotate_90_degrees_ccw</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
-    <v-btn icon flat @click="cropImage">OK</v-btn>
+    <v-btn icon text @click="cropImage">OK</v-btn>
    </v-toolbar>
    <vue-cropper
     class="cropperStyle"

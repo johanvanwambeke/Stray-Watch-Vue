@@ -9,6 +9,12 @@ module.exports = {
   baseUrl: process.env.VUE_APP_BASE_URL,
   dev: process.env.VUE_APP_DEV || false
  },
+
+ buildModules: [
+  // Simple usage
+  '@nuxtjs/vuetify'
+ ],
+
  /*
   ** Headers of the page
   */

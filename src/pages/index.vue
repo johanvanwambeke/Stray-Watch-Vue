@@ -2,25 +2,25 @@
  <v-layout rows wrap>
   <!-- filters -->
   <v-layout cols wrap>
-   <v-flex xs6 md4 pa-2>
+   <v-flex xs4 md4 pa-2>
     <v-select
      clearable
-     box
+     filled
      v-model="animalFilter"
      :items="animalLst"
      label="Animal"
     ></v-select>
    </v-flex>
-   <v-flex xs6 md4 pa-2>
+   <v-flex xs4 md4 pa-2>
     <v-select
      clearable
-     box
+     filled
      v-model="needsFilter"
      :items="needsLst"
      label="Purpose"
     ></v-select>
    </v-flex>
-   <v-flex xs6 md4 pa-2>
+   <v-flex xs4 md4 pa-2>
     <v-switch color="black" v-model="myProfiles" label="My animals"></v-switch>
    </v-flex>
   </v-layout>
@@ -38,29 +38,65 @@
    </div>
   </v-flex>
   <!-- list of profiles -->
-  <v-flex xs12>
-   <div v-for="(profile, i) in profiles" :key="i" class="d-flex justify-center">
-    <v-layout pa-2>
-     <v-flex md8 xs12 class="d-flex align-stretch">
-      <div class="profileDescription">
-       <h1>{{ profile.animal }}</h1>
-       <h3>{{ profile.needs }}</h3>
-       <p style="color:light-gray">{{ profile.distance | twocomma }} Km</p>
-       <v-btn @click="openProfile(profile.animalProfileId)">more</v-btn>
-      </div>
-     </v-flex>
-     <v-flex md4 xs12 class="d-flex align-stretch">
-      <div
-       style="text-align:center;background-size: cover;"
-       :style="{ backgroundImage: `url(${profile.pic})` }"
-      ></div>
-     </v-flex>
-    </v-layout>
+  <v-layout wrap rows class="d-flex align-stretch">
+   <div v-for="(profile, i) in profiles" :key="i" class="d-flex align-center">
+    <v-lazy transition="fade-transition">
+     <div
+      class="profileCard"
+      @click="openProfile(profile.animalProfileId)"
+      style="cursor:pointer"
+      v-ripple
+     >
+      <v-layout cols wrap flex align-center justify-center>
+       <v-flex xs12>
+        <div
+         class="profileImage"
+         style="text-align:center;background-size: cover;background-position: center;"
+         :style="{ backgroundImage: `url(${profile.pic})` }"
+        ></div>
+       </v-flex>
+       <v-flex xs12>
+        <div class="profileDescription">
+         <h4>{{ profile.animal }}</h4>
+         <p style="color:light-grey">{{ profile.distance | twocomma }} Km</p>
+        </div>
+       </v-flex>
+      </v-layout>
+     </div>
+    </v-lazy>
    </div>
-  </v-flex>
+  </v-layout>
  </v-layout>
 </template>
 <style scoped>
+.profileCard {
+ min-width: 100px;
+ width: calc(100vw / 6);
+ height: calc(100vh / 3.5);
+ margin: 8px;
+}
+
+.profileImage {
+ height: calc(100vh / 5);
+}
+
+@media screen and (max-width: 900px) {
+ .profileCard {
+  min-width: 100px;
+  width: calc(100vw / 4);
+  height: calc(100vh / 3.5);
+  margin: 5px;
+ }
+ .profileImage {
+  height: calc(100vh / 5);
+ }
+}
+
+.profileDescription {
+ height: 20%;
+ padding-top: 10px;
+ color: black;
+}
 .mapcontainer {
  position: relative;
 }
@@ -83,12 +119,7 @@
  height: 300px;
  z-index: 2;
 }
-.profileDescription {
- background-color: rgb(68, 68, 68);
- padding: 20px;
- padding-left: 30px;
- color: white;
-}
+
 .popup {
  padding: 20px;
 }
