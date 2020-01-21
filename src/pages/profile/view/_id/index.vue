@@ -1,39 +1,15 @@
 <template>
-  <v-layout row wrap>
+  <v-layout rows wrap>
     <!-- <v-flex>{{ ogmImg }}</v-flex>
     <p>{{ sentense }}</p>-->
     <!-- <v-flex>
       <ogImage />
     </v-flex>-->
-    <v-flex xs12>
-      <v-layout cols wrap>
-        <h1>{{ sentense }}</h1>
-        <v-btn @click="editProfile" text icon>
-          <v-icon color="gray">edit</v-icon>
-        </v-btn>
-        <client-only>
-          <v-btn v-if="$auth.loggedIn" @click="follow" text icon>
-            <v-icon v-if="!userfollow" color="gray">favorite_border</v-icon>
-            <v-icon v-else color="pink">favorite</v-icon>
-          </v-btn>
-        </client-only>
-        <v-spacer></v-spacer>
-        <iframe
-          :src="
-      `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.strayhero.com%2Fprofile%2Fview%2F${$route.params.id}&layout=button_count&size=small&appId=1985973471691447&width=84&height=28`
-     "
-          style="border:none;overflow:hidden;position:relative;right:0px;"
-          scrolling="no"
-          frameborder="0"
-          allowtransparency="true"
-          allow="encrypted-media"
-          height="20px;"
-          width="80px"
-        ></iframe>
-      </v-layout>
-    </v-flex>
     <!-- Slider -->
-    <v-flex xs12 md6 pa-2>
+    <v-flex v-if="loadingSlider" xs12 ma-2 mb-0 style="position:relative">
+      <v-skeleton-loader class="skeletonoverlay" tile type="image,image,image,image"></v-skeleton-loader>
+    </v-flex>
+    <v-flex xs12 ma-2 mb-0>
       <!-- Slider main container -->
       <div class="swiper-container">
         <!-- Additional required wrapper -->
@@ -54,6 +30,59 @@
         <div class="swiper-button-next"></div>
       </div>
     </v-flex>
+    <!-- animal info -->
+    <v-flex class="metaInfoCard" mt-0 xs12 pa-2 ma-2>
+      <v-layout cols wrap style="position:relative">
+        <v-flex xs12>
+          <p style="font-size:16px">{{ sentense }}</p>
+          <!-- <p style="font-size:13px"></p> -->
+
+          <a :href="openMaps" style="font-size:13px;color:black">{{placename}}</a>
+        </v-flex>
+        <div class="actionsMenu">
+          <v-btn @click="editProfile" text icon>
+            <v-icon color="gray">edit</v-icon>
+          </v-btn>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn text icon v-on="on">
+                <v-icon color="#3b5999">share</v-icon>
+              </v-btn>
+            </template>
+
+            <v-flex style="background-color:white" pa-4>
+              <iframe
+                :src="
+      `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.strayhero.com%2Fprofile%2Fview%2F${$route.params.id}&layout=button_count&size=small&appId=1985973471691447&width=84&height=28`
+     "
+                style="border:none;overflow:hidden;position:relative;right:0px;"
+                scrolling="no"
+                frameborder="0"
+                allowtransparency="true"
+                allow="encrypted-media"
+                height="20px;"
+                width="80px"
+              ></iframe>
+            </v-flex>
+          </v-menu>
+          <client-only>
+            <v-btn v-if="$auth.loggedIn" @click="follow" text icon>
+              <v-icon v-if="!userfollow" color="gray">favorite_border</v-icon>
+              <v-icon v-else color="pink">favorite</v-icon>
+            </v-btn>
+          </client-only>
+        </div>
+      </v-layout>
+    </v-flex>
+
+    <!-- form -->
+    <v-flex xs12 md6 pa-2>
+      <AnimalProfileForm :editable="false" />
+    </v-flex>
+    <!-- messages  -->
+    <v-flex xs12 md6 pa-2>
+      <ProfileMessages :dispose="disposeComponent" />
+    </v-flex>
     <!-- locatie -->
     <v-flex xs12 md6 pa-2>
       <div class="imgcontainer">
@@ -63,26 +92,42 @@
         </div>
       </div>
     </v-flex>
-    <!-- form -->
-    <v-flex xs12 md6 pa-2>
-      <AnimalProfileForm :editable="false" />
-    </v-flex>
-    <!-- messages  -->
-    <v-flex xs12 md6 pa-2>
-      <ProfileMessages :dispose="disposeComponent" />
-    </v-flex>
   </v-layout>
 </template>
-<style>
+
+<style lang="scss">
 @import '@/node_modules/swiper/css/swiper.css';
+.skeletonoverlay {
+  width: 100%;
+  height: 50vh;
+  z-index: 10;
+}
+.metaInfoCard {
+  /* border: solid rgb(160, 160, 160); */
+  border: solid rgb(0, 0, 0, 0.12);
+  border-width: 0px 1px 1px 1px;
+  background-color: whitesmoke;
+}
+.actionsMenu {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.swiper-container {
+  position: relative;
+  overflow: hidden;
+}
 .swiper-pagination-bullet {
   background-color: white;
 }
+// .swiper-wrapper {
+//   width: 100%;
+// }
 .swiper-slide-container {
   width: 100%;
-  padding-bottom: 75%;
+  height: 50vh;
   position: relative;
-  height: 0;
+  overflow: hidden;
 }
 .swiper-slide-image {
   position: absolute;
@@ -91,6 +136,8 @@
   bottom: 0;
   left: 0;
   background-size: cover;
+  background-position: center;
+  overflow: hidden;
 }
 .overlay {
   position: absolute;
@@ -172,7 +219,9 @@ export default {
       urls: [],
       mapUrl: '',
       disposeComponent: false,
-      userfollow: false
+      userfollow: false,
+      placename: '',
+      loadingSlider: true
     }
   },
   mounted() {
@@ -185,6 +234,7 @@ export default {
         this.urls = data.url
         this.initialiseSwiper()
         this.getMapUrl()
+        this.getLocation()
       })
   },
   head() {
@@ -211,6 +261,24 @@ export default {
     AnimalProfileForm
   },
   methods: {
+    getLocation() {
+      if (!this.long) return
+      var url =
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/
+      ${this.long},${this.lat}
+      .json?access_token=` + process.env.MAP_TOKEN
+
+      return new Promise((resolve, reject) => {
+        this.$axios
+          .get(url)
+          .then(ress => {
+            this.placename = ress.data.features[0].place_name
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      })
+    },
     getMapUrl() {
       if (!this.long) return
 
@@ -223,15 +291,15 @@ export default {
         process.env.MAP_TOKEN
     },
     initialiseSwiper() {
+      this.loadingSlider = true
       console.log(this.$vuetify.breakpoint.name)
       //xs :1
       //sm: 2
-      var spv = 1
-      if (this.$vuetify.breakpoint.name == 'sm') {
-        spv = 2
-      }
+      var spv = 2
 
       mySwiper = new Swiper('.swiper-container', {
+        // effect
+        effect: 'fade',
         // grab cursor
         grabCursor: true,
         // zoom into image
@@ -242,7 +310,7 @@ export default {
 
         //auto play
         autoplay: {
-          delay: 2500,
+          delay: 4000,
           disableOnInteraction: true
         },
         slidesPerView: spv,
@@ -259,6 +327,8 @@ export default {
           prevEl: '.swiper-button-prev'
         }
       })
+
+      this.loadingSlider = false
     },
     editProfile() {
       this.$router.push('/profile/edit/' + this.$route.params.id)

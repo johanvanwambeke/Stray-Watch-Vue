@@ -1,20 +1,28 @@
 <template>
   <v-layout rows wrap>
-    <v-flex xs12 mb-3 v-if="messages.length > 0">
-      <div class="messageblock" v-for="(message, i) in messages" :key="i">
-        <p class="username">{{ message.userName }}</p>
-        <v-card mb-2>
+    <v-divider style="margin-left:8px;margin-right:8px;padding-bottom:8px;"></v-divider>
+    <!-- <h2 class="font-weight-light">Chat history</h2> -->
+    <!-- Chat history -->
+    <v-flex class="chatHistoryCard" xs12 pa-2 mb-3>
+      <div class="messageblock" v-for="(message, i) in messages " :key="i">
+        <p style="margin-bottom:0px" class="username">{{ message.userName }}</p>
+        <v-card elevation="0">
           <v-flex pa-1>
             <p>{{ message.remark }}</p>
           </v-flex>
         </v-card>
       </div>
     </v-flex>
+    <!-- chat box -->
     <client-only>
-      <v-flex v-if="$auth.loggedIn" xs12 class="messageblock">
+      <v-flex v-if="$auth.loggedIn" pa-2 xs12 class="messageblock">
         <v-textarea
           v-on:keyup.enter="createRemark"
-          solo
+          filled
+          clearable
+          counter
+          dense
+          no-resize
           v-model="remark"
           name="input-7-4"
           label="Join the conversation"
@@ -28,6 +36,11 @@
   </v-layout>
 </template>
 <style>
+.chatHistoryCard {
+  max-height: 400px;
+  overflow-y: scroll;
+  z-index: 10;
+}
 .username {
   color: rgb(116, 116, 116);
   margin: 0px;
@@ -59,6 +72,7 @@ export default {
   mounted() {
     this.$hubConnected.then(() => {
       this.$hubConnection.on('ReceiveMessage', payload => {
+        console.log(payload)
         this.messages.push({
           remark: payload.message,
           userName: payload.user
