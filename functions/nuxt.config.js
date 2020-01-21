@@ -1,5 +1,5 @@
 const pkg = require('./package.json')
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+// const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 // export default {
 module.exports = {
@@ -9,6 +9,12 @@ module.exports = {
   baseUrl: process.env.VUE_APP_BASE_URL,
   dev: process.env.VUE_APP_DEV || false
  },
+
+ buildModules: [
+  // Simple usage
+  '@nuxtjs/vuetify'
+ ],
+
  /*
   ** Headers of the page
   */
@@ -68,11 +74,6 @@ module.exports = {
  loading: {
   color: '#fff'
  },
-
- /*
-  ** Global CSS
-  */
- css: ['~/assets/style/app.styl'],
 
  /*
   ** Plugins to load before mounting the App
@@ -145,7 +146,6 @@ module.exports = {
   ** Axios module configuration
   */
  axios: {
-  // See https://github.com/nuxt-community/axios-module#options
   baseURL: 'https://stray-watch-api.azurewebsites.net/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
  },
 
@@ -155,15 +155,8 @@ module.exports = {
  buildDir: 'nuxt',
  build: {
   transpile: ['vuetify/lib'],
-  plugins: [new VuetifyLoaderPlugin()],
-  loaders: {
-   stylus: {
-    import: ['~assets/style/variables.styl']
-   }
-  },
-  /*
-   ** You can extend webpack config here
-   */
+  // plugins: [new VuetifyLoaderPlugin()],
+
   extend(config, ctx) {}
  }
 }

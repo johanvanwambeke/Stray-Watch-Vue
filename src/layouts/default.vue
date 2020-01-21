@@ -8,38 +8,54 @@
     </center>
    </v-snackbar>
    <!-- navigatie -->
-   <v-layout cols wrap mb-3>
-    <v-flex xs4 sm2>
-     <v-btn small text to="/">List</v-btn>
+   <!-- <v-layout wrap rows class>
+        <div class="nav-button d-flex justify-center" v-for="an in 5">
+          <div class="text-center">
+            <v-icon>pets</v-icon>
+            <p style="font-size:10px">Animals</p>
+          </div>
+        </div>
+      </v-layout>-->
+   <v-layout cols wrap mb-2 pa-2>
+    <v-flex xs3>
+     <v-btn small text to="/">Animals</v-btn>
     </v-flex>
-    <v-flex xs4 sm2>
+    <v-flex xs3>
      <v-btn small text @click="create">Create</v-btn>
     </v-flex>
-    <v-flex xs4 sm2>
-     <v-btn small text to="/donate">Donate</v-btn>
-    </v-flex>
+    <!-- <v-flex xs3>
+          <v-btn small text to="/donate">Donate</v-btn>
+        </v-flex>-->
     <client-only>
-     <v-flex xs4 sm2 offset-sm2>
-      <v-menu offset-y v-if="alerts.length > 0">
-       <v-btn small text v-slot:activator="{ on }">
-        alerts {{ alerts.length }}
-        <v-icon>expand_more</v-icon>
-       </v-btn>
+     <!-- alert -->
+     <v-flex xs3 v-if="alerts.length > 0">
+      <v-menu offset-y>
+       <template v-slot:activator="{ on }">
+        <v-btn small text v-on="on">
+         alerts {{ alerts.length }}
+         <v-icon>expand_more</v-icon>
+        </v-btn>
+       </template>
+
        <v-flex style="background-color:white">
         <v-flex v-for="(alert, i) in alerts" :key="i" xs12>
-         <v-btn small flat @click="gotoProfile(alert.profileID)"
+         <v-btn small text @click="gotoProfile(alert.profileID)"
           >#{{ alert.profileID }} has new messages</v-btn
          >
         </v-flex>
        </v-flex>
       </v-menu>
      </v-flex>
-     <v-flex xs4 sm2>
+     <!-- user -->
+     <v-flex xs3 v-bind:class="{ 'offset-sm3': alerts.length === 0 }">
       <v-menu offset-y>
-       <v-btn small text slot="activator">
-        User
-        <v-icon>expand_more</v-icon>
-       </v-btn>
+       <template v-slot:activator="{ on }">
+        <v-btn small text v-on="on">
+         {{ $auth.loggedIn ? username : 'Log in' }}
+         <v-icon>expand_more</v-icon>
+        </v-btn>
+       </template>
+
        <v-flex style="background-color:white">
         <v-flex xs12 v-if="$auth.loggedIn">
          <v-btn small text to="/user">User</v-btn>
@@ -58,13 +74,20 @@
      </v-flex>
     </client-only>
    </v-layout>
+   <v-divider
+    style="margin-left:8px;margin-right:8px;padding-bottom:8px;"
+   ></v-divider>
 
-   <v-divider style="margin-bottom:20px;"></v-divider>
    <nuxt />
   </v-container>
  </v-app>
 </template>
 <style scoped>
+.nav-button {
+ width: calc(100% / 5);
+ height: 50px;
+ position: relative;
+}
 .align-right {
  display: flex;
  justify-content: flex-end;
@@ -76,26 +99,6 @@
 .underline {
  text-decoration: underline;
 }
-h1 {
- font-family: 'Playfair Display', serif;
-}
-.v-btn {
- color: rgb(41, 41, 41) !important;
- font-size: 14px;
- padding: 0px 25px;
-}
-.v-btn:hover {
- color: rgb(107, 107, 107) !important;
- font-size: 14px;
- /* border-bottom: 5px solid rgb(107, 107, 107); */
-}
-.v-btn--active {
- color: rgb(107, 107, 107) !important;
- font-size: 14px;
- /* border-bottom: 5px solid rgb(107, 107, 107); */
- background-color: transparent !important;
-}
-
 .appcss {
  background-image: linear-gradient(
   to bottom,
@@ -118,6 +121,16 @@ export default {
   return { snackbar: false }
  },
  computed: {
+  username() {
+   var value = this.$auth.user.email
+   if (!value) return ''
+   value = value.toString()
+   if (value.length > 9) {
+    return value.substring(0, 9) + '..'
+   } else {
+    return value
+   }
+  },
   snackmsg() {
    var message = this.$store.state.utils.snackmsg
    if (message != '') this.snackbar = true
