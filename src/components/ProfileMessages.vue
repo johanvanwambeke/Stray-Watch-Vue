@@ -1,6 +1,5 @@
 <template>
   <v-layout rows wrap>
-    <v-divider style="margin-left:8px;margin-right:8px;padding-bottom:8px;"></v-divider>
     <!-- <h2 class="font-weight-light">Chat history</h2> -->
     <!-- Chat history -->
     <v-flex class="chatHistoryCard" xs12 pa-2 mb-3>
@@ -8,7 +7,7 @@
         <p style="margin-bottom:0px" class="username">{{ message.userName }}</p>
         <v-card elevation="0">
           <v-flex pa-1>
-            <p>{{ message.remark }}</p>
+            <p class="body-2">{{ message.remark }}</p>
           </v-flex>
         </v-card>
       </div>
@@ -42,7 +41,7 @@
   z-index: 10;
 }
 .username {
-  color: rgb(116, 116, 116);
+  color: rgb(206, 206, 206);
   margin: 0px;
   font-size: 10px;
 }

@@ -10,7 +10,9 @@
   "start": "nuxt start",
   "generate": "nuxt generate",
   "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-  "precommit": "npm run lint"
+  "precommit": "npm run lint",
+  "docker": "docker build . -t strayhero:1 ",
+  "dockerrun": "docker run  --name strayhero -p 3000:3000 strayhero:1"
  },
  "dependencies": {
   "@aspnet/signalr": "^1.1.4",

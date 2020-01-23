@@ -1,6 +1,6 @@
 <template>
   <v-app light>
-    <v-container>
+    <v-container class="boss-container">
       <!-- snackbar -->
       <v-snackbar v-model="snackbar" bottom color="black">
         <center>
@@ -83,6 +83,12 @@
   </v-app>
 </template>
 <style scoped>
+@media screen and (max-width: 700px) {
+  .boss-container {
+    padding: 0px;
+  }
+}
+
 .nav-button {
   width: calc(100% / 5);
   height: 50px;

@@ -11,7 +11,7 @@
               <p v-if="behavior != ''" class="label">behavior</p>
               <p v-if="behavior != ''">{{ behavior }}</p>
               <p v-if="needs != ''" class="label">needs</p>
-              <p class="font-weight-regular" v-if="needs != ''">{{ needs }}</p>
+              <p class="body-2" v-if="needs != ''">{{ needs }}</p>
               <p v-if="captureStatus && captureStatus != ''" class="label">capture status</p>
               <p v-if="captureStatus && captureStatus != ''">{{ captureStatus }}</p>
               <p v-if="info != ''" class="label">Message</p>
@@ -39,22 +39,40 @@
     </div>
     <div v-if="editable">
       <v-flex>
-        <v-select filled v-model="animal" :items="animalLst" label="Animal"></v-select>
+        <v-select clearable dense flat solo v-model="animal" :items="animalLst" label="Animal"></v-select>
       </v-flex>
       <v-flex>
-        <v-select filled v-model="age" :items="ageLst" label="age"></v-select>
+        <v-select clearable dense flat solo v-model="age" :items="ageLst" label="age"></v-select>
       </v-flex>
       <v-flex v-if="needs == 'medical'">
-        <v-select filled multiple chips v-model="medical" :items="medicalLst" label="Ailment"></v-select>
+        <v-select
+          clearable
+          dense
+          flat
+          solo
+          multiple
+          chips
+          v-model="medical"
+          :items="medicalLst"
+          label="Ailment"
+        ></v-select>
       </v-flex>
       <v-flex>
-        <v-select filled v-model="urgency" :items="urgencyLst" label="Urgency"></v-select>
+        <v-select clearable dense flat solo v-model="urgency" :items="urgencyLst" label="Urgency"></v-select>
       </v-flex>
       <v-flex>
-        <v-select filled v-model="behavior" :items="behaviorLst" label="Behavior"></v-select>
+        <v-select
+          clearable
+          dense
+          flat
+          solo
+          v-model="behavior"
+          :items="behaviorLst"
+          label="Behavior"
+        ></v-select>
       </v-flex>
       <v-flex>
-        <v-select filled v-model="needs" :items="needsLst" label="Purpose"></v-select>
+        <v-select clearable dense flat solo v-model="needs" :items="needsLst" label="Purpose"></v-select>
       </v-flex>
       <div
         v-if="needs == 'capture'"
@@ -67,7 +85,15 @@
           <v-text-field v-model="color" label="Color"></v-text-field>
         </v-flex>
         <v-flex>
-          <v-select filled v-model="captureStatus" :items="captureStatusLst" label="Capture status"></v-select>
+          <v-select
+            clearable
+            dense
+            flat
+            solo
+            v-model="captureStatus"
+            :items="captureStatusLst"
+            label="Capture status"
+          ></v-select>
         </v-flex>
         <!-- sterile -->
         <v-layout cols wrap>
@@ -122,7 +148,16 @@
         </v-layout>-->
       </div>
       <v-flex>
-        <v-textarea filled label="More info" v-model="info"></v-textarea>
+        <v-textarea
+          filled
+          clearable
+          counter
+          dense
+          no-resize
+          auto-grow
+          label="More info"
+          v-model="info"
+        ></v-textarea>
       </v-flex>
       <!-- <v-btn @click="getProfileAnimal"></v-btn> -->
     </div>
@@ -132,7 +167,7 @@
 .label {
   color: gray;
   margin-bottom: -2px;
-  font-size: 13px;
+  font-size: 12px;
 }
 .infoblock {
   font-size: 18px;

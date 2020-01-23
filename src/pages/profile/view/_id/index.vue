@@ -1,23 +1,15 @@
 <template>
   <v-layout rows wrap>
-    <!-- <v-flex>{{ ogmImg }}</v-flex>
-    <p>{{ sentense }}</p>-->
-    <!-- <v-flex>
-      <ogImage />
-    </v-flex>-->
-    <!-- Slider -->
-    <v-flex v-if="loadingSlider" xs12 ma-2 mb-0 style="position:relative">
+    <v-flex v-if="loadingSlider" xs12 pa-2 pb-0 style="position:relative">
       <v-skeleton-loader class="skeletonoverlay" tile type="image,image,image,image"></v-skeleton-loader>
     </v-flex>
-    <v-flex xs12 ma-2 mb-0>
+    <v-flex xs12 pa-2 pb-0>
       <!-- Slider main container -->
       <div class="swiper-container">
         <!-- Additional required wrapper -->
         <div class="swiper-wrapper">
           <!-- Slides -->
           <div v-for="(url, i) in imagelst" :key="i" class="swiper-slide">
-            <!-- <div class="swiper-zoom-container"> -->
-            <!-- <img :src="url.src" alt /> -->
             <div class="swiper-slide-container">
               <div class="swiper-slide-image" :style="`background-image: url(${url.src}); `"></div>
             </div>
@@ -30,6 +22,7 @@
         <div class="swiper-button-next"></div>
       </div>
     </v-flex>
+
     <!-- animal info -->
     <v-flex class="metaInfoCard" mt-0 xs12 pa-2 ma-2>
       <v-layout cols wrap style="position:relative">
@@ -43,18 +36,19 @@
           <v-btn @click="editProfile" text icon>
             <v-icon color="gray">edit</v-icon>
           </v-btn>
+          <v-btn @click="nativeShare">
+            <v-icon>share</v-icon>
+          </v-btn>
           <v-menu offset-y>
             <template v-slot:activator="{ on }">
-              <v-btn text icon v-on="on">
+              <v-btn text icon v-on="on" @click="nativeShare">
                 <v-icon color="#3b5999">share</v-icon>
               </v-btn>
             </template>
 
             <v-flex style="background-color:white" pa-4>
               <iframe
-                :src="
-      `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.strayhero.com%2Fprofile%2Fview%2F${$route.params.id}&layout=button_count&size=small&appId=1985973471691447&width=84&height=28`
-     "
+                :src="facebookUrl1+ $route.params.id+facebookUrl2"
                 style="border:none;overflow:hidden;position:relative;right:0px;"
                 scrolling="no"
                 frameborder="0"
@@ -78,13 +72,7 @@
     <!-- form -->
     <v-flex xs12 md6 pa-2>
       <AnimalProfileForm :editable="false" />
-    </v-flex>
-    <!-- messages  -->
-    <v-flex xs12 md6 pa-2>
-      <ProfileMessages :dispose="disposeComponent" />
-    </v-flex>
-    <!-- locatie -->
-    <v-flex xs12 md6 pa-2>
+      <!-- map -->
       <div class="imgcontainer">
         <img class="locationImg" alt="Animal location" :src="mapUrl" />
         <div class="overlay" @click="openMaps">
@@ -92,16 +80,24 @@
         </div>
       </div>
     </v-flex>
+    <!-- divider -->
+
+    <!-- messages  -->
+    <v-flex xs12 md6 pa-2>
+      <ProfileMessages :dispose="disposeComponent" />
+    </v-flex>
   </v-layout>
 </template>
-
-<style lang="scss">
-@import '@/node_modules/swiper/css/swiper.css';
+<style scoped>
 .skeletonoverlay {
   width: 100%;
   height: 50vh;
   z-index: 10;
 }
+</style>
+<style lang="scss">
+@import '@/node_modules/swiper/css/swiper.css';
+
 .metaInfoCard {
   /* border: solid rgb(160, 160, 160); */
   border: solid rgb(0, 0, 0, 0.12);
@@ -120,12 +116,10 @@
 .swiper-pagination-bullet {
   background-color: white;
 }
-// .swiper-wrapper {
-//   width: 100%;
-// }
+
 .swiper-slide-container {
   width: 100%;
-  height: 50vh;
+  height: 400px;
   position: relative;
   overflow: hidden;
 }
@@ -178,7 +172,6 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 15px !important;
   /* background-color: rgba(114, 114, 114, 0.15); */
-  border-radius: 10px;
   margin-top: -20px;
   padding: 10px 20px 10px 20px;
 }
@@ -186,7 +179,6 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 15px !important;
   /* background-color: rgba(114, 114, 114, 0.15); */
-  border-radius: 10px;
   margin-top: -20px;
   padding: 10px 20px 10px 20px;
 }
@@ -221,7 +213,9 @@ export default {
       disposeComponent: false,
       userfollow: false,
       placename: '',
-      loadingSlider: true
+      loadingSlider: true,
+      facebookUrl1: `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.strayhero.com%2Fprofile%2Fview%2F`,
+      facebookUrl2: `&layout=button_count&size=small&appId=1985973471691447&width=84&height=28`
     }
   },
   mounted() {
@@ -261,6 +255,23 @@ export default {
     AnimalProfileForm
   },
   methods: {
+    nativeShare(event) {
+      if (navigator.share) {
+        event.stopPropagation()
+        // Web Share API is supported
+        navigator
+          .share({
+            title: 'WebShare API Demo',
+            url: this.facebookUrl1 + this.$route.params.id + this.facebookUrl2
+          })
+          .then(() => {
+            console.log('Thanks for sharing!')
+          })
+          .catch(console.error)
+      } else {
+        // Fallback
+      }
+    },
     getLocation() {
       if (!this.long) return
       var url =
@@ -295,11 +306,15 @@ export default {
       console.log(this.$vuetify.breakpoint.name)
       //xs :1
       //sm: 2
-      var spv = 2
+      var smallscreen =
+        this.$vuetify.breakpoint.name == 'sm' ||
+        this.$vuetify.breakpoint.name == 'xs'
+
+      var spv = smallscreen ? 1 : 2
 
       mySwiper = new Swiper('.swiper-container', {
         // effect
-        effect: 'fade',
+        effect: smallscreen ? 'fade' : '',
         // grab cursor
         grabCursor: true,
         // zoom into image
