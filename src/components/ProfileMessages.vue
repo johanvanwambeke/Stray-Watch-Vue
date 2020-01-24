@@ -71,7 +71,6 @@ export default {
   mounted() {
     this.$hubConnected.then(() => {
       this.$hubConnection.on('ReceiveMessage', payload => {
-        console.log(payload)
         this.messages.push({
           remark: payload.message,
           userName: payload.user
@@ -83,7 +82,6 @@ export default {
         'Johan Van Wambeke'
       )
     })
-    console.log(this.$auth.user)
   },
   methods: {
     createRemark() {

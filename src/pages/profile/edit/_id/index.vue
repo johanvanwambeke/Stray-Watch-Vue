@@ -38,11 +38,11 @@
 
     <!-- location map -->
     <v-flex xs12 md6 pa-2>
-      <!-- <MapBox /> -->
+      <MapBox />
     </v-flex>
     <!-- animal profile form -->
     <v-flex xs12 pa-2>
-      <AnimalProfileForm :editable="true" />
+      <ProfileForm :editable="true" />
     </v-flex>
     <!-- bottom buttons -->
     <v-flex xs12 pl-2>
@@ -81,12 +81,12 @@
 }
 </style>
 <script>
-import { DokaModal, toURL } from '~/vue-doka/'
 import { mapState } from 'vuex'
+import { DokaModal, toURL } from '~/vue-doka/'
 import ProfileMessages from '~/components/ProfileMessages.vue'
 // import ImageSlider from '~/components/ImageSlider.vue'
 import MapBox from '~/components/MapBox.vue'
-import AnimalProfileForm from '~/components/AnimalProfileForm.vue'
+import ProfileForm from '~/components/ProfileForm.vue'
 import Swiper from 'swiper'
 var mySwiper = null
 export default {
@@ -121,6 +121,9 @@ export default {
     this.$store
       .dispatch('profiles/getProfile', this.$route.params.id)
       .then(res => {
+        //We willen slechts 1 'get profile'
+        //Deze moet hier worden opgeroepen en zo alles in de store goed zetten
+
         var data = res
         console.log(data)
         data.url.forEach(element => {
@@ -137,7 +140,7 @@ export default {
   components: {
     ProfileMessages,
     MapBox,
-    AnimalProfileForm,
+    ProfileForm,
     DokaModal
   },
   methods: {
@@ -168,7 +171,7 @@ export default {
       console.log(this.imagelst)
       console.log(number)
       var obj = {
-        AnimalProfileID: parseInt(this.$route.params.id),
+        ProfileID: parseInt(this.$route.params.id),
         imgString: this.imagelst[number]
       }
       console.log(obj)
@@ -183,7 +186,7 @@ export default {
     },
     setMain() {
       var obj = {
-        AnimalProfileID: parseInt(this.$route.params.id),
+        ProfileID: parseInt(this.$route.params.id),
         imgString: this.imagelst[mySwiper.activeIndex]
       }
       this.$store.dispatch('images/setMain', obj)
@@ -201,7 +204,7 @@ export default {
       if (this.editingSlide != null) {
         mySwiper.removeSlide(this.editingSlide)
         console.log(this.imagelst)
-        // this.$store.dispatch('images/delete',{animalprofileid: this.$route.params.id, imageid:})
+        // this.$store.dispatch('images/delete',{profileid: this.$route.params.id, imageid:})
       }
 
       this.toBase64(output.file).then(res => {
@@ -214,7 +217,7 @@ export default {
           .dispatch('images/uploadImage', {
             src: res,
             image: output.file,
-            AnimalProfileID: this.$route.params.id
+            ProfileID: this.$route.params.id
           })
           .then(res => {
             //replace
@@ -282,25 +285,12 @@ export default {
       var imagesb64arr = this.$store.state.images.images.map(
         a => a.imgForUpload
       )
-
+      console.log(this.$store.getters['profiles/profileId'])
       var profile = {
-        animal: this.$store.getters['profiles/animal'],
-        age: this.$store.getters['profiles/age'],
-        needs: this.$store.getters['profiles/needs'],
-        medical: this.$store.getters['profiles/medical'],
-        urgency: this.$store.getters['profiles/urgency'],
-        behavior: this.$store.getters['profiles/behavior'],
+        species: this.$store.getters['profiles/species'],
         info: this.$store.getters['profiles/info'],
-
         chip: this.$store.getters['profiles/chip'],
-        color: this.$store.getters['profiles/color'],
-        captureStatus: this.$store.getters['profiles/captureStatus'],
-        eartip: this.$store.getters['profiles/eartip'],
-        vaccinated: this.$store.getters['profiles/vaccinated'],
-        sterile: this.$store.getters['profiles/sterile'],
-        healthCheck: this.$store.getters['profiles/healthCheck'],
-
-        animalProfileId: this.$store.getters['profiles/profileId'],
+        profileId: this.$store.getters['profiles/profileId'],
         longLat: '[' + mylonlat[0] + ', ' + mylonlat[1] + ']',
         images64: imagesb64arr
       }

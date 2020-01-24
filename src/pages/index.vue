@@ -10,7 +10,7 @@
           solo
           hide-details
           v-model="animalFilter"
-          :items="animalLst"
+          :items="speciesList"
           label="Animal"
         ></v-select>
       </v-flex>
@@ -26,17 +26,19 @@
           label="Purpose"
         ></v-select>
       </v-flex>
-      <v-flex xs4 pa-2>
-        <v-switch
-          dense
-          inset
-          hide-details
-          color="black"
-          v-model="myProfiles"
-          label="I created"
-          style="margin-top:5px!important"
-        ></v-switch>
-      </v-flex>
+      <client-only>
+        <v-flex v-if="$auth.loggedIn" xs4 pa-2>
+          <v-switch
+            dense
+            inset
+            hide-details
+            color="black"
+            v-model="myProfiles"
+            label="I created"
+            style="margin-top:5px!important"
+          ></v-switch>
+        </v-flex>
+      </client-only>
     </v-layout>
     <!-- map -->
     <v-flex xs12 pa-2>
@@ -65,7 +67,7 @@
         v-for="(profile, i) in profiles"
         :key="i"
         class="profileCard"
-        @click="openProfile(profile.animalProfileId)"
+        @click="openProfile(profile.profileId)"
         style="cursor:pointer"
       >
         <v-btn v-if="$auth.loggedIn" @click="follow($event,profile)" text icon class="favoriteIcon">
@@ -174,6 +176,7 @@
 }
 </style>
 <script>
+import { mapState } from 'vuex'
 var map = null
 var marker = null
 var currentMarkers = []
@@ -185,17 +188,7 @@ export default {
       myProfiles: false,
       animalFilter: '',
       needsFilter: '',
-      animalLst: ['cat', 'dog'],
-      needsLst: [
-        'capture',
-        'fosterhome',
-        'funding',
-        'adoption',
-        'finding new owner',
-        'medical',
-        'feeding',
-        'driver'
-      ],
+      needsLst: [],
       location: {},
       loadingProfiles: true,
       loadingMap: true
@@ -225,6 +218,11 @@ export default {
       this.search()
     }
   },
+  computed: {
+    ...mapState({
+      speciesList: state => state.profiles.speciesList
+    })
+  },
   mounted() {
     navigator.geolocation.getCurrentPosition(success => {
       this.location.long = success.coords.longitude
@@ -237,7 +235,7 @@ export default {
     search() {
       this.loadingProfiles = true
       var payload = {
-        animal: this.animalFilter,
+        species: this.animalFilter,
         needs: this.needsFilter,
         deviceLong: this.location.long,
         deviceLat: this.location.lat,
@@ -326,16 +324,16 @@ export default {
         var popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
           '<div class="popup">' +
             '<h2>' +
-            profile.animal +
+            profile.species +
             '</h2>' +
             '<a href="profile/view/' +
-            profile.animalProfileId +
+            profile.profileId +
             '">profiel</a>' +
             '</div>'
         )
 
         var marker = new mapboxgl.Marker({
-          color: profile.animal == 'cat' ? '#660000' : '#66A39E'
+          color: profile.species == 'Cat' ? '#660000' : '#66A39E'
         })
           .setLngLat([profile.long, profile.lat])
           .setPopup(popup)
@@ -352,7 +350,7 @@ export default {
 
       this.$store
         .dispatch('user/follow', {
-          profileID: profile.animalProfileId,
+          profileId: profile.profileId,
           userID: this.$auth.user.userID,
           follow: profile.follow
         })

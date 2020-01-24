@@ -20,12 +20,6 @@ export const mutations = {
   myimage.src = payload.imgForUpload
   state.images.splice(payload.nr, 1, myimage)
  },
- //  setMainImage(state, payload) {
- //   state.images.forEach(function(entry) {
- //    entry.main = false
- //   })
- //   state.images[payload].main = true
- //  },
  setUrl(state, payload) {
   var image = state.images.filter(x => x.guid == payload.guid)[0]
   if (image == null) return
@@ -95,7 +89,7 @@ export const actions = {
    var obj = {
     imgString: payload.src,
     smth: 'tekst',
-    AnimalProfileID: parseInt(payload.AnimalProfileID)
+    ProfileID: parseInt(payload.ProfileID)
    }
    this.$axios
     .post('api/Image/savefile', JSON.stringify(obj), {

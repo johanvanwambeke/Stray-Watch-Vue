@@ -39,7 +39,7 @@
     </div>
     <div v-if="editable">
       <v-flex>
-        <v-select clearable dense flat solo v-model="animal" :items="animalLst" label="Animal"></v-select>
+        <v-select clearable dense flat solo v-model="species" :items="speciesList" label="Species"></v-select>
       </v-flex>
       <v-flex>
         <v-select clearable dense flat solo v-model="age" :items="ageLst" label="age"></v-select>
@@ -181,7 +181,6 @@ export default {
     return {
       healthcheckBit: false,
       email: 'default@ce.com',
-      animalLst: ['cat', 'dog'],
       ageLst: ['< 1 year', 'junior', 'adult', 'senior', 'unsure'],
       needsLst: [
         'capture',
@@ -231,6 +230,9 @@ export default {
   },
   methods: {},
   computed: {
+    ...mapState({
+      speciesList: state => state.profiles.speciesList
+    }),
     healthCheck: {
       get() {
         console.log(
@@ -315,12 +317,12 @@ export default {
         this.$store.commit('profiles/chip', value)
       }
     },
-    animal: {
+    species: {
       get() {
-        return this.$store.state.profiles.animal
+        return this.$store.state.profiles.species
       },
       set(value) {
-        this.$store.commit('profiles/animal', value)
+        this.$store.commit('profiles/species', value)
       }
     },
     age: {

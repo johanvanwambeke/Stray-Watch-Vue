@@ -415,7 +415,7 @@ export default {
    this.$store.dispatch('images/uploadImage', {
     src: image.imgForUpload,
     image: image,
-    AnimalProfileID: this.$route.params.id
+    ProfileID: this.$route.params.id
    })
   }
  }

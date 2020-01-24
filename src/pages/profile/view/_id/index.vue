@@ -28,20 +28,18 @@
       <v-layout cols wrap style="position:relative">
         <v-flex xs12>
           <p style="font-size:16px">{{ sentense }}</p>
-          <!-- <p style="font-size:13px"></p> -->
-
           <a :href="openMaps" style="font-size:13px;color:black">{{placename}}</a>
         </v-flex>
         <div class="actionsMenu">
           <v-btn @click="editProfile" text icon>
             <v-icon color="gray">edit</v-icon>
           </v-btn>
-          <v-btn @click="nativeShare">
-            <v-icon>share</v-icon>
+          <v-btn v-if="mobileShare" text icon @click="nativeShare">
+            <v-icon color="#3b5999">share</v-icon>
           </v-btn>
-          <v-menu offset-y>
+          <v-menu v-if="!mobileShare" offset-y>
             <template v-slot:activator="{ on }">
-              <v-btn text icon v-on="on" @click="nativeShare">
+              <v-btn text icon v-on="on">
                 <v-icon color="#3b5999">share</v-icon>
               </v-btn>
             </template>
@@ -71,7 +69,7 @@
 
     <!-- form -->
     <v-flex xs12 md6 pa-2>
-      <AnimalProfileForm :editable="false" />
+      <ProfileForm :editable="false" />
       <!-- map -->
       <div class="imgcontainer">
         <img class="locationImg" alt="Animal location" :src="mapUrl" />
@@ -190,7 +188,7 @@
 import Swiper from 'swiper'
 import { mapState } from 'vuex'
 import ProfileMessages from '~/components/ProfileMessages.vue'
-import AnimalProfileForm from '~/components/AnimalProfileForm.vue'
+import ProfileForm from '~/components/ProfileForm.vue'
 
 var mySwiper = null
 export default {
@@ -248,11 +246,14 @@ export default {
       imagelst: state => state.images.images,
       long: state => state.profiles.long,
       lat: state => state.profiles.lat
-    })
+    }),
+    mobileShare() {
+      return navigator.share
+    }
   },
   components: {
     ProfileMessages,
-    AnimalProfileForm
+    ProfileForm
   },
   methods: {
     nativeShare(event) {
@@ -262,7 +263,7 @@ export default {
         navigator
           .share({
             title: 'WebShare API Demo',
-            url: this.facebookUrl1 + this.$route.params.id + this.facebookUrl2
+            url: 'https://app.strayhero.com' + this.$route.fullPath
           })
           .then(() => {
             console.log('Thanks for sharing!')

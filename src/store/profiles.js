@@ -1,61 +1,23 @@
 export const state = () => ({
  animal: '',
- age: '',
- needs: '',
- medical: '',
- urgency: '',
- behavior: '',
+ birthday: '',
  info: '',
  longLat: [10, 10],
  profileId: '',
  chip: '',
- color: '',
- captureStatus: '',
- eartip: null,
- vaccinated: null,
- sterile: null,
- healthCheck: null
+ profile: null,
+ speciesList: ['Cat', 'Dog', 'Bird', 'Livestock', 'Rodent', 'Other']
 })
 
 export const getters = {
- healthCheck(state) {
-  return state.healthCheck
- },
- eartip(state) {
-  return state.eartip
- },
- vaccinated(state) {
-  return state.vaccinated
- },
- sterile(state) {
-  return state.sterile
- },
  chip(state) {
   return state.chip
  },
- color(state) {
-  return state.color
+ species(state) {
+  return state.species
  },
- captureStatus(state) {
-  return state.captureStatus
- },
- animal(state) {
-  return state.animal
- },
- age(state) {
-  return state.age
- },
- needs(state) {
-  return state.needs
- },
- medical(state) {
-  return state.medical
- },
- urgency(state) {
-  return state.urgency
- },
- behavior(state) {
-  return state.behavior
+ birthday(state) {
+  return state.birthday
  },
  info(state) {
   return state.info
@@ -69,45 +31,15 @@ export const getters = {
 }
 
 export const mutations = {
- healthCheck(state, payload) {
-  state.healthCheck = payload
- },
- eartip(state, payload) {
-  state.eartip = payload
- },
- vaccinated(state, payload) {
-  state.vaccinated = payload
- },
- sterile(state, payload) {
-  state.sterile = payload
- },
  chip(state, payload) {
   state.chip = payload
  },
- color(state, payload) {
-  state.color = payload
- },
- captureStatus(state, payload) {
-  state.captureStatus = payload
- },
- animal(state, payload) {
-  state.animal = payload
+ species(state, payload) {
+  state.species = payload
   console.log('animal updated ' + payload)
  },
- age(state, payload) {
-  state.age = payload
- },
- needs(state, payload) {
-  state.needs = payload
- },
- medical(state, payload) {
-  state.medical = payload
- },
- urgency(state, payload) {
-  state.urgency = payload
- },
- behavior(state, payload) {
-  state.behavior = payload
+ birthday(state, payload) {
+  state.birthday = payload
  },
  setInfo(state, payload) {
   state.info = payload
@@ -121,56 +53,29 @@ export const mutations = {
   state.lat = payload[1]
  },
  setProfile(state, payload) {
-  state.animal = payload.animal
-  state.age = payload.age
-  state.needs = payload.needs
-  state.medical = payload.medical
-  state.urgency = payload.urgency
-  state.behavior = payload.behavior
+  state.species = payload.species
   state.info = payload.info
-  state.profileId = payload.animalProfileId
-
+  state.profileId = payload.profileId
   state.chip = payload.chip
-  state.color = payload.color
-  state.captureStatus = payload.captureStatus
-  state.eartip = payload.eartip
-  state.vaccinated = payload.vaccinated
-  state.sterile = payload.sterile
-  state.healthCheck = payload.healthCheck
-
-  console.log(state.longlat)
  }
 }
 
 export const actions = {
- clear({ commit }) {
+ async clear({ commit }) {
   commit('setProfile', {
-   animal: '',
-   age: '',
-   needs: '',
-   medical: '',
-   urgency: '',
-   behavior: '',
    profileId: '',
    info: '',
-
-   chip: '',
-   color: '',
-   captureStatus: '',
-   eartip: null,
-   vaccinated: null,
-   sterile: null
+   chip: ''
   })
   commit('setlongLat', [10, 10])
   commit('images/clear', null, {
    root: true
   })
  },
-
  async search({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
    this.$axios
-    .post('api/AnimalProfile/search', JSON.stringify(payload), {
+    .post('api/Profile/search', JSON.stringify(payload), {
      headers: {
       // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
@@ -188,8 +93,8 @@ export const actions = {
     })
   })
  },
- getMetaInfo({ commit }, payload) {
-  return this.$axios.get('api/AnimalProfile/getMeta/' + payload).then(res => {
+ async getMetaInfo({ commit }, payload) {
+  return this.$axios.get('api/Profile/getMeta/' + payload).then(res => {
    return res.data
   })
  },
@@ -200,7 +105,7 @@ export const actions = {
     rejectUnauthorized: false
    })
    this.$axios
-    .get('api/AnimalProfile/get/' + payload, {
+    .get('api/Profile/get/' + payload, {
      headers: {
       // Authorization: 'Bearer ' + rootState.user.token
      },
@@ -223,7 +128,7 @@ export const actions = {
  async create({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
    var profile = {
-    animal: '',
+    species: '',
     age: '',
     needs: '',
     medical: '',
@@ -234,7 +139,7 @@ export const actions = {
     images64: []
    }
    this.$axios
-    .post('api/animalprofile/create', JSON.stringify(profile), {
+    .post('api/profile/create', JSON.stringify(profile), {
      headers: {
       // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
@@ -254,23 +159,6 @@ export const actions = {
     })
   })
  },
- async saveProfile({ commit, rootState }, payload) {
-  if (payload.longLat != null) {
-   var array = JSON.parse(payload.longLat)
-   payload.long = array[0]
-   payload.lat = array[1]
-  }
-  return new Promise((resolve, reject) => {
-   this.$axios
-    .post('api/animalprofile/create', JSON.stringify(payload), {
-     headers: {
-      // Authorization: 'Bearer ' + rootState.user.token,
-      'Content-Type': 'application/json'
-     }
-    })
-    .then(result => resolve(result.data.id))
-  })
- },
  async updateProfile({ commit, rootState }, payload) {
   if (payload.longLat != null) {
    var array = JSON.parse(payload.longLat)
@@ -279,9 +167,8 @@ export const actions = {
   }
   return new Promise((resolve, reject) => {
    this.$axios
-    .post('api/animalprofile/Update', JSON.stringify(payload), {
+    .post('api/profile/Update', JSON.stringify(payload), {
      headers: {
-      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })
