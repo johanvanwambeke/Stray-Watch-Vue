@@ -12,6 +12,11 @@ export default function({ app, axios }) {
   //  //  console.log(jwtToken)
   // }
 
+  // if (!app.context.$auth.loggedIn) {
+  //  resolve()
+  //  return
+  // }
+
   var connection = new HubConnectionBuilder()
    .withUrl(
     `${app.$axios.defaults.baseURL}chathub`

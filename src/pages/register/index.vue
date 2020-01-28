@@ -16,6 +16,8 @@
         <v-text-field type="password" v-model="password" label="password" required></v-text-field>
         <v-btn @click="register">Register</v-btn>
       </v-form>
+
+      <v-btn @click="registerWithGoogle">Register With Google</v-btn>
     </v-flex>
   </v-layout>
 </template>
@@ -43,6 +45,25 @@ export default {
         .catch(err => {
           alert(err)
         })
+    },
+    registerWithGoogle() {
+      this.$auth.loginWith('google').then(res => {
+        console.log(res)
+        // var obj = {
+        //   firstName: this.firstName,
+        //   lastName: this.lastName,
+        //   email: this.email,
+        //   password: this.password
+        // }
+        // this.$store
+        //   .dispatch('user/create', obj)
+        //   .then(res => {
+        //     alert(res)
+        //   })
+        //   .catch(err => {
+        //     alert(err)
+        //   })
+      })
     },
     onsignal() {
       var output = document.getElementById('out')

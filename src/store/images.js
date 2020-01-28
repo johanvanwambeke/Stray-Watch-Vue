@@ -28,6 +28,7 @@ export const mutations = {
   state.images[index].uploaded = true
  },
  setImages(state, payload) {
+  state.images = []
   payload.forEach((element, i) => {
    if (state.images[i]) state.images[i].src = element
    else
@@ -35,16 +36,10 @@ export const mutations = {
      src: element
     })
   })
- },
- clear(state, payload) {
-  state.images = []
  }
 }
 
 export const actions = {
- clear({ commit }) {
-  commit('clear')
- },
  async add({ commit, state }, payload) {
   commit('addImage', payload)
  },
@@ -55,7 +50,6 @@ export const actions = {
   this.$axios
    .post('api/Image/deletefile', JSON.stringify(payload), {
     headers: {
-     //  Authorization: 'Bearer ' + rootState.user.token,
      'Content-Type': 'application/json'
     }
    })
@@ -94,7 +88,6 @@ export const actions = {
    this.$axios
     .post('api/Image/savefile', JSON.stringify(obj), {
      headers: {
-      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })

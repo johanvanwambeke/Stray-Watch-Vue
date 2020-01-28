@@ -1,89 +1,72 @@
 export const state = () => ({
- animal: '',
- birthday: '',
- info: '',
- longLat: [10, 10],
- profileId: '',
- chip: '',
- profile: null,
- speciesList: ['Cat', 'Dog', 'Bird', 'Livestock', 'Rodent', 'Other']
+ profile: {
+  species: null,
+  info: null,
+  chip: null,
+  long: 10,
+  lat: 10,
+  follow: 0
+ },
+ speciesList: ['Cat', 'Dog', 'Bird', 'Livestock', 'Rodent', 'Other'],
+ profiles: []
 })
 
-export const getters = {
- chip(state) {
-  return state.chip
- },
- species(state) {
-  return state.species
- },
- birthday(state) {
-  return state.birthday
- },
- info(state) {
-  return state.info
- },
- longLat(state) {
-  return state.longLat
- },
- profileId(state) {
-  return state.profileId
- }
-}
+export const getters = {}
 
 export const mutations = {
- chip(state, payload) {
-  state.chip = payload
- },
- species(state, payload) {
-  state.species = payload
-  console.log('animal updated ' + payload)
- },
- birthday(state, payload) {
-  state.birthday = payload
- },
- setInfo(state, payload) {
-  state.info = payload
- },
- profileId(state, payload) {
-  state.profileId = payload
- },
- setlongLat(state, payload) {
-  state.longLat = payload
-  state.long = payload[0]
-  state.lat = payload[1]
+ setProfiles(state, payload) {
+  state.profiles = payload
  },
  setProfile(state, payload) {
-  state.species = payload.species
-  state.info = payload.info
-  state.profileId = payload.profileId
-  state.chip = payload.chip
+  state.profile = payload
+ },
+ setSpecies(state, payload) {
+  state.profile.species = payload === undefined ? null : payload
+ },
+ setInfo(state, payload) {
+  state.profile.info = payload
+ },
+ setChip(state, payload) {
+  state.profile.chip = payload
+ },
+ setName(state, payload) {
+  state.profile.name = payload
+ },
+ setBirthday(state, payload) {
+  state.profile.birthday = payload
+ },
+ setlongLat(state, payload) {
+  state.profile.long = payload[0]
+  state.profile.lat = payload[1]
+ },
+ setFollow(state, payload) {
+  state.profile.follow = payload
+ },
+ setFollowInList(state, payload) {
+  state.profiles.filter(x => x.profileId === payload.profileId)[0].follow =
+   payload.follow
  }
 }
 
 export const actions = {
- async clear({ commit }) {
-  commit('setProfile', {
-   profileId: '',
-   info: '',
-   chip: ''
-  })
-  commit('setlongLat', [10, 10])
-  commit('images/clear', null, {
-   root: true
-  })
- },
- async search({ commit, rootState }, payload) {
+ async search({ state, commit }, payload) {
   return new Promise((resolve, reject) => {
+   //  console.log(state.profiles)
+   //  if (state.profiles.length > 0) {
+   //   console.log('Do not get new profiles')
+   //   resolve(null)
+   //   return
+   //  }
+
    this.$axios
     .post('api/Profile/search', JSON.stringify(payload), {
      headers: {
-      // Authorization: 'Bearer ' + rootState.user.token,
       'Content-Type': 'application/json'
      }
     })
-
-    .then(response => {
-     resolve(response.data)
+    .then(res => {
+     commit('setProfiles', res.data)
+     resolve(res.data)
     })
     .catch(error => {
      commit('utils/snackmsg', error, {
@@ -98,23 +81,34 @@ export const actions = {
    return res.data
   })
  },
- async getProfile({ commit, rootState, https }, payload) {
+ async getProfile({ commit, state, rootstate }, payload) {
   return new Promise((resolve, reject) => {
    const https = require('https')
    const agent = new https.Agent({
     rejectUnauthorized: false
    })
+
+   if (parseInt(payload) === parseInt(state.profile.profileId)) {
+    console.log('Do not get new profile')
+    //set the profile to the profile from the list
+    //same with images
+    resolve(null)
+    return
+   }
+   commit('images/setImages', [], {
+    root: true
+   })
+
    this.$axios
     .get('api/Profile/get/' + payload, {
-     headers: {
-      // Authorization: 'Bearer ' + rootState.user.token
-     },
+     headers: {},
      httpsAgent: agent
     })
     .then(res => {
-     resolve(res.data)
-     commit('setlongLat', [res.data.long, res.data.lat])
+     console.log('incomming profile', res.data)
      commit('setProfile', res.data)
+     resolve(res.data)
+     //  commit('setlongLat', [res.data.long, res.data.lat])
      commit('images/setImages', res.data.url, {
       root: true
      })
@@ -125,18 +119,12 @@ export const actions = {
     })
   })
  },
- async create({ commit, rootState }, payload) {
+ async create({ commit }, payload) {
   return new Promise((resolve, reject) => {
    var profile = {
     species: '',
-    age: '',
-    needs: '',
-    medical: '',
-    urgency: '',
-    behavior: '',
     info: '',
-    longLat: '',
-    images64: []
+    longLat: ''
    }
    this.$axios
     .post('api/profile/create', JSON.stringify(profile), {
@@ -159,15 +147,10 @@ export const actions = {
     })
   })
  },
- async updateProfile({ commit, rootState }, payload) {
-  if (payload.longLat != null) {
-   var array = JSON.parse(payload.longLat)
-   payload.long = array[0]
-   payload.lat = array[1]
-  }
+ async updateProfile({ state }) {
   return new Promise((resolve, reject) => {
    this.$axios
-    .post('api/profile/Update', JSON.stringify(payload), {
+    .post('api/profile/Update', JSON.stringify(state.profile), {
      headers: {
       'Content-Type': 'application/json'
      }

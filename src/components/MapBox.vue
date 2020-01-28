@@ -32,20 +32,21 @@ var map = null
 var marker = null
 export default {
   watch: {
-    longLat: function(val) {
-      map.flyTo({ center: val })
-      marker.setLngLat(val)
+    long: function(val) {
+      var longlat = [this.long, this.lat]
+      map.flyTo({ center: longlat })
+      marker.setLngLat(longlat)
     }
   },
   data() {
     return {
-      mapLongLat: [50, 50],
       dialog: false
     }
   },
   computed: {
     ...mapState({
-      longLat: state => state.profiles.longLat
+      long: state => state.profiles.profile.long,
+      lat: state => state.profiles.profile.lat
     })
   },
   mounted() {

@@ -176,14 +176,14 @@
 }
 </style>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 var map = null
 var marker = null
 var currentMarkers = []
 export default {
   data() {
     return {
-      profiles: [],
+      // profiles: [],
       hintOnTwoFingers: false,
       myProfiles: false,
       animalFilter: '',
@@ -220,10 +220,12 @@ export default {
   },
   computed: {
     ...mapState({
-      speciesList: state => state.profiles.speciesList
+      speciesList: state => state.profiles.speciesList,
+      profiles: state => state.profiles.profiles
     })
   },
-  mounted() {
+  async mounted() {
+    console.log(this.$auth.user)
     navigator.geolocation.getCurrentPosition(success => {
       this.location.long = success.coords.longitude
       this.location.lat = success.coords.latitude
@@ -232,6 +234,9 @@ export default {
     })
   },
   methods: {
+    ...mapMutations({
+      setFollowInList: 'profiles/setFollowInList'
+    }),
     search() {
       this.loadingProfiles = true
       var payload = {
@@ -245,8 +250,8 @@ export default {
       this.$store
         .dispatch('profiles/search', payload)
         .then(res => {
-          console.log(res)
-          this.profiles = res
+          // console.log(res)
+          // this.profiles = res
           this.placeMapMarkers()
           this.loadingProfiles = false
         })
@@ -355,7 +360,10 @@ export default {
           follow: profile.follow
         })
         .then(res => {
-          profile.follow = !profile.follow
+          this.setFollowInList({
+            profileId: profile.profileId,
+            follow: !profile.follow
+          })
         })
     }
   }

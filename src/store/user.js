@@ -117,5 +117,47 @@ export const actions = {
  },
  setToken({ commit }, payload) {
   commit('token', payload)
+ },
+ async loginAsGoogle({ commit }, payload) {
+  await this.$axios
+   .post(
+    'api/users/googleauthenticate',
+    JSON.stringify({
+     secret: payload
+    }),
+    {
+     headers: {
+      'Content-Type': 'application/json'
+     }
+    }
+   )
+   .then(async res => {
+    console.log(res.data)
+    this.$auth.setToken('local', 'Bearer ' + res.data.token)
+    setTimeout(async () => {
+     this.$auth.setStrategy('local')
+     setTimeout(async () => {
+      this.$axios.get('api/users/get').then(resp => {
+       this.$auth.setUser(resp.data)
+      })
+     })
+    })
+
+    //  this.$auth.setToken('local', 'Bearer ' + res.data.token)
+    //  this.$axios.setHeader('Authorization', 'Bearer ' + res.data.token)
+    //  this.$auth.ctx.app.$axios.setHeader(
+    //   'Authorization',
+    //   'Bearer ' + res.data.token
+    //  )
+    //  this.$axios.get('api/users/get').then(resp => {
+    //   this.$auth.setUser(resp.data)
+    //   resolve(res.data)
+    //  })
+   })
+   .catch(error => {
+    commit('utils/snackmsg', error, {
+     root: true
+    })
+   })
  }
 }

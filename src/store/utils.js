@@ -14,4 +14,8 @@ export const mutations = {
  }
 }
 
-export const actions = {}
+export const actions = {
+ showMessage({ commit }, payload) {
+  commit('snackmsg', payload)
+ }
+}

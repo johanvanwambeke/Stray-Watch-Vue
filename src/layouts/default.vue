@@ -2,10 +2,8 @@
   <v-app light>
     <v-container class="boss-container">
       <!-- snackbar -->
-      <v-snackbar v-model="snackbar" bottom color="black">
-        <center>
-          <p style="color:red">{{ snackmsg }}</p>
-        </center>
+      <v-snackbar v-model="snackbar" class="text-center" bottom color="black">
+        <p style="color:red">{{ snackmsg }}</p>
       </v-snackbar>
       <!-- navigatie -->
       <!-- <v-layout wrap rows class>
@@ -17,63 +15,53 @@
         </div>
       </v-layout>-->
       <v-layout cols wrap mb-2 pa-2>
-        <v-flex xs3>
-          <v-btn small text to="/">Animals</v-btn>
-        </v-flex>
-        <v-flex xs3>
-          <v-btn small text @click="create">Create</v-btn>
-        </v-flex>
-        <!-- <v-flex xs3>
-          <v-btn small text to="/donate">Donate</v-btn>
-        </v-flex>-->
+        <v-btn small text to="/">Animals</v-btn>
+        <v-btn small text @click="create">Create</v-btn>
+        <v-spacer></v-spacer>
         <client-only>
           <!-- alert -->
-          <v-flex xs3 v-if="alerts.length > 0">
-            <v-menu offset-y>
-              <template v-slot:activator="{ on }">
-                <v-btn small text v-on="on">
-                  alerts {{ alerts.length }}
-                  <v-icon>expand_more</v-icon>
-                </v-btn>
-              </template>
+          <v-menu offset-y v-if="alerts.length > 0">
+            <template v-slot:activator="{ on }">
+              <v-btn small text v-on="on">
+                alerts {{ alerts.length }}
+                <v-icon>expand_more</v-icon>
+              </v-btn>
+            </template>
 
-              <v-flex style="background-color:white">
-                <v-flex v-for="(alert, i) in alerts" :key="i" xs12>
-                  <v-btn
-                    small
-                    text
-                    @click="gotoProfile(alert.profileID)"
-                  >#{{ alert.profileID }} has new messages</v-btn>
-                </v-flex>
+            <v-flex style="background-color:white">
+              <v-flex v-for="(alert, i) in alerts" :key="i" xs12>
+                <v-btn
+                  small
+                  text
+                  @click="gotoProfile(alert.profileID)"
+                >#{{ alert.profileID }} has new messages</v-btn>
               </v-flex>
-            </v-menu>
-          </v-flex>
+            </v-flex>
+          </v-menu>
           <!-- user -->
-          <v-flex xs3 v-bind:class="{ 'offset-sm3': alerts.length === 0 }">
-            <v-menu offset-y>
-              <template v-slot:activator="{ on }">
-                <v-btn small text v-on="on">
-                  {{ $auth.loggedIn ? username : 'Log in' }}
-                  <v-icon>expand_more</v-icon>
-                </v-btn>
-              </template>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn small text v-on="on">
+                {{ $auth.loggedIn ? username : 'Log in' }}
+                <v-icon>expand_more</v-icon>
+              </v-btn>
+            </template>
 
-              <v-flex style="background-color:white">
-                <v-flex xs12 v-if="$auth.loggedIn">
-                  <v-btn small text to="/user">User</v-btn>
-                </v-flex>
-                <v-flex xs12 v-if="$auth.loggedIn">
-                  <v-btn small text @click="logout">Logout</v-btn>
-                </v-flex>
-                <v-flex xs12 v-if="!$auth.loggedIn">
-                  <v-btn small text to="/register">Register</v-btn>
-                </v-flex>
-                <v-flex xs12 v-if="!$auth.loggedIn">
-                  <v-btn small text to="/login">Log in</v-btn>
-                </v-flex>
+            <v-flex style="background-color:white">
+              <v-flex xs12 v-if="$auth.loggedIn">
+                <v-btn small text to="/user">User</v-btn>
               </v-flex>
-            </v-menu>
-          </v-flex>
+              <v-flex xs12 v-if="$auth.loggedIn">
+                <v-btn small text @click="logout">Logout</v-btn>
+              </v-flex>
+              <v-flex xs12 v-if="!$auth.loggedIn">
+                <v-btn small text to="/register">Register</v-btn>
+              </v-flex>
+              <v-flex xs12 v-if="!$auth.loggedIn">
+                <v-btn small text to="/login">Log in</v-btn>
+              </v-flex>
+            </v-flex>
+          </v-menu>
         </client-only>
       </v-layout>
       <v-divider style="margin-left:8px;margin-right:8px;padding-bottom:8px;"></v-divider>
@@ -155,15 +143,12 @@ export default {
       this.$router.push('/profile/view/' + profileID)
     },
     create() {
-      //create a new profile
-      this.$store.dispatch('profiles/clear').then(x => {
-        this.$store
-          .dispatch('profiles/create')
-          .then(x => {
-            this.$router.push('/profile/edit/' + x)
-          })
-          .catch(err => {})
-      })
+      this.$store
+        .dispatch('profiles/create')
+        .then(x => {
+          this.$router.push('/profile/edit/' + x)
+        })
+        .catch(err => {})
     }
   }
 }

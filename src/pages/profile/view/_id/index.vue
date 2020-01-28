@@ -59,7 +59,7 @@
           </v-menu>
           <client-only>
             <v-btn v-if="$auth.loggedIn" @click="follow" text icon>
-              <v-icon v-if="!userfollow" color="gray">favorite_border</v-icon>
+              <v-icon v-if="!profile.follow" color="gray">favorite_border</v-icon>
               <v-icon v-else color="pink">favorite</v-icon>
             </v-btn>
           </client-only>
@@ -110,6 +110,7 @@
 .swiper-container {
   position: relative;
   overflow: hidden;
+  max-height: 400px;
 }
 .swiper-pagination-bullet {
   background-color: white;
@@ -186,7 +187,7 @@
 </style>
 <script>
 import Swiper from 'swiper'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import ProfileMessages from '~/components/ProfileMessages.vue'
 import ProfileForm from '~/components/ProfileForm.vue'
 
@@ -206,10 +207,8 @@ export default {
     return {
       profileId: 10,
       thisIsMine: true,
-      urls: [],
       mapUrl: '',
       disposeComponent: false,
-      userfollow: false,
       placename: '',
       loadingSlider: true,
       facebookUrl1: `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.strayhero.com%2Fprofile%2Fview%2F`,
@@ -217,13 +216,10 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('images/clear')
     this.$store
       .dispatch('profiles/getProfile', this.$route.params.id)
       .then(res => {
         var data = res
-        this.userfollow = data.follow
-        this.urls = data.url
         this.initialiseSwiper()
         this.getMapUrl()
         this.getLocation()
@@ -244,11 +240,12 @@ export default {
   computed: {
     ...mapState({
       imagelst: state => state.images.images,
-      long: state => state.profiles.long,
-      lat: state => state.profiles.lat
+      long: state => state.profiles.profile.long,
+      lat: state => state.profiles.profile.lat,
+      profile: state => state.profiles.profile
     }),
     mobileShare() {
-      return navigator.share
+      return process.client && navigator.share
     }
   },
   components: {
@@ -256,6 +253,9 @@ export default {
     ProfileForm
   },
   methods: {
+    ...mapMutations({
+      setFollow: 'profiles/setFollow'
+    }),
     nativeShare(event) {
       if (navigator.share) {
         event.stopPropagation()
@@ -312,6 +312,7 @@ export default {
         this.$vuetify.breakpoint.name == 'xs'
 
       var spv = smallscreen ? 1 : 2
+      // var spv = !smallscreen && imagelst.length > 1 ? 2 : 1
 
       mySwiper = new Swiper('.swiper-container', {
         // effect
@@ -347,17 +348,34 @@ export default {
       this.loadingSlider = false
     },
     editProfile() {
+      //If loged in
+      if (!this.$auth.loggedIn) {
+        this.$store.dispatch(
+          'utils/showMessage',
+          'You have to log in to edit profiles'
+        )
+        return
+      }
+      //only if the user owns this profile, he/she can alter it
+      if (this.$auth.user.userID != this.$store.state.profiles.profile.userID) {
+        this.$store.dispatch(
+          'utils/showMessage',
+          'For now, you can only edit profiles you created'
+        )
+        return
+      }
       this.$router.push('/profile/edit/' + this.$route.params.id)
     },
     follow() {
+      return
       this.$store
         .dispatch('user/follow', {
           profileID: parseInt(this.$route.params.id),
           userID: this.$auth.user.userID,
-          follow: this.userfollow
+          follow: this.follow
         })
         .then(res => {
-          this.userfollow = !this.userfollow
+          setFollow(!this.follow)
         })
     },
     openMaps() {

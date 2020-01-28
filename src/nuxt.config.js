@@ -1,5 +1,5 @@
 const pkg = require('./package.json')
-// const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+require('dotenv').config()
 
 // export default {
 module.exports = {
@@ -109,8 +109,13 @@ module.exports = {
    {
     src: '@/plugins/signalr',
     ssr: false
+   },
+   {
+    src: '@/plugins/socialtolocal',
+    ssr: false
    }
   ],
+
   strategies: {
    local: {
     endpoints: {
@@ -122,9 +127,21 @@ module.exports = {
      logout: false,
      user: { url: '/api/users/get', method: 'get', propertyName: false }
     }
-    // tokenRequired: true,
-    // tokenType: 'bearer'
+   },
+   google: {
+    client_id: process.env.GOOGLE_API
    }
+  },
+  redirect: {
+   login: {
+    url: 'api/users/authenticate',
+    method: 'post',
+    propertyName: 'token'
+   },
+   logout: false,
+   user: { url: '/api/users/get', method: 'get', propertyName: false },
+   callback: '/login',
+   home: '/'
   }
  },
 
@@ -146,7 +163,7 @@ module.exports = {
   ** Axios module configuration
   */
  axios: {
-  baseURL: 'https://localhost:44352/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
+  baseURL: 'https://stray-watch-api.azurewebsites.net/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
  },
 
  /*

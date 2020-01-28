@@ -1,24 +1,37 @@
 <template>
   <v-layout rows wrap>
     <!-- swiper -->
-    <v-flex v-if="loadingSlider" xs12 pa-2 style="position:relative">
-      <v-skeleton-loader class="skeletonoverlay" tile type="image,image,image,image"></v-skeleton-loader>
-    </v-flex>
-    <v-flex xs12 pa-2>
-      <v-flex xs12>
-        <!-- Slider main container -->
-        <div ref="swipy" class="swiper-container">
-          <!-- Additional required wrapper -->
-          <div class="swiper-wrapper">
-            <!-- Slides -->
-          </div>
-          <!-- If we need pagination -->
-          <div class="swiper-pagination"></div>
-          <!-- If we need navigation buttons -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
+    <v-flex xs12 md6>
+      <v-flex xs12 pa-2 pb-0 style="position:relative">
+        <div v-if="loadingSlider" class="skeletontop">
+          <v-skeleton-loader class="skeletonoverlay" tile type="image,image,image,image"></v-skeleton-loader>
         </div>
-        <!-- buttons -->
+        <div v-if="imagelst.length===0" @click="$refs.fileInput.click()" class="addImage"></div>
+        <v-flex xs12>
+          <!-- Slider main container -->
+          <div ref="swipy" class="swiper-container">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+              <!-- Slides -->
+            </div>
+            <!-- If we need pagination -->
+            <div class="swiper-pagination"></div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          </div>
+        </v-flex>
+        <input
+          style="display:none"
+          type="file"
+          ref="fileInput"
+          accept="image/*"
+          @change="addPictures"
+          multiple
+        />
+      </v-flex>
+      <!-- buttons -->
+      <v-flex class="buttonsCard" mt-0 xs12 ma-2 pa-2>
         <div class="buttonnav">
           <v-btn text @click="$refs.fileInput.click()">add</v-btn>
           <v-btn text @click="editSlide">edit</v-btn>
@@ -26,14 +39,6 @@
           <v-btn text @click="setMain">set main</v-btn>
         </div>
       </v-flex>
-      <input
-        style="display:none"
-        type="file"
-        ref="fileInput"
-        accept="image/*"
-        @change="addPictures"
-        multiple
-      />
     </v-flex>
 
     <!-- location map -->
@@ -63,17 +68,33 @@
   </v-layout>
 </template>
 <style scoped>
-.swiper-container {
+.addImage {
+  cursor: pointer;
+  background-color: greenyellow;
   width: 100%;
-  position: relative;
+  min-height: 400px;
+  max-height: 400px;
   overflow: hidden;
+}
+
+.skeletontop {
+  cursor: pointer;
+  width: 100%;
+  min-height: 400px;
+  max-height: 400px;
+  overflow: hidden;
+}
+.buttonsCard {
+  /* border: solid rgb(160, 160, 160); */
+  border: solid rgb(0, 0, 0, 0.12);
+  border-width: 0px 1px 1px 1px;
+  background-color: whitesmoke;
+  margin-top: -16px;
 }
 .skeletonoverlay {
   width: 100%;
   z-index: 10;
 }
-</style>
-<style scoped>
 .buttonnav {
   display: flex;
   align-items: center;
@@ -81,7 +102,7 @@
 }
 </style>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { DokaModal, toURL } from '~/vue-doka/'
 import ProfileMessages from '~/components/ProfileMessages.vue'
 // import ImageSlider from '~/components/ImageSlider.vue'
@@ -104,7 +125,6 @@ export default {
   data() {
     return {
       profileId: null,
-      imagelst: [],
       counter: 0,
       arraytemp: [],
       src: '',
@@ -116,8 +136,6 @@ export default {
   },
   mounted() {
     this.initialiseSwiper()
-    this.$store.dispatch('images/clear')
-    this.$store.dispatch('profiles/clear')
     this.$store
       .dispatch('profiles/getProfile', this.$route.params.id)
       .then(res => {
@@ -126,7 +144,7 @@ export default {
 
         var data = res
         console.log(data)
-        data.url.forEach(element => {
+        this.imagelst.forEach(element => {
           this.addSlide(element)
         })
         this.loadingSlider = false
@@ -134,7 +152,8 @@ export default {
   },
   computed: {
     ...mapState({
-      longLat: state => state.profiles.longLat
+      longLat: state => state.profiles.longLat,
+      imagelst: state => state.images.images
     })
   },
   components: {
@@ -144,6 +163,9 @@ export default {
     DokaModal
   },
   methods: {
+    ...mapMutations({
+      addImageToList: 'images/addImage'
+    }),
     editSlide() {
       console.log(this.imagelst[mySwiper.activeIndex])
       this.src = this.imagelst[mySwiper.activeIndex]
@@ -159,12 +181,11 @@ export default {
               <div
                 class="swiper-slide-image"
                 style="background-position: center;background-image: url(&quot;` +
-          src +
+          src.src +
           `&quot;); "></div>
             </div>
           </div>`
       ])
-      this.imagelst.push(src)
     },
     removeSlide(number) {
       if (number == null) number = mySwiper.activeIndex
@@ -260,7 +281,7 @@ export default {
           el: '.swiper-pagination',
           type: 'bullets'
         },
-        slidesPerView: spv,
+        slidesPerView: 1,
 
         // Navigation arrows
         navigation: {
@@ -269,38 +290,10 @@ export default {
         }
       })
     },
-    setLocation(payload) {
-      console.log(payload)
-      if (payload && payload.longitude)
-        this.$store.commit('profiles/setlongLat', [
-          payload.longitude,
-          payload.latitude
-        ])
-    },
     async updateProfile() {
-      //I will wrap the form data in 1 object and send it to the backend to save
-      //It returns the ID of the profile
-      //I navigate to the profile ID
-      var mylonlat = this.$store.getters['profiles/longLat']
-      var imagesb64arr = this.$store.state.images.images.map(
-        a => a.imgForUpload
-      )
-      console.log(this.$store.getters['profiles/profileId'])
-      var profile = {
-        species: this.$store.getters['profiles/species'],
-        info: this.$store.getters['profiles/info'],
-        chip: this.$store.getters['profiles/chip'],
-        profileId: this.$store.getters['profiles/profileId'],
-        longLat: '[' + mylonlat[0] + ', ' + mylonlat[1] + ']',
-        images64: imagesb64arr
-      }
-
-      console.log(profile)
-
       this.$store
-        .dispatch('profiles/updateProfile', profile)
+        .dispatch('profiles/updateProfile')
         .then(profileId => {
-          console.log(profileId)
           this.$router.push({ path: '/profile/view/' + this.$route.params.id })
         })
         .catch(error => {
@@ -399,6 +392,9 @@ export default {
 }
 .swiper-container {
   width: 100%;
+  max-height: 400px;
+  position: relative;
+  overflow: hidden;
 }
 .swiper-button-prev {
   color: rgba(255, 255, 255, 0.7);
