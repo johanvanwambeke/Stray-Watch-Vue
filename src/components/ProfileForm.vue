@@ -3,12 +3,15 @@
     <div v-if="!editable">
       <v-card elevation="0">
         <v-flex pa-4>
-          <h2 class="font-weight-light mb-4">{{ profile.species }}</h2>
+          <h3 class="font-weight-light mb-4">Species: {{ profile.species }}</h3>
           <v-layout cols wrap class="infoblock">
             <v-flex xs12>
               <!-- name -->
               <p v-if="profile.name && profile.name != ''" class="label">name</p>
               <p v-if="profile.name && profile.name != ''">{{ profile.name }}</p>
+              <!-- age -->
+              <p v-if="age && age != ''" class="label">age</p>
+              <p v-if="age && age != ''">{{ age }}</p>
               <!-- chip -->
               <p v-if="profile.chip && profile.chip != ''" class="label">chip</p>
               <p v-if="profile.chip && profile.chip != ''">{{ profile.chip }}</p>
@@ -48,6 +51,37 @@
           :items="speciesList"
         ></v-select>
       </v-flex>
+      <!-- <p class="editlabel">Approximate date of birth</p>
+      <v-flex>
+        <v-menu :value="birthdayPickerState" offset-y :close-on-content-click="false">
+          <template v-slot:activator="{ on }">
+            <v-btn outlined small text v-on="on">
+              {{profile.birthday}}
+              <v-icon>expand_more</v-icon>
+            </v-btn>
+          </template>
+
+          <v-date-picker :value="profile.birthday" @change="setBirthdayClick($event)"></v-date-picker>
+        </v-menu>
+      </v-flex>-->
+      <p class="editlabel">Approximate age</p>
+      <v-layout>
+        <div style="margin:10px;" class="text-center">
+          <p>{{years}} years</p>
+          <v-btn outlined small text @click="addTime(-1,'years')">+</v-btn>
+          <v-btn outlined small text @click="addTime(1,'years')">-</v-btn>
+        </div>
+        <div style="margin:10px" class="text-center">
+          <p>{{months}} months</p>
+          <v-btn outlined small text @click="addTime(-1,'months')">+</v-btn>
+          <v-btn outlined small text @click="addTime(1,'months')">-</v-btn>
+        </div>
+        <div style="margin:10px" class="text-center">
+          <p>{{days}} days</p>
+          <v-btn outlined small text @click="addTime(-1,'days')">+</v-btn>
+          <v-btn outlined small text @click="addTime(1,'days')">-</v-btn>
+        </div>
+      </v-layout>
       <p class="editlabel">Chip number</p>
       <v-flex>
         <v-text-field
@@ -102,21 +136,76 @@ import { mapMutations } from 'vuex'
 import moment from 'moment'
 export default {
   data() {
-    return {}
+    return {
+      birthdayPickerState: false
+    }
   },
   methods: {
     ...mapMutations({
       setSpecies: 'profiles/setSpecies',
       setInfo: 'profiles/setInfo',
       setName: 'profiles/setName',
-      setChip: 'profiles/setChip'
-    })
+      setChip: 'profiles/setChip',
+      setBirthday: 'profiles/setBirthday'
+    }),
+    // setBirthdayClick($event) {
+    //   console.log('close the menu')
+    //   this.birthdayPickerState = false
+    //   this.setBirthday($event)
+    // },
+    addTime(duration, unit) {
+      var birthday = moment(this.profile.birthday)
+      birthday.add(duration, unit)
+      var today = moment(new Date())
+      if (today.diff(birthday, 'days') < 0)
+        this.setBirthday(today.format('YYYY-MM-DD'))
+      else this.setBirthday(birthday.format('YYYY-MM-DD'))
+    }
   },
   computed: {
     ...mapState({
       speciesList: state => state.profiles.speciesList,
       profile: state => state.profiles.profile
-    })
+    }),
+    years() {
+      var a = moment(new Date())
+      var b = moment(this.profile.birthday)
+      var years = a.diff(b, 'year')
+      return years
+    },
+    months() {
+      var a = moment(new Date())
+      var b = moment(this.profile.birthday)
+      var years = a.diff(b, 'year')
+      b.add(years, 'years')
+      var months = a.diff(b, 'months')
+      b.add(months, 'months')
+      return months
+    },
+    days() {
+      var a = moment(new Date())
+      var b = moment(this.profile.birthday)
+      var years = a.diff(b, 'year')
+      b.add(years, 'years')
+      var months = a.diff(b, 'months')
+      b.add(months, 'months')
+      var days = a.diff(b, 'days')
+      return days
+    },
+    age() {
+      var a = moment(new Date())
+      var b = moment(this.profile.birthday)
+      var years = a.diff(b, 'year')
+      b.add(years, 'years')
+      var months = a.diff(b, 'months')
+      b.add(months, 'months')
+      var days = a.diff(b, 'days')
+      return (
+        (years > 0 ? years + ' years ' : '') +
+        (months > 0 ? months + ' months ' : '') +
+        (days > 0 ? days + ' days ' : '')
+      )
+    }
   },
   props: {
     editable: true

@@ -141,9 +141,6 @@ export default {
       .then(res => {
         //We willen slechts 1 'get profile'
         //Deze moet hier worden opgeroepen en zo alles in de store goed zetten
-
-        var data = res
-        console.log(data)
         this.imagelst.forEach(element => {
           this.addSlide(element)
         })

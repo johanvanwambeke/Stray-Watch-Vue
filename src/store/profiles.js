@@ -11,13 +11,19 @@ export const state = () => ({
  profiles: []
 })
 
-export const getters = {}
+import moment from 'moment'
+// export const getters = {
+//  getBirthdate(state) {
+//   return new moment(state.profile.birthDay).startOf('day')
+//  }
+// }
 
 export const mutations = {
  setProfiles(state, payload) {
   state.profiles = payload
  },
  setProfile(state, payload) {
+  payload.birthday = moment(payload.birthday).format('YYYY-MM-DD')
   state.profile = payload
  },
  setSpecies(state, payload) {

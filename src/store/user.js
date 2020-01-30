@@ -134,6 +134,11 @@ export const actions = {
    .then(async res => {
     console.log(res.data)
     this.$auth.setToken('local', 'Bearer ' + res.data.token)
+    this.$axios.setHeader('Authorization', 'Bearer ' + res.data.token)
+    this.$auth.ctx.app.$axios.setHeader(
+     'Authorization',
+     'Bearer ' + res.data.token
+    )
     setTimeout(async () => {
      this.$auth.setStrategy('local')
      setTimeout(async () => {
