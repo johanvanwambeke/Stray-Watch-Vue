@@ -41,6 +41,9 @@ export const mutations = {
  setBirthday(state, payload) {
   state.profile.birthday = payload
  },
+ setSex(state, payload) {
+  state.profile.sex = payload
+ },
  setlongLat(state, payload) {
   state.profile.long = payload[0]
   state.profile.lat = payload[1]
@@ -57,13 +60,6 @@ export const mutations = {
 export const actions = {
  async search({ state, commit }, payload) {
   return new Promise((resolve, reject) => {
-   //  console.log(state.profiles)
-   //  if (state.profiles.length > 0) {
-   //   console.log('Do not get new profiles')
-   //   resolve(null)
-   //   return
-   //  }
-
    this.$axios
     .post('api/Profile/search', JSON.stringify(payload), {
      headers: {

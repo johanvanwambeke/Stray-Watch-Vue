@@ -3,21 +3,40 @@
     <div v-if="!editable">
       <v-card elevation="0">
         <v-flex pa-4>
-          <h3 class="font-weight-light mb-4">Species: {{ profile.species }}</h3>
+          <!-- <h3 class="font-weight-light mb-4">Species: {{ profile.species }}</h3> -->
           <v-layout cols wrap class="infoblock">
             <v-flex xs12>
               <!-- name -->
               <p v-if="profile.name && profile.name != ''" class="label">name</p>
               <p v-if="profile.name && profile.name != ''">{{ profile.name }}</p>
+              <!-- species-->
+              <p v-if="profile.species && profile.species != ''" class="label">species</p>
+              <p v-if="profile.species && profile.species != ''">{{ profile.species }}</p>
               <!-- age -->
               <p v-if="age && age != ''" class="label">age</p>
               <p v-if="age && age != ''">{{ age }}</p>
               <!-- chip -->
               <p v-if="profile.chip && profile.chip != ''" class="label">chip</p>
               <p v-if="profile.chip && profile.chip != ''">{{ profile.chip }}</p>
+              <!-- sex -->
+              <p class="label">Sex</p>
+              <choiceBox
+                :editable="false"
+                v-bind:initalValue="sexState"
+                @select="setSex"
+                v-bind:choices="sexChoices"
+              ></choiceBox>
+
               <!-- info -->
               <p v-if="profile.info != ''" class="label">Message</p>
               <p v-if="profile.info != ''">{{ profile.info }}</p>
+              <!-- created by -->
+              <p
+                class="text-right"
+                style="font-size:9px;margin:0px"
+              >created by {{ profile.createdBy }}</p>
+              <!-- created on -->
+              <p class="text-right" style="font-size:9px;margin:0px">{{ createdFormat }}</p>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -31,7 +50,6 @@
           flat
           dense
           outlined
-          clearable
           hide-details="auto"
           :value="profile.name"
           @change="setName($event)"
@@ -44,44 +62,70 @@
           flat
           dense
           outlined
-          clearable
           hide-details="auto"
           :value="profile.species"
           @change="setSpecies($event)"
           :items="speciesList"
         ></v-select>
       </v-flex>
-      <!-- <p class="editlabel">Approximate date of birth</p>
-      <v-flex>
-        <v-menu :value="birthdayPickerState" offset-y :close-on-content-click="false">
+      <p class="editlabel">Sex</p>
+      <choiceBox
+        :editable="true"
+        v-bind:initalValue="sexState"
+        @select="setSex"
+        v-bind:choices="sexChoices"
+      ></choiceBox>
+      <v-layout>
+        <p class="editlabel">
+          Approximate age
+          <span
+            class="editlabel"
+            style="cursor:point"
+            @click="ageBirtdayToggle = !ageBirtdayToggle"
+          >or birthday</span>
+        </p>
+      </v-layout>
+      <v-layout v-if="!ageBirtdayToggle" class="d-flex justify-space-between">
+        <div class="timeblock text-center" style="margin-left:0px">
+          <v-btn small text @click="addTime(-1, 'years')">
+            <v-icon color="#AAA">mdi-plus</v-icon>
+          </v-btn>
+          <p style="margin-bottom:4px">{{ years }} years</p>
+          <v-btn small text @click="addTime(1, 'years')">
+            <v-icon color="#AAA">mdi-minus</v-icon>
+          </v-btn>
+        </div>
+        <div class="timeblock text-center">
+          <v-btn small text @click="addTime(-1, 'months')">
+            <v-icon color="#AAA">mdi-plus</v-icon>
+          </v-btn>
+          <p style="margin-bottom:4px">{{ months }} months</p>
+          <v-btn small text @click="addTime(1, 'months')">
+            <v-icon color="#AAA">mdi-minus</v-icon>
+          </v-btn>
+        </div>
+        <div class="timeblock text-center" style="margin-right:0px">
+          <v-btn small text @click="addTime(-1, 'days')">
+            <v-icon color="#AAA">mdi-plus</v-icon>
+          </v-btn>
+          <p style="margin-bottom:4px">{{ days }} days</p>
+          <v-btn small text @click="addTime(1, 'days')">
+            <v-icon color="#AAA">mdi-minus</v-icon>
+          </v-btn>
+        </div>
+      </v-layout>
+      <v-flex v-else>
+        <v-menu offset-y :close-on-content-click="false">
           <template v-slot:activator="{ on }">
-            <v-btn outlined small text v-on="on">
-              {{profile.birthday}}
+            <v-btn small text v-on="on">
+              {{ profile.birthday }}
               <v-icon>expand_more</v-icon>
             </v-btn>
           </template>
 
-          <v-date-picker :value="profile.birthday" @change="setBirthdayClick($event)"></v-date-picker>
+          <v-date-picker :value="profile.birthday" @change="setBirthday($event)"></v-date-picker>
         </v-menu>
-      </v-flex>-->
-      <p class="editlabel">Approximate age</p>
-      <v-layout>
-        <div style="margin:10px;" class="text-center">
-          <p>{{years}} years</p>
-          <v-btn outlined small text @click="addTime(-1,'years')">+</v-btn>
-          <v-btn outlined small text @click="addTime(1,'years')">-</v-btn>
-        </div>
-        <div style="margin:10px" class="text-center">
-          <p>{{months}} months</p>
-          <v-btn outlined small text @click="addTime(-1,'months')">+</v-btn>
-          <v-btn outlined small text @click="addTime(1,'months')">-</v-btn>
-        </div>
-        <div style="margin:10px" class="text-center">
-          <p>{{days}} days</p>
-          <v-btn outlined small text @click="addTime(-1,'days')">+</v-btn>
-          <v-btn outlined small text @click="addTime(1,'days')">-</v-btn>
-        </div>
-      </v-layout>
+      </v-flex>
       <p class="editlabel">Chip number</p>
       <v-flex>
         <v-text-field
@@ -89,7 +133,6 @@
           flat
           dense
           outlined
-          clearable
           hide-details="auto"
           :value="profile.chip"
           @change="setChip($event)"
@@ -102,10 +145,8 @@
           flat
           dense
           outlined
-          clearable
           hide-details="auto"
           no-resize
-          counter
           auto-grow
           :value="profile.info"
           @change="setInfo($event)"
@@ -115,6 +156,15 @@
   </div>
 </template>
 <style scoped>
+.timeblock {
+  border: 1px solid rgb(161, 161, 161);
+  border-radius: 5px;
+  margin: 10px;
+  padding: 5px 0px;
+  background-color: white;
+  width: 100%;
+  max-width: 100px;
+}
 .label {
   color: gray;
   margin-bottom: -2px;
@@ -131,14 +181,36 @@
 }
 </style>
 <script>
-import { mapState } from 'vuex'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import moment from 'moment'
+import choiceBox from '../components/ChoiceBoxes'
 export default {
   data() {
     return {
-      birthdayPickerState: false
+      ageBirtdayToggle: false,
+      sexChoices: [
+        {
+          value: true,
+          text: 'male',
+          ico: true,
+          iconName: 'mdi-gender-male'
+        },
+        {
+          value: false,
+          text: 'female',
+          ico: true,
+          iconName: 'mdi-gender-female'
+        },
+        {
+          value: null,
+          text: 'unknown',
+          ico: false
+        }
+      ]
     }
+  },
+  components: {
+    choiceBox
   },
   methods: {
     ...mapMutations({
@@ -146,13 +218,9 @@ export default {
       setInfo: 'profiles/setInfo',
       setName: 'profiles/setName',
       setChip: 'profiles/setChip',
-      setBirthday: 'profiles/setBirthday'
+      setBirthday: 'profiles/setBirthday',
+      setSex: 'profiles/setSex'
     }),
-    // setBirthdayClick($event) {
-    //   console.log('close the menu')
-    //   this.birthdayPickerState = false
-    //   this.setBirthday($event)
-    // },
     addTime(duration, unit) {
       var birthday = moment(this.profile.birthday)
       birthday.add(duration, unit)
@@ -167,6 +235,12 @@ export default {
       speciesList: state => state.profiles.speciesList,
       profile: state => state.profiles.profile
     }),
+    sexState() {
+      return this.profile.sex
+    },
+    createdFormat() {
+      return moment(this.profile.created).format('LLLL')
+    },
     years() {
       var a = moment(new Date())
       var b = moment(this.profile.birthday)
