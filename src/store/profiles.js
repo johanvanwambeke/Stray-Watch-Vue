@@ -57,7 +57,20 @@ export const mutations = {
  }
 }
 
+import dogNames from 'dog-names'
+import catNames from 'cat-names'
 export const actions = {
+ setRandomName({ commit, state }) {
+  var name = ''
+  if (state.profile.species === 'Cat') {
+   commit('setName', catNames.random())
+   return
+  }
+  if (state.profile.sex) name = dogNames.maleRandom()
+  if (!state.profile.sex) name = dogNames.femaleRandom()
+  if (state.profile.sex === null) name = dogNames.allRandom()
+  commit('setName', name)
+ },
  async search({ state, commit }, payload) {
   return new Promise((resolve, reject) => {
    this.$axios
@@ -92,8 +105,6 @@ export const actions = {
 
    if (parseInt(payload) === parseInt(state.profile.profileId)) {
     console.log('Do not get new profile')
-    //set the profile to the profile from the list
-    //same with images
     resolve(null)
     return
    }
@@ -110,7 +121,6 @@ export const actions = {
      console.log('incomming profile', res.data)
      commit('setProfile', res.data)
      resolve(res.data)
-     //  commit('setlongLat', [res.data.long, res.data.lat])
      commit('images/setImages', res.data.url, {
       root: true
      })
