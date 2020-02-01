@@ -1,5 +1,10 @@
 export const state = () => ({
- images: []
+ images: [
+  {
+   url:
+    'https://straywatchfotos.blob.core.windows.net/animalfotos/f70ca393-88d0-44f8-9d75-d456e2f08a77.jpeg'
+  }
+ ]
 })
 
 export const getters = {
@@ -28,14 +33,7 @@ export const mutations = {
   state.images[index].uploaded = true
  },
  setImages(state, payload) {
-  state.images = []
-  payload.forEach((element, i) => {
-   if (state.images[i]) state.images[i].src = element
-   else
-    state.images.push({
-     src: element
-    })
-  })
+  state.images = payload
  }
 }
 

@@ -142,7 +142,7 @@ export default {
         //We willen slechts 1 'get profile'
         //Deze moet hier worden opgeroepen en zo alles in de store goed zetten
         this.imagelst.forEach(element => {
-          this.addSlide(element)
+          this.addSlide(element.url)
         })
         this.loadingSlider = false
       })
@@ -171,14 +171,14 @@ export default {
       //this needs to also remove the edited slide
       //pref. add this one in the spot where it was removed :/
     },
-    addSlide(src) {
+    addSlide(url) {
       mySwiper.appendSlide([
         `   <div class="swiper-slide" data-v-c28cb864="" >
             <div class="swiper-slide-container">
               <div
                 class="swiper-slide-image"
                 style="background-position: center;background-image: url(&quot;` +
-          src.src +
+          url +
           `&quot;); "></div>
             </div>
           </div>`
@@ -199,8 +199,6 @@ export default {
         mySwiper.removeSlide(number)
         console.log(this.imagelst)
       })
-
-      // mySwiper.removeSlide(mySwiper.activeIndex)
     },
     setMain() {
       var obj = {

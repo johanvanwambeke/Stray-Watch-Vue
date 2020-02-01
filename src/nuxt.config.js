@@ -81,6 +81,7 @@ module.exports = {
  plugins: [
   '@/plugins/vuetify',
   '@/plugins/notifications',
+
   {
    src: '@/plugins/vue-fullscreen',
    ssr: false
@@ -163,7 +164,7 @@ module.exports = {
   ** Axios module configuration
   */
  axios: {
-  baseURL: 'https://localhost:44352/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
+  baseURL: 'https://stray-watch-api.azurewebsites.net/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
  },
 
  /*

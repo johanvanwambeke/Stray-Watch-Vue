@@ -9,9 +9,9 @@
         <!-- Additional required wrapper -->
         <div class="swiper-wrapper">
           <!-- Slides -->
-          <div v-for="(url, i) in imagelst" :key="i" class="swiper-slide">
+          <div v-for="(image, i) in imagelst" :key="i" class="swiper-slide">
             <div class="swiper-slide-container">
-              <div class="swiper-slide-image" :style="`background-image: url(${url.src}); `"></div>
+              <div class="swiper-slide-image" :style="`background-image: url(${image.url}); `"></div>
             </div>
           </div>
         </div>

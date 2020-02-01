@@ -121,7 +121,7 @@ export const actions = {
      console.log('incomming profile', res.data)
      commit('setProfile', res.data)
      resolve(res.data)
-     commit('images/setImages', res.data.url, {
+     commit('images/setImages', res.data.images, {
       root: true
      })
     })
