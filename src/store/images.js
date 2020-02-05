@@ -1,10 +1,5 @@
 export const state = () => ({
- images: [
-  {
-   url:
-    'https://straywatchfotos.blob.core.windows.net/animalfotos/f70ca393-88d0-44f8-9d75-d456e2f08a77.jpeg'
-  }
- ]
+ images: []
 })
 
 export const getters = {
@@ -17,7 +12,7 @@ export const mutations = {
  addImage(state, payload) {
   state.images.push(payload)
  },
- deleteImage(state, payload) {
+ removeImage(state, payload) {
   state.images.splice(payload, 1)
  },
  replaceImage(state, payload) {
@@ -25,12 +20,13 @@ export const mutations = {
   myimage.src = payload.imgForUpload
   state.images.splice(payload.nr, 1, myimage)
  },
- setUrl(state, payload) {
+ updateImageId(state, payload) {
   var image = state.images.filter(x => x.guid == payload.guid)[0]
   if (image == null) return
   var index = state.images.indexOf(image)
-  state.images[index].url = payload.url
+  state.images[index].imageId = payload.imageId
   state.images[index].uploaded = true
+  console.log(state.images)
  },
  setImages(state, payload) {
   state.images = payload
@@ -44,19 +40,21 @@ export const actions = {
  async delete({ commit }, payload) {
   commit('deleteImage', payload)
  },
- async deleteFs({ commit, rootState }, payload) {
+ deleteFs({ commit, rootState }, payload) {
+  var prepImage = {
+   profileId: parseInt(245),
+   myGuid: payload.myGuid
+  }
+
+  console.log('payload', payload)
   this.$axios
-   .post('api/Image/deletefile', JSON.stringify(payload), {
+   .post('api/Image/deletefile', JSON.stringify(prepImage), {
     headers: {
      'Content-Type': 'application/json'
     }
    })
-   .then(response => {
-    console.log('success')
-   })
-   .catch(error => {
-    console.log('fail')
-   })
+   .then(response => {})
+   .catch(error => {})
  },
  async setMain({ commit, rootState }, payload) {
   console.log(payload)
@@ -78,28 +76,17 @@ export const actions = {
  },
  uploadImage({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
-   var obj = {
-    imgString: payload.src,
-    smth: 'tekst',
-    ProfileID: parseInt(payload.ProfileID)
-   }
+   console.log(payload)
    this.$axios
-    .post('api/Image/savefile', JSON.stringify(obj), {
+    .post('api/Image/savefile', JSON.stringify(payload), {
      headers: {
       'Content-Type': 'application/json'
      }
     })
     .then(response => {
-     console.log('success')
-     console.log(response.data)
-     commit('setUrl', {
-      url: response.data.uri,
-      guid: payload.image.guid
-     })
      resolve('ok')
     })
     .catch(error => {
-     console.log(error)
      reject('fail')
     })
   })

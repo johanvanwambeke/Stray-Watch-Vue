@@ -11,7 +11,7 @@
 import cusSwiper from '~/components/mySwiper.vue'
 export default {
   mounted() {
-    this.$store.dispatch('profiles/getProfile', 247).then(res => {})
+    this.$store.dispatch('profiles/getProfile', 245).then(res => {})
   },
   components: {
     cusSwiper

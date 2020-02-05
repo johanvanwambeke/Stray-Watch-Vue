@@ -1,25 +1,50 @@
 <template>
-  <div>
-    <!-- Slider main container -->
-    <div class="swiper-container">
-      <!-- Additional required wrapper -->
-      <div class="swiper-wrapper">
-        <!-- Slides -->
-        <div v-for="(image, i) in imagelst" :key="i" class="swiper-slide">
-          <div class="swiper-slide-container">
-            <div class="swiper-slide-image" :style="`background-image: url(${image.url}); `"></div>
+  <v-layout rows>
+    <v-flex>
+      <!-- Slider main container -->
+      <div class="swiper-container">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+          <!-- Slides -->
+          <div v-for="(image, i) in imagelst" :key="i" class="swiper-slide">
+            <div class="swiper-slide-container">
+              <div class="swiper-slide-image" :style="`background-image: url(${image.url}); `"></div>
+            </div>
           </div>
         </div>
+        <!-- If we need pagination -->
+        <div class="swiper-pagination"></div>
+        <!-- If we need navigation buttons -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
       </div>
-      <!-- If we need pagination -->
-      <div class="swiper-pagination"></div>
-      <!-- If we need navigation buttons -->
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
-    </div>
-
-    <v-btn ref="initslider" @click="doit">addimg</v-btn>
-  </div>
+      <input
+        style="display:none"
+        type="file"
+        ref="fileInput"
+        accept="image/*"
+        @change="addPictures"
+        multiple
+      />
+      <v-btn text @click="$refs.fileInput.click()">add</v-btn>
+      <v-btn text @click="removeImage()">remove</v-btn>
+      <v-btn text @click="editSlide">edit slide</v-btn>
+    </v-flex>
+    <v-flex>
+      <!-- doka modal -->
+      <DokaModal
+        crop-aspect-ratio="0.75"
+        :src="src"
+        v-if="enabled"
+        outputQuality="80"
+        outputWidth="600"
+        outputStripImageHead="false"
+        @confirm="handleDokaConfirm"
+        @close="enabled = false"
+        ref="dokaEditor"
+      />
+    </v-flex>
+  </v-layout>
 </template>
 <style>
 @import '@/node_modules/swiper/css/swiper.css';
@@ -66,15 +91,31 @@
 </style>
 <script>
 import Swiper from 'swiper'
+import moment from 'moment'
+import { DokaModal, toURL } from '~/vue-doka/'
 import { mapState, mapMutations } from 'vuex'
 var cusSwiper = null
 
 export default {
+  head: {
+    script: [
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' }
+    ]
+  },
   data() {
-    return {}
+    return {
+      counter: 0,
+      arraytemp: [],
+      src: '',
+      enabled: false,
+      editingSlide: null
+    }
   },
   mounted() {
     this.initialiseSwiper()
+  },
+  components: {
+    DokaModal
   },
   watch: {
     imagelst: {
@@ -94,15 +135,153 @@ export default {
     })
   },
   methods: {
-    doit() {
-      this.addImage({
-        url:
-          'https://cdn.pixabay.com/photo/2012/03/01/00/55/flowers-19830_1280.jpg'
+    ...mapMutations({
+      addImage: 'images/addImage',
+      deleteImage: 'images/removeImage',
+      updateImageId: 'images/updateImageId'
+    }),
+    editSlide() {
+      this.editingSlide = cusSwiper.activeIndex
+      this.src = this.imagelst[this.editingSlide].url
+      this.enabled = true
+      console.log('here?')
+    },
+    removeImage() {
+      var index = cusSwiper.activeIndex
+      var img = Object.create(this.imagelst[index])
+      this.$store.dispatch('images/deleteFs', img)
+      this.deleteImage(index)
+    },
+    addPictures(e) {
+      //clear editing slide to prevent deleting smth wrong
+      this.editingSlide = null
+      //put pictures in a list.
+      this.counter = 0
+      this.arraytemp = e.target.files
+      //Add the coords of these pictures to there long lat fields (subtle dots)
+      //last picture sets the coords of this profile
+      Array.from(this.arraytemp).forEach(file => {
+        this.getImageInfo(file).then(res => {
+          if (res != null) {
+            file.long = res.long
+            file.lat = res.lat
+            file.photoCreated = res.photoCreated
+          }
+        })
+      })
+
+      //all pictures run true the doka to be resized
+      this.src = this.arraytemp[0]
+      this.enabled = true
+    },
+    toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = error => reject(error)
       })
     },
-    ...mapMutations({
-      addImage: 'images/addImage'
-    }),
+    getImageInfo(file) {
+      var self = this
+      return new Promise((resolve, reject) => {
+        EXIF.getData(file, function() {
+          var dateTimeOriginal = EXIF.getTag(this, 'DateTimeOriginal')
+          if (this.exifdata.GPSLatitude) {
+            var latitude =
+              this.exifdata.GPSLatitude[0].numerator /
+                this.exifdata.GPSLatitude[0].denominator +
+              this.exifdata.GPSLatitude[1].numerator /
+                this.exifdata.GPSLatitude[1].denominator /
+                60 +
+              this.exifdata.GPSLatitude[2].numerator /
+                this.exifdata.GPSLatitude[2].denominator /
+                3600
+            var Longtitude =
+              this.exifdata.GPSLongitude[0].numerator /
+                this.exifdata.GPSLongitude[0].denominator +
+              this.exifdata.GPSLongitude[1].numerator /
+                this.exifdata.GPSLongitude[1].denominator /
+                60 +
+              this.exifdata.GPSLongitude[2].numerator /
+                this.exifdata.GPSLongitude[2].denominator /
+                3600
+            if (this.exifdata.GPSLatitudeRef == 'S') latitude *= -1
+            if (this.exifdata.GPSLongitudeRef != 'E') longitude *= -1
+          }
+
+          if (latitude != '' && latitude != null) {
+            self.$store.commit('profiles/setlongLat', [Longtitude, latitude])
+            resolve({
+              lat: latitude,
+              long: Longtitude,
+              photoCreated: dateTimeOriginal
+            })
+          } else {
+            resolve()
+          }
+        })
+      })
+    },
+    async handleDokaConfirm(output) {
+      //delete the slide we changed
+      var file = this.arraytemp[this.counter]
+      if (this.editingSlide != null) {
+        file = this.imagelst[this.editingSlide]
+        this.removeImage(this.editingSlide)
+        console.log('editing slide', file)
+      }
+      console.log(this.editingSlide, file)
+      var isodate = moment(
+        file.photoCreated,
+        'YYYY:MM:DD hh:mm:ss'
+      ).toISOString()
+      var prepImage = {
+        url: toURL(output.file),
+        long: file.long,
+        lat: file.lat,
+        photoCreated: isodate,
+        profileId: parseInt(245),
+        myGuid: this.generateUUID()
+      }
+      this.addImage(prepImage)
+
+      //launch next image
+      this.counter += 1
+      if (this.arraytemp != null && this.counter < this.arraytemp.length) {
+        console.log('next', this.counter)
+        this.src = this.arraytemp[this.counter]
+        this.enabled = true
+      }
+
+      this.toBase64(output.file).then(res => {
+        prepImage.base64 = res
+        this.$store.dispatch('images/uploadImage', prepImage).then(res => {
+          console.log('returnval', res)
+          // this.updateImageId(res)
+        })
+      })
+    },
+    generateUUID() {
+      // Public Domain/MIT
+      var d = new Date().getTime() //Timestamp
+      var d2 = (performance && performance.now && performance.now() * 1000) || 0 //Time in microseconds since page-load or 0 if unsupported
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(
+        c
+      ) {
+        var r = Math.random() * 16 //random number between 0 and 16
+        if (d > 0) {
+          //Use timestamp until depleted
+          r = (d + r) % 16 | 0
+          d = Math.floor(d / 16)
+        } else {
+          //Use microseconds since page-load if supported
+          r = (d2 + r) % 16 | 0
+          d2 = Math.floor(d2 / 16)
+        }
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16)
+      })
+    },
     initialiseSwiper() {
       console.log(this.$vuetify.breakpoint.name)
       //xs :1
@@ -130,7 +309,7 @@ export default {
           delay: 4000,
           disableOnInteraction: true
         },
-        slidesPerView: spv,
+        slidesPerView: 1,
 
         // If we need pagination
         pagination: {
