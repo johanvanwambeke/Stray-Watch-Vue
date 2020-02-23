@@ -60,6 +60,11 @@
 </template>
 <style>
 @import '@/node_modules/swiper/css/swiper.css';
+.doka--root {
+ --doka-effect--invert: 100%;
+ --doka-color--alpha: #2990ff;
+ --doka-color--alpha-dim: #1a80ec;
+}
 .edit-button {
  position: absolute;
  top: 10px;
