@@ -81,6 +81,7 @@ module.exports = {
  plugins: [
   '@/plugins/vuetify',
   '@/plugins/notifications',
+
   {
    src: '@/plugins/vue-fullscreen',
    ssr: false

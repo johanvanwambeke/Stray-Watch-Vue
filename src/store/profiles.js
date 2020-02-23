@@ -5,7 +5,8 @@ export const state = () => ({
   chip: null,
   long: 10,
   lat: 10,
-  follow: 0
+  follow: 0,
+  birthday: moment()
  },
  speciesList: ['Cat', 'Dog', 'Bird', 'Livestock', 'Rodent', 'Other'],
  profiles: []

@@ -14,7 +14,7 @@
           label="Animal"
         ></v-select>
       </v-flex>
-      <v-flex xs4 pa-2>
+      <!-- <v-flex xs4 pa-2>
         <v-select
           clearable
           dense
@@ -38,7 +38,7 @@
             style="margin-top:5px!important"
           ></v-switch>
         </v-flex>
-      </client-only>
+      </client-only>-->
     </v-layout>
     <!-- map -->
     <v-flex xs12 pa-2>

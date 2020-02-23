@@ -1,104 +1,112 @@
 <template>
-  <v-layout rows wrap>
-    <!-- swiper -->
-    <v-flex xs12 md6>
-      <v-flex xs12 pa-2 pb-0 style="position:relative">
-        <div v-if="loadingSlider" class="skeletontop">
-          <v-skeleton-loader class="skeletonoverlay" tile type="image,image,image,image"></v-skeleton-loader>
-        </div>
-        <div v-if="imagelst.length===0" @click="$refs.fileInput.click()" class="addImage"></div>
-        <v-flex xs12>
-          <!-- Slider main container -->
-          <div ref="swipy" class="swiper-container">
-            <!-- Additional required wrapper -->
-            <div class="swiper-wrapper">
-              <!-- Slides -->
-            </div>
-            <!-- If we need pagination -->
-            <div class="swiper-pagination"></div>
-            <!-- If we need navigation buttons -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-          </div>
-        </v-flex>
-        <input
-          style="display:none"
-          type="file"
-          ref="fileInput"
-          accept="image/*"
-          @change="addPictures"
-          multiple
-        />
-      </v-flex>
-      <!-- buttons -->
-      <v-flex class="buttonsCard" mt-0 xs12 ma-2 pa-2>
-        <div class="buttonnav">
-          <v-btn text @click="$refs.fileInput.click()">add</v-btn>
-          <v-btn text @click="editSlide">edit</v-btn>
-          <v-btn text @click="removeSlide()">remove</v-btn>
-          <v-btn text @click="setMain">set main</v-btn>
-        </div>
-      </v-flex>
+ <v-layout rows wrap>
+  <!-- swiper -->
+  <v-flex xs12 md6>
+   <v-flex xs12 pa-2 pb-0 style="position:relative">
+    <div v-if="loadingSlider" class="skeletontop">
+     <v-skeleton-loader
+      class="skeletonoverlay"
+      tile
+      type="image,image,image,image"
+     ></v-skeleton-loader>
+    </div>
+    <div
+     v-if="imagelst.length === 0"
+     @click="$refs.fileInput.click()"
+     class="addImage"
+    ></div>
+    <v-flex xs12>
+     <!-- Slider main container -->
+     <div ref="swipy" class="swiper-container">
+      <!-- Additional required wrapper -->
+      <div class="swiper-wrapper">
+       <!-- Slides -->
+      </div>
+      <!-- If we need pagination -->
+      <div class="swiper-pagination"></div>
+      <!-- If we need navigation buttons -->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+     </div>
     </v-flex>
-
-    <!-- location map -->
-    <v-flex xs12 md6 pa-2>
-      <MapBox />
-    </v-flex>
-    <!-- animal profile form -->
-    <v-flex xs12 pa-2>
-      <ProfileForm :editable="true" />
-    </v-flex>
-    <!-- bottom buttons -->
-    <v-flex xs12 pl-2>
-      <v-btn style="margin:0px" @click="updateProfile">Save</v-btn>
-    </v-flex>
-    <!-- doka modal -->
-    <DokaModal
-      crop-aspect-ratio="0.75"
-      :src="src"
-      v-if="enabled"
-      outputQuality="80"
-      outputWidth="600"
-      outputStripImageHead="false"
-      @confirm="handleDokaConfirm"
-      @close="enabled = false"
-      ref="dokaEditor"
+    <input
+     style="display:none"
+     type="file"
+     ref="fileInput"
+     accept="image/*"
+     @change="addPictures"
+     multiple
     />
-  </v-layout>
+   </v-flex>
+   <!-- buttons -->
+   <v-flex class="buttonsCard" mt-0 xs12 ma-2 pa-2>
+    <div class="buttonnav">
+     <v-btn text @click="$refs.fileInput.click()">add</v-btn>
+     <v-btn text @click="editSlide">edit</v-btn>
+     <v-btn text @click="removeSlide()">remove</v-btn>
+     <v-btn text @click="setMain">set main</v-btn>
+    </div>
+   </v-flex>
+  </v-flex>
+
+  <!-- location map -->
+  <v-flex xs12 md6 pa-2>
+   <MapBox />
+  </v-flex>
+  <!-- animal profile form -->
+  <v-flex xs12 pa-2>
+   <ProfileForm :editable="true" />
+  </v-flex>
+  <!-- bottom buttons -->
+  <v-flex xs12 pl-2>
+   <v-btn style="margin:0px" @click="updateProfile">Save</v-btn>
+  </v-flex>
+  <!-- doka modal -->
+  <DokaModal
+   crop-aspect-ratio="0.75"
+   :src="src"
+   v-if="enabled"
+   outputQuality="80"
+   outputWidth="600"
+   outputStripImageHead="false"
+   @confirm="handleDokaConfirm"
+   @close="enabled = false"
+   ref="dokaEditor"
+  />
+ </v-layout>
 </template>
 <style scoped>
 .addImage {
-  cursor: pointer;
-  background-color: greenyellow;
-  width: 100%;
-  min-height: 400px;
-  max-height: 400px;
-  overflow: hidden;
+ cursor: pointer;
+ background-color: greenyellow;
+ width: 100%;
+ min-height: 400px;
+ max-height: 400px;
+ overflow: hidden;
 }
 
 .skeletontop {
-  cursor: pointer;
-  width: 100%;
-  min-height: 400px;
-  max-height: 400px;
-  overflow: hidden;
+ cursor: pointer;
+ width: 100%;
+ min-height: 400px;
+ max-height: 400px;
+ overflow: hidden;
 }
 .buttonsCard {
-  /* border: solid rgb(160, 160, 160); */
-  border: solid rgb(0, 0, 0, 0.12);
-  border-width: 0px 1px 1px 1px;
-  background-color: whitesmoke;
-  margin-top: -16px;
+ /* border: solid rgb(160, 160, 160); */
+ border: solid rgb(0, 0, 0, 0.12);
+ border-width: 0px 1px 1px 1px;
+ background-color: whitesmoke;
+ margin-top: -16px;
 }
 .skeletonoverlay {
-  width: 100%;
-  z-index: 10;
+ width: 100%;
+ z-index: 10;
 }
 .buttonnav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+ display: flex;
+ align-items: center;
+ justify-content: center;
 }
 </style>
 <script>
@@ -111,304 +119,304 @@ import ProfileForm from '~/components/ProfileForm.vue'
 import Swiper from 'swiper'
 var mySwiper = null
 export default {
-  head: {
-    script: [
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' }
-    ],
-    link: [
-      {
-        href: 'https://api.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css',
-        rel: 'stylesheet'
-      }
-    ]
-  },
-  data() {
-    return {
-      profileId: null,
-      counter: 0,
-      arraytemp: [],
-      src: '',
-      enabled: false,
-      editingSlide: null,
-      sentense: 'asd',
-      loadingSlider: true
-    }
-  },
-  mounted() {
-    this.initialiseSwiper()
-    this.$store
-      .dispatch('profiles/getProfile', this.$route.params.id)
-      .then(res => {
-        //We willen slechts 1 'get profile'
-        //Deze moet hier worden opgeroepen en zo alles in de store goed zetten
-        this.imagelst.forEach(element => {
-          this.addSlide(element.url)
-        })
-        this.loadingSlider = false
-      })
-  },
-  computed: {
-    ...mapState({
-      longLat: state => state.profiles.longLat,
-      imagelst: state => state.images.images
+ head: {
+  script: [
+   { src: 'https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js' }
+  ],
+  link: [
+   {
+    href: 'https://api.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css',
+    rel: 'stylesheet'
+   }
+  ]
+ },
+ data() {
+  return {
+   profileId: null,
+   counter: 0,
+   arraytemp: [],
+   src: '',
+   enabled: false,
+   editingSlide: null,
+   sentense: 'asd',
+   loadingSlider: true
+  }
+ },
+ mounted() {
+  this.initialiseSwiper()
+  this.$store
+   .dispatch('profiles/getProfile', this.$route.params.id)
+   .then(res => {
+    //We willen slechts 1 'get profile'
+    //Deze moet hier worden opgeroepen en zo alles in de store goed zetten
+    this.imagelst.forEach(element => {
+     this.addSlide(element.url)
     })
+    this.loadingSlider = false
+   })
+ },
+ computed: {
+  ...mapState({
+   longLat: state => state.profiles.longLat,
+   imagelst: state => state.images.images
+  })
+ },
+ components: {
+  ProfileMessages,
+  MapBox,
+  ProfileForm,
+  DokaModal
+ },
+ methods: {
+  ...mapMutations({
+   addImageToList: 'images/addImage'
+  }),
+  editSlide() {
+   console.log(this.imagelst[mySwiper.activeIndex])
+   this.src = this.imagelst[mySwiper.activeIndex]
+   this.enabled = true
+   this.editingSlide = mySwiper.activeIndex
+   //this needs to also remove the edited slide
+   //pref. add this one in the spot where it was removed :/
   },
-  components: {
-    ProfileMessages,
-    MapBox,
-    ProfileForm,
-    DokaModal
-  },
-  methods: {
-    ...mapMutations({
-      addImageToList: 'images/addImage'
-    }),
-    editSlide() {
-      console.log(this.imagelst[mySwiper.activeIndex])
-      this.src = this.imagelst[mySwiper.activeIndex]
-      this.enabled = true
-      this.editingSlide = mySwiper.activeIndex
-      //this needs to also remove the edited slide
-      //pref. add this one in the spot where it was removed :/
-    },
-    addSlide(url) {
-      mySwiper.appendSlide([
-        `   <div class="swiper-slide" data-v-c28cb864="" >
+  addSlide(url) {
+   mySwiper.appendSlide([
+    `   <div class="swiper-slide" data-v-c28cb864="" >
             <div class="swiper-slide-container">
               <div
                 class="swiper-slide-image"
                 style="background-position: center;background-image: url(&quot;` +
-          url +
-          `&quot;); "></div>
+     url +
+     `&quot;); "></div>
             </div>
           </div>`
-      ])
-    },
-    removeSlide(number) {
-      if (number == null) number = mySwiper.activeIndex
-      console.log(this.imagelst)
-      console.log(number)
-      var obj = {
-        ProfileID: parseInt(this.$route.params.id),
-        imgString: this.imagelst[number]
+   ])
+  },
+  removeSlide(number) {
+   if (number == null) number = mySwiper.activeIndex
+   console.log(this.imagelst)
+   console.log(number)
+   var obj = {
+    ProfileID: parseInt(this.$route.params.id),
+    imgString: this.imagelst[number].base64,
+    myGuid: this.imagelst[number].myGuid
+   }
+   this.$store.dispatch('images/deleteFs', obj).then(res => {
+    //remove from they array
+    // this.imagelst.splice(this.imagelst[number], 1)
+    mySwiper.removeSlide(number)
+    console.log(this.imagelst)
+   })
+  },
+  setMain() {
+   var obj = {
+    ProfileID: parseInt(this.$route.params.id),
+    imgString: this.imagelst[mySwiper.activeIndex]
+   }
+   this.$store.dispatch('images/setMain', obj)
+  },
+  toBase64(file) {
+   return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => reject(error)
+   })
+  },
+  async handleDokaConfirm(output) {
+   //delete the slide we changed
+   if (this.editingSlide != null) {
+    mySwiper.removeSlide(this.editingSlide)
+    console.log(this.imagelst)
+    // this.$store.dispatch('images/delete',{profileid: this.$route.params.id, imageid:})
+   }
+
+   this.toBase64(output.file).then(res => {
+    //they keep there coordinates info
+    var currentUrl = toURL(output.file)
+    console.log(currentUrl)
+    this.addSlide(currentUrl)
+    //they are saved and url-replaced
+    this.$store
+     .dispatch('images/uploadImage', {
+      src: res,
+      image: output.file,
+      ProfileID: this.$route.params.id
+     })
+     .then(res => {
+      //replace
+      var index = this.imagelst.indexOf(currentUrl)
+
+      if (index !== -1) {
+       this.imagelst[index] = res.uri
       }
-      console.log(obj)
-      this.$store.dispatch('images/deleteFs', obj).then(res => {
-        //remove from they array
-        this.imagelst.splice(this.imagelst[number], 1)
-        mySwiper.removeSlide(number)
-        console.log(this.imagelst)
-      })
-    },
-    setMain() {
-      var obj = {
-        ProfileID: parseInt(this.$route.params.id),
-        imgString: this.imagelst[mySwiper.activeIndex]
-      }
-      this.$store.dispatch('images/setMain', obj)
-    },
-    toBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => resolve(reader.result)
-        reader.onerror = error => reject(error)
-      })
-    },
-    async handleDokaConfirm(output) {
-      //delete the slide we changed
-      if (this.editingSlide != null) {
-        mySwiper.removeSlide(this.editingSlide)
-        console.log(this.imagelst)
-        // this.$store.dispatch('images/delete',{profileid: this.$route.params.id, imageid:})
-      }
 
-      this.toBase64(output.file).then(res => {
-        //they keep there coordinates info
-        var currentUrl = toURL(output.file)
-        console.log(currentUrl)
-        this.addSlide(currentUrl)
-        //they are saved and url-replaced
-        this.$store
-          .dispatch('images/uploadImage', {
-            src: res,
-            image: output.file,
-            ProfileID: this.$route.params.id
-          })
-          .then(res => {
-            //replace
-            var index = this.imagelst.indexOf(currentUrl)
+      console.log(res.uri)
+     })
 
-            if (index !== -1) {
-              this.imagelst[index] = res.uri
-            }
-
-            console.log(res.uri)
-          })
-
-        //launch next image
-        this.counter += 1
-        if (this.arraytemp != null && this.counter < this.arraytemp.length) {
-          console.log('next', this.counter)
-          this.src = this.arraytemp[this.counter]
-          this.enabled = true
-        }
-      })
-    },
-
-    initialiseSwiper() {
-      var smallscreen =
-        this.$vuetify.breakpoint.name == 'sm' ||
-        this.$vuetify.breakpoint.name == 'xs'
-
-      var spv = smallscreen ? 1 : 2
-
-      mySwiper = new Swiper('.swiper-container', {
-        // effect
-        effect: smallscreen ? 'fade' : '',
-        // grab cursor
-        grabCursor: true,
-        // Optional parameters
-        direction: 'horizontal',
-
-        // If we need pagination
-        pagination: {
-          el: '.swiper-pagination',
-          type: 'bullets'
-        },
-        slidesPerView: 1,
-
-        // Navigation arrows
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      })
-    },
-    async updateProfile() {
-      this.$store
-        .dispatch('profiles/updateProfile')
-        .then(profileId => {
-          this.$router.push({ path: '/profile/view/' + this.$route.params.id })
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    addPictures(e) {
-      //clear editing slide to prevent deleting smth wrong
-      this.editingSlide = null
-      //put pictures in a list.
-      this.counter = 0
-      this.arraytemp = e.target.files
-      //Add the coords of these pictures to the map (subtle dots)
-      //last picture sets the coords of this profile
-      Array.from(this.arraytemp).forEach(file => {
-        this.getImageInfo(file).then(res => {
-          console.log(res)
-        })
-      })
-
-      //all pictures run true the doka to be resized
-      this.src = this.arraytemp[0]
-      this.enabled = true
-    },
-    getImageInfo(file) {
-      var self = this
-      return new Promise((resolve, reject) => {
-        EXIF.getData(file, function() {
-          if (this.exifdata.GPSLatitude) {
-            var latitude =
-              this.exifdata.GPSLatitude[0].numerator /
-                this.exifdata.GPSLatitude[0].denominator +
-              this.exifdata.GPSLatitude[1].numerator /
-                this.exifdata.GPSLatitude[1].denominator /
-                60 +
-              this.exifdata.GPSLatitude[2].numerator /
-                this.exifdata.GPSLatitude[2].denominator /
-                3600
-            var Longtitude =
-              this.exifdata.GPSLongitude[0].numerator /
-                this.exifdata.GPSLongitude[0].denominator +
-              this.exifdata.GPSLongitude[1].numerator /
-                this.exifdata.GPSLongitude[1].denominator /
-                60 +
-              this.exifdata.GPSLongitude[2].numerator /
-                this.exifdata.GPSLongitude[2].denominator /
-                3600
-            if (this.exifdata.GPSLatitudeRef == 'S') latitude *= -1
-            if (this.exifdata.GPSLongitudeRef != 'E') longitude *= -1
-          }
-          if (latitude != '' && latitude != null) {
-            self.$store.commit('profiles/setlongLat', [Longtitude, latitude])
-            resolve({ latitude: latitude, longitude: Longtitude })
-          } else {
-            resolve()
-          }
-        })
-      })
+    //launch next image
+    this.counter += 1
+    if (this.arraytemp != null && this.counter < this.arraytemp.length) {
+     console.log('next', this.counter)
+     this.src = this.arraytemp[this.counter]
+     this.enabled = true
     }
+   })
+  },
+
+  initialiseSwiper() {
+   var smallscreen =
+    this.$vuetify.breakpoint.name == 'sm' ||
+    this.$vuetify.breakpoint.name == 'xs'
+
+   var spv = smallscreen ? 1 : 2
+
+   mySwiper = new Swiper('.swiper-container', {
+    // effect
+    effect: smallscreen ? 'fade' : '',
+    // grab cursor
+    grabCursor: true,
+    // Optional parameters
+    direction: 'horizontal',
+
+    // If we need pagination
+    pagination: {
+     el: '.swiper-pagination',
+     type: 'bullets'
+    },
+    slidesPerView: 1,
+
+    // Navigation arrows
+    navigation: {
+     nextEl: '.swiper-button-next',
+     prevEl: '.swiper-button-prev'
+    }
+   })
+  },
+  async updateProfile() {
+   this.$store
+    .dispatch('profiles/updateProfile')
+    .then(profileId => {
+     this.$router.push({ path: '/profile/view/' + this.$route.params.id })
+    })
+    .catch(error => {
+     console.log(error)
+    })
+  },
+  addPictures(e) {
+   //clear editing slide to prevent deleting smth wrong
+   this.editingSlide = null
+   //put pictures in a list.
+   this.counter = 0
+   this.arraytemp = e.target.files
+   //Add the coords of these pictures to the map (subtle dots)
+   //last picture sets the coords of this profile
+   Array.from(this.arraytemp).forEach(file => {
+    this.getImageInfo(file).then(res => {
+     console.log(res)
+    })
+   })
+
+   //all pictures run true the doka to be resized
+   this.src = this.arraytemp[0]
+   this.enabled = true
+  },
+  getImageInfo(file) {
+   var self = this
+   return new Promise((resolve, reject) => {
+    EXIF.getData(file, function() {
+     if (this.exifdata.GPSLatitude) {
+      var latitude =
+       this.exifdata.GPSLatitude[0].numerator /
+        this.exifdata.GPSLatitude[0].denominator +
+       this.exifdata.GPSLatitude[1].numerator /
+        this.exifdata.GPSLatitude[1].denominator /
+        60 +
+       this.exifdata.GPSLatitude[2].numerator /
+        this.exifdata.GPSLatitude[2].denominator /
+        3600
+      var Longtitude =
+       this.exifdata.GPSLongitude[0].numerator /
+        this.exifdata.GPSLongitude[0].denominator +
+       this.exifdata.GPSLongitude[1].numerator /
+        this.exifdata.GPSLongitude[1].denominator /
+        60 +
+       this.exifdata.GPSLongitude[2].numerator /
+        this.exifdata.GPSLongitude[2].denominator /
+        3600
+      if (this.exifdata.GPSLatitudeRef == 'S') latitude *= -1
+      if (this.exifdata.GPSLongitudeRef != 'E') longitude *= -1
+     }
+     if (latitude != '' && latitude != null) {
+      self.$store.commit('profiles/setlongLat', [Longtitude, latitude])
+      resolve({ latitude: latitude, longitude: Longtitude })
+     } else {
+      resolve()
+     }
+    })
+   })
   }
+ }
 }
 </script>
 <style>
 .locationImages {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  background-color: black;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  border-radius: 50%;
+ background-repeat: no-repeat;
+ background-position: center;
+ background-size: contain;
+ background-color: black;
+ width: 50px;
+ height: 50px;
+ cursor: pointer;
+ border-radius: 50%;
 }
 .grow {
-  transition: all 0.2s ease-in-out;
+ transition: all 0.2s ease-in-out;
 }
 </style>
 <style>
 @import '@/node_modules/swiper/css/swiper.css';
 .swiper-pagination-bullet {
-  background-color: white;
+ background-color: white;
 }
 .swiper-slide-container {
-  width: 100%;
-  padding-bottom: 75%;
-  position: relative;
-  height: 0;
+ width: 100%;
+ padding-bottom: 75%;
+ position: relative;
+ height: 0;
 }
 .swiper-slide-image {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-size: cover;
+ position: absolute;
+ top: 0;
+ right: 0;
+ bottom: 0;
+ left: 0;
+ background-size: cover;
 }
 .swiper-container {
-  width: 100%;
-  max-height: 400px;
-  position: relative;
-  overflow: hidden;
+ width: 100%;
+ max-height: 400px;
+ position: relative;
+ overflow: hidden;
 }
 .swiper-button-prev {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 25px;
-  background-color: rgba(114, 114, 114, 0.15);
-  border-radius: 50px;
-  margin-top: -20px;
-  padding: 10px 20px 10px 20px;
+ color: rgba(255, 255, 255, 0.7);
+ font-size: 25px;
+ background-color: rgba(114, 114, 114, 0.15);
+ border-radius: 50px;
+ margin-top: -20px;
+ padding: 10px 20px 10px 20px;
 }
 .swiper-button-next {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 25px;
-  background-color: rgba(114, 114, 114, 0.15);
-  border-radius: 50px;
-  margin-top: -20px;
-  padding: 10px 20px 10px 20px;
+ color: rgba(255, 255, 255, 0.7);
+ font-size: 25px;
+ background-color: rgba(114, 114, 114, 0.15);
+ border-radius: 50px;
+ margin-top: -20px;
+ padding: 10px 20px 10px 20px;
 }
 .swiper-slide {
-  background-position: center;
-  background-size: contain;
+ background-position: center;
+ background-size: contain;
 }
 </style>

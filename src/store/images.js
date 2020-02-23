@@ -41,14 +41,9 @@ export const actions = {
   commit('deleteImage', payload)
  },
  deleteFs({ commit, rootState }, payload) {
-  var prepImage = {
-   profileId: parseInt(245),
-   myGuid: payload.myGuid
-  }
-
-  console.log('payload', payload)
+  console.log('payload deletefs', payload)
   this.$axios
-   .post('api/Image/deletefile', JSON.stringify(prepImage), {
+   .post('api/Image/deletefile', JSON.stringify(payload), {
     headers: {
      'Content-Type': 'application/json'
     }
@@ -77,6 +72,10 @@ export const actions = {
  uploadImage({ commit, rootState }, payload) {
   return new Promise((resolve, reject) => {
    console.log(payload)
+   var obj = {
+    Base64: payload.src,
+    ProfileID: payload.ProfileId
+   }
    this.$axios
     .post('api/Image/savefile', JSON.stringify(payload), {
      headers: {

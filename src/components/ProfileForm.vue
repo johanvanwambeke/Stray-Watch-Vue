@@ -1,6 +1,12 @@
 <template>
- <div>
+ <div style="position:relative;width:100%">
   <div v-if="!editable">
+   <v-btn
+    style="position:absolute;top:10px;right:10px;z-index:100"
+    icon
+    @click="editable = !editable"
+    ><v-icon color="gray">edit</v-icon></v-btn
+   >
    <v-card elevation="0">
     <v-flex pa-4>
      <!-- <h3 class="font-weight-light mb-4">Species: {{ profile.species }}</h3> -->
@@ -33,7 +39,9 @@
 
        <!-- info -->
        <p v-if="profile.info != ''" class="label">Message</p>
-       <p v-if="profile.info != ''">{{ profile.info }}</p>
+       <p v-if="profile.info != ''">
+        {{ profile.info }}
+       </p>
        <!-- created by -->
        <p class="text-right" style="font-size:9px;margin:0px">
         created by {{ profile.createdBy }}
@@ -170,7 +178,11 @@
      auto-grow
      :value="profile.info"
      @change="setInfo($event)"
+     style="white-space: pre-wrap;"
     ></v-textarea>
+   </v-flex>
+   <v-flex mt-2>
+    <v-btn outlined @click="updateProfile">Save</v-btn>
    </v-flex>
   </div>
  </div>
@@ -217,6 +229,7 @@ export default {
  data() {
   return {
    ageBirtdayToggle: false,
+   editable: false,
    sexChoices: [
     {
      value: true,
@@ -260,6 +273,17 @@ export default {
    if (today.diff(birthday, 'days') < 0)
     this.setBirthday(today.format('YYYY-MM-DD'))
    else this.setBirthday(birthday.format('YYYY-MM-DD'))
+  },
+  async updateProfile() {
+   this.$store
+    .dispatch('profiles/updateProfile')
+    .then(profileId => {
+     //  this.$router.push({ path: '/profile/view/' + this.$route.params.id })
+     this.editable = false
+    })
+    .catch(error => {
+     console.log(error)
+    })
   }
  },
  computed: {
@@ -312,9 +336,6 @@ export default {
     (days > 0 ? days + ' days ' : '')
    )
   }
- },
- props: {
-  editable: true
  },
  filters: {
   booltranlate(value) {
