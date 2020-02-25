@@ -1,13 +1,15 @@
 
 <template>
-  <h1>Authenticating facebook</h1>
-  <v-progress-circular indeterminate color="primary"></v-progress-circular>
+  <div>
+    <h1>Authenticating facebook</h1>
+    <v-progress-circular v-model="loading" indeterminate color="primary"></v-progress-circular>
+  </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      loaded: false
+      loading: true
     }
   },
   async mounted() {
@@ -36,7 +38,7 @@ export default {
               await this.$auth.fetchUser()
               // this.$auth.setToken('local', 'Bearer ' + res.token)
               console.log(this.$auth.user)
-              this.loaded = true
+              this.loading = false
             })
           })
         })

@@ -55,13 +55,17 @@
     <!-- location map -->
     <v-flex xs12 pa-2>
       <v-card outlined style="overflow:hidden">
-        <MapBox />
+        <client-only>
+          <MapBox />
+        </client-only>
       </v-card>
     </v-flex>
     <!-- messages  -->
     <v-flex xs12 pa-2>
       <v-card outlined>
-        <ProfileMessages :dispose="disposeComponent" />
+        <client-only>
+          <ProfileMessages :dispose="disposeComponent" />
+        </client-only>
       </v-card>
     </v-flex>
   </v-layout>
@@ -92,7 +96,8 @@ export default {
     this.disposeComponent = true
     next()
   },
-  asyncData({ params, store }) {
+  async asyncData({ params, store }) {
+    await store.dispatch('profiles/getProfile', params.id)
     return store.dispatch('profiles/getMetaInfo', params.id).then(res => {
       return res
     })
@@ -113,6 +118,7 @@ export default {
       .dispatch('profiles/getProfile', this.$route.params.id)
       .then(res => {
         var data = res
+        console.log('mounted', data)
         this.getLocation()
       })
   },

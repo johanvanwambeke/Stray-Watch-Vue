@@ -140,8 +140,7 @@ export default {
       arraytemp: [],
       src: '',
       enabled: false,
-      editingSlide: null,
-      edit: false
+      editingSlide: null
     }
   },
   mounted() {

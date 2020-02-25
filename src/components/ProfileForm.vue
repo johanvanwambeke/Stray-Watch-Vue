@@ -237,6 +237,7 @@ export default {
     }
   },
   mounted() {
+    // store.dispatch('profiles/getProfile', this.$route.params.id)
     this.edit = this.editing
   },
   props: {

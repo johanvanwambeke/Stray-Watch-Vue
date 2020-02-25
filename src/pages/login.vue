@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <v-layout rows wrap align-center>
-      <v-flex>
+    <v-layout rows wrap class="text-center backgroundimage">
+      <v-flex style="max-width:300px;margin-left:auto;margin-right:auto">
         <v-form>
           <h2>Please log in</h2>
           <v-text-field v-model="email" placeholder="email"></v-text-field>
@@ -15,8 +15,6 @@
           <v-btn color="#999" height="25px" class="loginBtn" @click="login">Login</v-btn>
         </v-form>
       </v-flex>
-    </v-layout>
-    <v-layout rows wrap class="text-center backgroundimage">
       <v-flex xs12>
         <v-btn
           color="#4267B2"
