@@ -81,7 +81,6 @@ module.exports = {
  plugins: [
   '@/plugins/vuetify',
   '@/plugins/notifications',
-
   {
    src: '@/plugins/vue-fullscreen',
    ssr: false
@@ -112,11 +111,10 @@ module.exports = {
     ssr: false
    },
    {
-    src: '@/plugins/socialtolocal',
-    ssr: true
+    src: '@/plugins/auth',
+    ssr: false
    }
   ],
-
   strategies: {
    local: {
     endpoints: {
@@ -130,19 +128,25 @@ module.exports = {
     }
    },
    google: {
+    // authorization_endpoint: 'https://accounts.google.com/o/oauth2/auth',
+    // userinfo_endpoint: 'https://www.googleapis.com/oauth2/v2/userinfo',
+    // scope: ['openid', 'profile', 'email'],
+    // redirect_uri: process.env.VUE_APP_BASE_URL + '/callbackGoogle/',
     client_id: process.env.GOOGLE_API
+   },
+   facebook: {
+    client_id: process.env.FACEBOOK_ID,
+    // redirect_uri: process.env.VUE_APP_BASE_URL + '/callbackFacebook/',
+    userinfo_endpoint:
+     'https://graph.facebook.com/v2.12/me?fields=about,name,picture{url},email',
+    scope: ['public_profile', 'email']
    }
   },
   redirect: {
-   login: {
-    url: 'api/users/authenticate',
-    method: 'post',
-    propertyName: 'token'
-   },
-   logout: false,
-   user: { url: '/api/users/get', method: 'get', propertyName: false },
-   callback: '/login',
-   home: '/'
+   login: '/login',
+   logout: '/',
+   home: '/',
+   callback: '/callback/'
   }
  },
 
@@ -164,7 +168,7 @@ module.exports = {
   ** Axios module configuration
   */
  axios: {
-  baseURL: 'https://localhost:44352/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
+  baseURL: 'https://stray-watch-api.azurewebsites.net/' //'https://localhost:44352/' //'https://stray-watch-api.azurewebsites.net/'
  },
 
  /*

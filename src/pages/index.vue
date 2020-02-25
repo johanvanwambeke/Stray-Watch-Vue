@@ -42,17 +42,19 @@
     </v-layout>
     <!-- map -->
     <v-flex xs12 pa-2>
-      <div class="mapcontainer">
-        <v-skeleton-loader v-if="loadingMap" tile class="skeletonoverlay" type="image"></v-skeleton-loader>
-        <div v-if="hintOnTwoFingers" class="overlay">
-          <v-container fill-height fluid>
-            <v-flex align="center" justify="center">
-              <p>Use 2 fingers to move the map</p>
-            </v-flex>
-          </v-container>
+      <v-card outlined style="overflow:hidden">
+        <div class="mapcontainer">
+          <v-skeleton-loader v-if="loadingMap" tile class="skeletonoverlay" type="image"></v-skeleton-loader>
+          <div v-if="hintOnTwoFingers" class="overlay">
+            <v-container fill-height fluid>
+              <v-flex align="center" justify="center">
+                <p>Use 2 fingers to move the map</p>
+              </v-flex>
+            </v-container>
+          </div>
+          <div id="map" ref="map" class="mapbox"></div>
         </div>
-        <div id="map" ref="map" class="mapbox"></div>
-      </div>
+      </v-card>
     </v-flex>
     <!-- list of profiles -->
     <!-- skeleton  -->
@@ -79,7 +81,7 @@
             <v-lazy>
               <div
                 class="profileImage"
-                style="text-align:center;background-size: cover;background-position: center;"
+                style="text-align:center;background-size: cover;background-position: center;border-radius: 4px 4px 0px 0px"
                 :style="{ backgroundImage: `url(${profile.pic})` }"
               ></div>
             </v-lazy>
