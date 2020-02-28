@@ -7,10 +7,8 @@
         <div class="swiper-wrapper">
           <!-- Slides -->
           <div v-for="(image, i) in imagelst" :key="i" class="swiper-slide">
-            <div class="swiper-slide-container">
-              <div class="blur-background" :style="`background-image: url(${image.url}); `"></div>
-              <div class="swiper-slide-image" :style="`background-image: url(${image.url}); `"></div>
-            </div>
+            <div class="blur-background" :style="`background-image: url(${image.url}); `"></div>
+            <div class="swiper-slide-image" :style="`background-image: url(${image.url}); `"></div>
           </div>
         </div>
         <!-- If we need pagination -->
@@ -53,11 +51,6 @@
 </template>
 <style>
 @import '@/node_modules/swiper/css/swiper.css';
-.doka--root {
-  --doka-effect--invert: 100%;
-  --doka-color--alpha: #2990ff;
-  --doka-color--alpha-dim: #1a80ec;
-}
 .edit-button {
   position: absolute;
   top: 10px;
@@ -68,31 +61,23 @@
 .swiper-container {
   position: relative;
   overflow: hidden;
-  max-height: 400px;
-}
-.swiper-pagination-bullet {
-  background-color: white;
 }
 
-.swiper-slide-container {
-  width: 100%;
-  height: 400px;
-  position: relative;
-  overflow: hidden;
+.swiper-slide {
+  min-height: 400px !important;
 }
 .blur-background {
-  filter: blur(10px);
-  -webkit-filter: blur(10px);
-
+  filter: blur(9px);
+  -webkit-filter: blur(9px);
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-
+  z-index: 4;
   background-size: cover;
   background-position: center;
-  overflow: hidden;
+  min-height: 400px;
 }
 .swiper-slide-image {
   position: absolute;
@@ -101,21 +86,23 @@
   bottom: 0;
   left: 0;
   z-index: 5;
-  background-size: contain;
+  background-size: contain !important;
   background-position: center;
-  overflow: hidden;
+  min-height: 400px;
 }
+.swiper-pagination-bullet {
+  background-color: white;
+}
+
 .swiper-button-prev {
   color: rgba(255, 255, 255, 0.7);
   font-size: 15px !important;
-  /* background-color: rgba(114, 114, 114, 0.15); */
   margin-top: -20px;
   padding: 10px 20px 10px 20px;
 }
 .swiper-button-next {
   color: rgba(255, 255, 255, 0.7);
   font-size: 15px !important;
-  /* background-color: rgba(114, 114, 114, 0.15); */
   margin-top: -20px;
   padding: 10px 20px 10px 20px;
 }

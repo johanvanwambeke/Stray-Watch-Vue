@@ -13,6 +13,9 @@
     </div>
   </div>
 </template>
+<style lang="scss" scoped>
+@import 'https://api.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css';
+</style>
 <script>
 import { mapState } from 'vuex'
 var map = null

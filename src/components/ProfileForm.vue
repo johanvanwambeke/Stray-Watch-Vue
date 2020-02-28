@@ -38,13 +38,6 @@
             <!-- info -->
             <p v-if="profile.info != ''" class="label">Message</p>
             <p v-if="profile.info != ''" style=" white-space: pre-wrap;">{{ profile.info }}</p>
-            <!-- created by -->
-            <p
-              class="text-right"
-              style="font-size:9px;margin:0px"
-            >created by {{ profile.createdBy }}</p>
-            <!-- created on -->
-            <p class="text-right" style="font-size:9px;margin:0px">{{ createdFormat }}</p>
           </v-flex>
         </v-layout>
       </v-flex>
