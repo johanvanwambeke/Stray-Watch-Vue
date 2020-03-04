@@ -1,5 +1,5 @@
 <template>
-  <v-layout rows wrap>
+  <v-layout rows wrap style="position:relative">
     <!-- filters -->
     <v-layout cols wrap>
       <v-flex xs4 pa-2>
@@ -59,14 +59,76 @@
     <!-- list of profiles -->
     <!-- skeleton  -->
     <v-layout v-if="loadingProfiles" wrap rows class="d-flex align-center">
-      <div v-for="(j, i) in 3*4" :key="i" class="profileCard">
-        <v-skeleton-loader tile :key="i" class="mx-auto" max-width="300" type="card"></v-skeleton-loader>
+      <div v-for="(w, g) in 4" :key="g" class="profileCard">
+        <v-skeleton-loader rounded tile :key="g" class="mx-auto" type="card"></v-skeleton-loader>
+      </div>
+      <v-flex pa-2 xs12 class="d-flex align-center" style="color:#ccc">
+        <p style="margin:0px;margin-right:10px">more then 3km away</p>
+        <v-divider></v-divider>
+      </v-flex>
+      <div v-for="(j, i) in 12" :key="i+10" class="profileCard">
+        <v-skeleton-loader rounded tile :key="i+10" class="mx-auto" type="card"></v-skeleton-loader>
       </div>
     </v-layout>
     <!-- actual profiles -->
-    <v-layout v-if="!loadingProfiles" wrap rows class="d-flex align-center">
+    <v-layout xs12 v-if="!loadingProfiles" wrap rows class="d-flex align-center">
+      <div class="profileCard" @click="createProfile" style="cursor:pointer">
+        <v-layout v-ripple cols wrap flex align-center justify-center>
+          <v-flex xs12 style="position:relative">
+            <v-lazy>
+              <div
+                class="profileImage"
+                style="text-align:center;background-size: contain;background-position: center;border-radius: 4px 4px 0px 0px"
+                :style="{ backgroundImage: `url(https://cdn2.iconfinder.com/data/icons/picons-basic-2/57/basic2-272_add_new_plus-512.png)` }"
+              ></div>
+            </v-lazy>
+          </v-flex>
+          <v-flex xs12>
+            <div class="profileDescription">
+              <p style="font-size:15px;margin-bottom:4px">Create a new profile</p>
+            </div>
+          </v-flex>
+        </v-layout>
+      </div>
+
       <div
-        v-for="(profile, i) in profiles"
+        v-for="(profile, i) in profiles.filter(profile=>profile.distance<=3)"
+        :key="i+'f'"
+        class="profileCard"
+        @click="openProfile(profile.profileId)"
+        style="cursor:pointer"
+      >
+        <v-btn v-if="$auth.loggedIn" @click="follow($event,profile)" text icon class="favoriteIcon">
+          <v-icon v-if="!profile.follow" size="18px" color="gray">favorite_border</v-icon>
+          <v-icon v-else size="18px" color="pink">favorite</v-icon>
+        </v-btn>
+        <v-layout v-ripple cols wrap flex align-center justify-center>
+          <v-flex xs12 style="position:relative">
+            <v-lazy>
+              <div
+                class="profileImage"
+                style="text-align:center;background-size: cover;background-position: center;border-radius: 4px 4px 0px 0px"
+                :style="{ backgroundImage: `url(${profile.pic})` }"
+              ></div>
+            </v-lazy>
+          </v-flex>
+          <v-flex xs12>
+            <div class="profileDescription">
+              <p style="font-size:15px;margin-bottom:4px">{{ profile.sentence }}</p>
+              <p style="font-size:13px;color:light-grey">{{ profile.distance | twocomma }} Km</p>
+            </div>
+          </v-flex>
+        </v-layout>
+      </div>
+    </v-layout>
+    <!-- further away -->
+    <v-flex pa-2 xs12 class="d-flex align-center" style="color:#ccc">
+      <p style="margin:0px;margin-right:10px">more then 3km away</p>
+      <v-divider></v-divider>
+    </v-flex>
+    <v-layout xs12 v-if="!loadingProfiles" wrap rows class="d-flex align-center">
+      <div
+        v-for="(profile, i) in profiles.filter(profile=>profile.distance>3)"
         :key="i"
         class="profileCard"
         @click="openProfile(profile.profileId)"
@@ -95,6 +157,7 @@
         </v-layout>
       </div>
     </v-layout>
+    <!-- Create Button -->
   </v-layout>
 </template>
 <style>
@@ -110,7 +173,6 @@
   top: 15px;
   left: calc(100% - 40px);
   z-index: 150;
-  /* background-color: rgba(255, 255, 255, 0.281); */
   background-color: rgba(255, 255, 255, 0.8);
 }
 .profileCard {
@@ -119,6 +181,7 @@
   position: relative;
   padding: 8px;
 }
+
 @media screen and (max-width: 850px) {
   .profileCard {
     width: calc(100% / 3);
@@ -239,6 +302,14 @@ export default {
     ...mapMutations({
       setFollowInList: 'profiles/setFollowInList'
     }),
+    createProfile() {
+      this.$store
+        .dispatch('profiles/create')
+        .then(x => {
+          this.$router.push('/profile/view/' + x)
+        })
+        .catch(err => {})
+    },
     search() {
       this.loadingProfiles = true
       var payload = {

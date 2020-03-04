@@ -3,17 +3,12 @@
     <!-- animal info -->
     <v-flex xs12 pa-2>
       <v-card outlined style="overflow:hidden">
-        <v-layout ma-2 cols wrap style="position:relative">
+        <v-layout ma-4 cols wrap style="position:relative">
           <v-flex xs6>
-            <p style="font-size:16px">#{{$route.params.id}}</p>
-            <a
-              @click="openMaps"
-              style="font-size:13px;color:black;text-decoration:underline"
-            >{{ placename }}</a>
             <!-- created by -->
-            <p style="font-size:9px;margin:0px">created by {{ profile.createdBy }}</p>
+            <p style="font-size:10px;margin:0px;margin-top:3px">created by {{ profile.createdBy }}</p>
             <!-- created on -->
-            <p style="font-size:9px;margin:0px">{{ createdFormat }}</p>
+            <p style="font-size:10px;margin:0px">{{ createdFormat }}</p>
           </v-flex>
 
           <v-spacer></v-spacer>
@@ -50,24 +45,23 @@
         </v-layout>
       </v-card>
     </v-flex>
-
     <!-- images -->
     <v-flex xs12 pa-2>
       <v-card outlined style="overflow:hidden">
-        <MySwiper :profileID="$route.params.id" :edit="editable"></MySwiper>
+        <MySwiper :profileID="$route.params.id" :edit="editing"></MySwiper>
       </v-card>
     </v-flex>
     <!-- form -->
     <v-flex xs12 pa-2>
       <v-card outlined>
-        <ProfileForm :editable="editable" :editing="editing" />
+        <ProfileForm :editable="$auth.loggedIn" :editing="editing" />
       </v-card>
     </v-flex>
     <!-- location map -->
-    <v-flex xs12 pa-2>
+    <v-flex xs12 pa-2 ref="map">
       <v-card outlined style="overflow:hidden">
         <client-only>
-          <MapBox />
+          <MapBox :editable="$auth.loggedIn" :editing="editing" />
         </client-only>
       </v-card>
     </v-flex>
@@ -79,9 +73,65 @@
         </client-only>
       </v-card>
     </v-flex>
+    <!-- edit button -->
+
+    <v-flex xs12 class="wrapper">
+      <div class="fixed-wrapper">
+        <div class="fixed">
+          <v-btn
+            v-if="!editing"
+            @click="editing = !editing"
+            large
+            icon
+            outlined
+            class="contextAction"
+          >
+            <v-icon>edit</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="editing"
+            @click="updateProfile"
+            large
+            icon
+            outlined
+            class="contextAction notexist"
+          >
+            <v-icon>save</v-icon>
+          </v-btn>
+        </div>
+      </div>
+    </v-flex>
   </v-layout>
 </template>
 <style scoped>
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Absolute positioned wrapper for the element you want to fix position */
+.fixed-wrapper {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+/* The element you want to fix the position of */
+.fixed {
+  position: fixed;
+  /* width: 100%; */
+  bottom: 10px;
+  /* right: -10px; */
+  /* Do not set top / left! */
+}
+
+.contextAction {
+  z-index: 151;
+  margin-left: -44px;
+  /* border: none; */
+  background-color: white;
+}
+
 .addImage {
   cursor: pointer;
   background-color: greenyellow;
@@ -177,7 +227,6 @@ export default {
         //Deze moet hier worden opgeroepen en zo alles in de store goed zetten
         this.imagelst.forEach(element => {})
         this.loadingSlider = false
-        this.getLocation()
       })
   },
   computed: {
@@ -225,10 +274,11 @@ export default {
         .dispatch('profiles/updateProfile')
         .then(profileId => {
           this.$router.push({ path: '/profile/view/' + this.$route.params.id })
-          getLocation()
+          this.editing = false
         })
         .catch(error => {
           console.log(error)
+          this.editing = false
         })
     },
     follow() {
@@ -241,29 +291,6 @@ export default {
         .then(res => {
           setFollow(!this.follow)
         })
-    },
-    getLocation() {
-      if (!this.profile.long) return
-      var url =
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/
-      ${this.profile.long},${this.profile.lat}
-      .json?access_token=` + process.env.MAP_TOKEN
-
-      console.log('getlcation', url)
-      this.$axios
-        .get(url)
-        .then(ress => {
-          this.placename = ress.data.features[0].place_name
-          console.log('placename', ress)
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    openMaps() {
-      window.open(
-        `https://maps.google.com/` //maps?daddr=${this.profile.lat},${this.profile.long}&amp;ll=`
-      )
     }
   }
 }

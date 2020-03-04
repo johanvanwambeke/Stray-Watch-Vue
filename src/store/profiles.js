@@ -104,11 +104,11 @@ export const actions = {
     rejectUnauthorized: false
    })
 
-   //  if (parseInt(payload) === parseInt(state.profile.profileId)) {
-   //   console.log('Do not get new profile')
-   //   resolve(null)
-   //   return
-   //  }
+   if (parseInt(payload) === parseInt(state.profile.profileId)) {
+    console.log('Do not get new profile')
+    resolve(null)
+    return
+   }
    commit('images/setImages', [], {
     root: true
    })

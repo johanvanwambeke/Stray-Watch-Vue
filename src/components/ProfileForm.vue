@@ -1,14 +1,14 @@
 <template>
   <div style="position:relative;width:100%">
-    <div v-if="!edit">
-      <v-btn
+    <div v-if="!editing">
+      <!-- <v-btn
         v-if="editable"
         style="position:absolute;top:10px;right:10px;z-index:100"
         icon
         @click="edit = !edit"
       >
         <v-icon color="gray">edit</v-icon>
-      </v-btn>
+      </v-btn>-->
 
       <v-flex pa-4>
         <!-- <h3 class="font-weight-light mb-4">Species: {{ profile.species }}</h3> -->
@@ -42,10 +42,10 @@
         </v-layout>
       </v-flex>
     </div>
-    <v-flex v-if="edit" pa-4>
-      <v-btn style="position:absolute;top:10px;right:10px;z-index:100" icon @click="updateProfile">
+    <v-flex v-if="editing" pa-4>
+      <!-- <v-btn style="position:absolute;top:10px;right:10px;z-index:100" icon @click="updateProfile">
         <v-icon color="gray">save</v-icon>
-      </v-btn>
+      </v-btn>-->
       <v-flex>
         <!-- species -->
         <p class="editlabel">Species</p>
@@ -207,7 +207,6 @@ export default {
   data() {
     return {
       ageBirtdayToggle: false,
-      edit: false,
       sexChoices: [
         {
           value: true,
@@ -229,10 +228,7 @@ export default {
       ]
     }
   },
-  mounted() {
-    // store.dispatch('profiles/getProfile', this.$route.params.id)
-    this.edit = this.editing
-  },
+  mounted() {},
   props: {
     editable: false,
     editing: false
@@ -259,18 +255,18 @@ export default {
       if (today.diff(birthday, 'days') < 0)
         this.setBirthday(today.format('YYYY-MM-DD'))
       else this.setBirthday(birthday.format('YYYY-MM-DD'))
-    },
-    async updateProfile() {
-      this.$store
-        .dispatch('profiles/updateProfile')
-        .then(profileId => {
-          //  this.$router.push({ path: '/profile/view/' + this.$route.params.id })
-          this.edit = false
-        })
-        .catch(error => {
-          console.log(error)
-        })
     }
+    // async updateProfile() {
+    //   this.$store
+    //     .dispatch('profiles/updateProfile')
+    //     .then(profileId => {
+    //       //  this.$router.push({ path: '/profile/view/' + this.$route.params.id })
+    //       this.edit = false
+    //     })
+    //     .catch(error => {
+    //       console.log(error)
+    //     })
+    // }
   },
   computed: {
     ...mapState({

@@ -1,71 +1,64 @@
 <template>
   <v-app light>
     <v-container class="boss-container">
-      <!-- snackbar -->
       <v-snackbar v-model="snackbar" class="text-center" bottom color="black">
         <p style="color:red">{{ snackmsg }}</p>
       </v-snackbar>
-      <!-- navigatie -->
-      <!-- <v-layout wrap rows class>
-        <div class="nav-button d-flex justify-center" v-for="an in 5">
-          <div class="text-center">
-            <v-icon>pets</v-icon>
-            <p style="font-size:10px">Animals</p>
-          </div>
-        </div>
-      </v-layout>-->
-      <v-layout cols wrap mb-2 pa-2>
-        <v-btn small text to="/">Animals</v-btn>
-        <v-btn small text @click="create">Create</v-btn>
-        <v-spacer></v-spacer>
-        <client-only>
-          <!-- alert -->
-          <v-menu offset-y v-if="alerts.length > 0">
-            <template v-slot:activator="{ on }">
-              <v-btn small text v-on="on">
-                alerts {{ alerts.length }}
-                <v-icon>expand_more</v-icon>
-              </v-btn>
-            </template>
+      <!-- navigation -->
+      <v-flex xs12 pa-2 id="navbar">
+        <v-card outlined class="navcard" style="overflow:hidden;">
+          <v-layout cols wrap pa-2>
+            <v-btn small text to="/">Animals</v-btn>
+            <v-btn small text @click="create">Create</v-btn>
+            <v-spacer></v-spacer>
+            <client-only>
+              <!-- alert -->
+              <v-menu offset-y v-if="alerts.length > 0">
+                <template v-slot:activator="{ on }">
+                  <v-btn small text v-on="on">
+                    alerts {{ alerts.length }}
+                    <v-icon>expand_more</v-icon>
+                  </v-btn>
+                </template>
 
-            <v-flex style="background-color:white">
-              <v-flex v-for="(alert, i) in alerts" :key="i" xs12>
-                <v-btn
-                  small
-                  text
-                  @click="gotoProfile(alert.profileID)"
-                >#{{ alert.profileID }} has new messages</v-btn>
-              </v-flex>
-            </v-flex>
-          </v-menu>
-          <!-- user -->
-          <v-menu offset-y>
-            <template v-slot:activator="{ on }">
-              <v-btn small text v-on="on">
-                {{ $auth.loggedIn ? username : 'Log in' }}
-                <v-icon>expand_more</v-icon>
-              </v-btn>
-            </template>
+                <v-flex style="background-color:white">
+                  <v-flex v-for="(alert, i) in alerts" :key="i" xs12>
+                    <v-btn
+                      small
+                      text
+                      @click="gotoProfile(alert.profileID)"
+                    >#{{ alert.profileID }} has new messages</v-btn>
+                  </v-flex>
+                </v-flex>
+              </v-menu>
+              <!-- user -->
+              <v-menu offset-y>
+                <template v-slot:activator="{ on }">
+                  <v-btn small text v-on="on">
+                    {{ $auth.loggedIn ? username : 'Log in' }}
+                    <v-icon>expand_more</v-icon>
+                  </v-btn>
+                </template>
 
-            <v-flex style="background-color:white">
-              <v-flex xs12 v-if="$auth.loggedIn">
-                <v-btn small text to="/user">User</v-btn>
-              </v-flex>
-              <v-flex xs12 v-if="$auth.loggedIn">
-                <v-btn small text @click="logout">Logout</v-btn>
-              </v-flex>
-              <v-flex xs12 v-if="!$auth.loggedIn">
-                <v-btn small text to="/register">Register</v-btn>
-              </v-flex>
-              <v-flex xs12 v-if="!$auth.loggedIn">
-                <v-btn small text to="/login">Log in</v-btn>
-              </v-flex>
-            </v-flex>
-          </v-menu>
-        </client-only>
-      </v-layout>
-      <v-divider style="margin-left:8px;margin-right:8px;padding-bottom:8px;"></v-divider>
-
+                <v-flex style="background-color:white">
+                  <v-flex xs12 v-if="$auth.loggedIn">
+                    <v-btn small text to="/user">User</v-btn>
+                  </v-flex>
+                  <v-flex xs12 v-if="$auth.loggedIn">
+                    <v-btn small text @click="logout">Logout</v-btn>
+                  </v-flex>
+                  <v-flex xs12 v-if="!$auth.loggedIn">
+                    <v-btn small text to="/register">Register</v-btn>
+                  </v-flex>
+                  <v-flex xs12 v-if="!$auth.loggedIn">
+                    <v-btn small text to="/login">Log in</v-btn>
+                  </v-flex>
+                </v-flex>
+              </v-menu>
+            </client-only>
+          </v-layout>
+        </v-card>
+      </v-flex>
       <nuxt />
     </v-container>
   </v-app>
@@ -91,7 +84,19 @@
   background: rgb(122, 122, 122);
 }
 </style>
-<style scoped>
+<style scoped lang="scss">
+.navcard {
+  background-color: white !important;
+  border: none !important;
+}
+#navbar {
+  // position: fixed; /* Make it stick/fixed */
+  // top: 0; /* Stay on top */
+  transition: top 0.3s; /* Transition effect when sliding down (and up) */
+  // width: calc(100% - 20px);
+  z-index: 151;
+}
+
 @media screen and (max-width: 700px) {
   .boss-container {
     padding: 0px;
@@ -121,12 +126,28 @@
     #d2d2d2 100%
   ) !important;
 }
+#navbar {
+}
 </style>
-
+<script>
+if (process.client) {
+  var prevScrollpos = window.pageYOffset
+  window.onscroll = function() {
+    var currentScrollPos = window.pageYOffset
+    if (prevScrollpos > currentScrollPos) {
+      document.getElementById('navbar').style.top = '0'
+    } else {
+      document.getElementById('navbar').style.top = '-150px'
+    }
+    prevScrollpos = currentScrollPos
+  }
+}
+</script>
 <script>
 import { mapState } from 'vuex'
 export default {
   middleware: 'authGuard',
+  comments: {},
   methods: {
     goTo(link) {
       this.$router.push({ path: `/` + link })

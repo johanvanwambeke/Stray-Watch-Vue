@@ -1,15 +1,23 @@
 <template>
-  <div class="mapblock">
-    <div id="map" ref="map" class="mapbox"></div>
-    <div class="floating-images">
-      <div
-        class="image-thumbnail"
-        @click="setLocation(img.long, img.lat)"
-        v-for="(img,i) in images.filter(x=> x.long!=0 && x.long!=undefined)"
-        :key="i"
-      >
-        <img class="image-style" height="35px" width="35px" :src="img.url" />
+  <div>
+    <div class="mapblock">
+      <div id="map" ref="map" class="mapbox"></div>
+      <div class="floating-images" v-if="editing">
+        <div
+          class="image-thumbnail"
+          @click="setLocation(img.long, img.lat)"
+          v-for="(img,i) in images.filter(x=> x.long!=0 && x.long!=undefined)"
+          :key="i"
+        >
+          <img class="image-style" height="35px" width="35px" :src="img.url" />
+        </div>
       </div>
+    </div>
+    <div style="padding:8px">
+      <a
+        @click="openMaps"
+        style="font-size:13px;color:black;text-decoration:underline"
+      >{{ placename }}</a>
     </div>
   </div>
 </template>
@@ -27,11 +35,16 @@ export default {
       var longlat = [this.long, this.lat]
       map.flyTo({ center: longlat })
       marker.setLngLat(longlat)
+      this.getLocation()
     }
+  },
+  props: {
+    editing: false
   },
   data() {
     return {
-      dialog: false
+      dialog: false,
+      placename: ''
     }
   },
   computed: {
@@ -46,6 +59,29 @@ export default {
     console.log(this.long, this.lat)
   },
   methods: {
+    openMaps() {
+      window.open(
+        `https://maps.google.com/maps?daddr=${this.lat},${this.long}&amp;ll=`
+      )
+    },
+    getLocation() {
+      if (!this.long) return
+      var url =
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/
+      ${this.long},${this.lat}
+      .json?access_token=` + process.env.MAP_TOKEN
+
+      console.log('getlcation', url)
+      this.$axios
+        .get(url)
+        .then(ress => {
+          this.placename = ress.data.features[0].place_name
+          console.log('placename', ress)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     init() {
       var self = this
       const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
@@ -63,7 +99,7 @@ export default {
 
       // Create the marker
       marker = new mapboxgl.Marker({
-        draggable: true,
+        draggable: this.editing,
         color: '#66A39E'
       })
       marker.setLngLat([4.28, 50.3]).addTo(map)
@@ -73,16 +109,24 @@ export default {
         var lngLat = marker.getLngLat()
         self.$store.commit('profiles/setlongLat', [lngLat.lng, lngLat.lat])
       }
-      marker.on('dragend', onDragEnd)
+      if (this.editing) {
+        marker.on('dragend', onDragEnd)
 
-      map.on('click', function(e) {
-        marker.setLngLat(e.lngLat)
-        self.$store.commit('profiles/setlongLat', [e.lngLat.lng, e.lngLat.lat])
-      })
-      map.on('touch', function(e) {
-        marker.setLngLat(e.lngLat)
-        self.$store.commit('profiles/setlongLat', [e.lngLat.lng, e.lngLat.lat])
-      })
+        map.on('click', function(e) {
+          marker.setLngLat(e.lngLat)
+          self.$store.commit('profiles/setlongLat', [
+            e.lngLat.lng,
+            e.lngLat.lat
+          ])
+        })
+        map.on('touch', function(e) {
+          marker.setLngLat(e.lngLat)
+          self.$store.commit('profiles/setlongLat', [
+            e.lngLat.lng,
+            e.lngLat.lat
+          ])
+        })
+      }
 
       // Current location
       var currentLocation = new mapboxgl.GeolocateControl({
@@ -95,7 +139,6 @@ export default {
       map.addControl(currentLocation, 'top-left')
     },
     setLocation(long, lat) {
-      console.log(long, lat)
       this.$store.commit('profiles/setlongLat', [long, lat])
     }
   }
