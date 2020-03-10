@@ -13,11 +13,6 @@ export const state = () => ({
 })
 
 import moment from 'moment'
-// export const getters = {
-//  getBirthdate(state) {
-//   return new moment(state.profile.birthDay).startOf('day')
-//  }
-// }
 
 export const mutations = {
  setProfiles(state, payload) {
@@ -104,11 +99,11 @@ export const actions = {
     rejectUnauthorized: false
    })
 
-   if (parseInt(payload) === parseInt(state.profile.profileId)) {
-    console.log('Do not get new profile')
-    resolve(null)
-    return
-   }
+   //  if (parseInt(payload) === parseInt(state.profile.profileId)) {
+   //   console.log('Do not get new profile')
+   //   resolve(null)
+   //   return
+   //  }
    commit('images/setImages', [], {
     root: true
    })

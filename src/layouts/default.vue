@@ -48,10 +48,7 @@
                     <v-btn small text @click="logout">Logout</v-btn>
                   </v-flex>
                   <v-flex xs12 v-if="!$auth.loggedIn">
-                    <v-btn small text to="/register">Register</v-btn>
-                  </v-flex>
-                  <v-flex xs12 v-if="!$auth.loggedIn">
-                    <v-btn small text to="/login">Log in</v-btn>
+                    <v-btn small text to="/login">Register/login</v-btn>
                   </v-flex>
                 </v-flex>
               </v-menu>
@@ -87,7 +84,7 @@
 <style scoped lang="scss">
 .navcard {
   background-color: white !important;
-  border: none !important;
+  // border: none !important;
 }
 #navbar {
   // position: fixed; /* Make it stick/fixed */
@@ -188,7 +185,7 @@ export default {
       this.$store
         .dispatch('profiles/create')
         .then(x => {
-          this.$router.push('/profile/view/' + x)
+          this.$router.push('/profile/view/' + x + '?edit=true')
         })
         .catch(err => {})
     }

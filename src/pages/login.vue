@@ -15,7 +15,11 @@
           <v-btn color="#999" height="25px" class="loginBtn" @click="login">Login</v-btn>
         </v-form>
       </v-flex>
-      <v-flex xs12>
+
+      <v-flex pt-4 xs12>
+        <p style="margin:0px">
+          <span style="font-weight:bold">New here?</span> register and login with facebook
+        </p>
         <v-btn
           color="#4267B2"
           height="25px"

@@ -54,14 +54,14 @@
     <!-- form -->
     <v-flex xs12 pa-2>
       <v-card outlined>
-        <ProfileForm :editable="$auth.loggedIn" :editing="editing" />
+        <ProfileForm :editable="editable" :editing="editing" />
       </v-card>
     </v-flex>
     <!-- location map -->
     <v-flex xs12 pa-2 ref="map">
       <v-card outlined style="overflow:hidden">
         <client-only>
-          <MapBox :editable="$auth.loggedIn" :editing="editing" />
+          <MapBox :editable="editable" :editing="editing" />
         </client-only>
       </v-card>
     </v-flex>
@@ -74,8 +74,7 @@
       </v-card>
     </v-flex>
     <!-- edit button -->
-
-    <v-flex xs12 class="wrapper">
+    <v-flex v-if="editable" xs12 class="wrapper">
       <div class="fixed-wrapper">
         <div class="fixed">
           <v-btn
@@ -90,10 +89,22 @@
           </v-btn>
           <v-btn
             v-if="editing"
+            @click="cancelChange"
+            large
+            icon
+            outlined
+            style="margin-left:-98px"
+            class="contextAction notexist"
+          >
+            <v-icon>cancel</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="editing"
             @click="updateProfile"
             large
             icon
             outlined
+            style="margin-left:0px"
             class="contextAction notexist"
           >
             <v-icon>save</v-icon>
@@ -212,7 +223,7 @@ export default {
       editingSlide: null,
       sentense: 'asd',
       loadingSlider: true,
-      editable: true,
+      editable: false,
       editing: false,
       placename: '',
       facebookUrl1: `https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fapp.strayhero.com%2Fprofile%2Fview%2F`,
@@ -227,6 +238,9 @@ export default {
         //Deze moet hier worden opgeroepen en zo alles in de store goed zetten
         this.imagelst.forEach(element => {})
         this.loadingSlider = false
+
+        this.editable = this.$auth.user.userID === res.userID
+        this.editing = this.$route.query.edit && this.editable ? true : false
       })
   },
   computed: {
@@ -273,11 +287,19 @@ export default {
       this.$store
         .dispatch('profiles/updateProfile')
         .then(profileId => {
-          this.$router.push({ path: '/profile/view/' + this.$route.params.id })
+          // this.$router.push({ path: '/profile/view/' + this.$route.params.id })
           this.editing = false
         })
         .catch(error => {
           console.log(error)
+          this.editing = false
+        })
+    },
+    cancelChange() {
+      this.$store
+        .dispatch('profiles/getProfile', this.$route.params.id)
+        .then(res => {
+          this.$router.push({ path: '/profile/view/' + this.$route.params.id })
           this.editing = false
         })
     },
@@ -286,10 +308,11 @@ export default {
         .dispatch('user/follow', {
           profileID: parseInt(this.$route.params.id),
           userID: this.$auth.user.userID,
-          follow: this.follow
+          follow: this.profile.follow
         })
         .then(res => {
-          setFollow(!this.follow)
+          this.setFollow(!this.profile.follow)
+          console.log(res)
         })
     }
   }

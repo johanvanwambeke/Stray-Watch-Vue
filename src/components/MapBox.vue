@@ -99,7 +99,7 @@ export default {
 
       // Create the marker
       marker = new mapboxgl.Marker({
-        draggable: this.editing,
+        draggable: true,
         color: '#66A39E'
       })
       marker.setLngLat([4.28, 50.3]).addTo(map)
@@ -109,24 +109,26 @@ export default {
         var lngLat = marker.getLngLat()
         self.$store.commit('profiles/setlongLat', [lngLat.lng, lngLat.lat])
       }
-      if (this.editing) {
-        marker.on('dragend', onDragEnd)
+      marker.on('dragend', onDragEnd)
 
-        map.on('click', function(e) {
+      map.on('click', function(e) {
+        if (self.editing) {
           marker.setLngLat(e.lngLat)
           self.$store.commit('profiles/setlongLat', [
             e.lngLat.lng,
             e.lngLat.lat
           ])
-        })
-        map.on('touch', function(e) {
+        }
+      })
+      map.on('touch', function(e) {
+        if (self.editing) {
           marker.setLngLat(e.lngLat)
           self.$store.commit('profiles/setlongLat', [
             e.lngLat.lng,
             e.lngLat.lat
           ])
-        })
-      }
+        }
+      })
 
       // Current location
       var currentLocation = new mapboxgl.GeolocateControl({

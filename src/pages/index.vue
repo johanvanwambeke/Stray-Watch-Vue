@@ -14,31 +14,6 @@
           label="Animal"
         ></v-select>
       </v-flex>
-      <!-- <v-flex xs4 pa-2>
-        <v-select
-          clearable
-          dense
-          flat
-          solo
-          hide-details
-          v-model="needsFilter"
-          :items="needsLst"
-          label="Purpose"
-        ></v-select>
-      </v-flex>
-      <client-only>
-        <v-flex v-if="$auth.loggedIn" xs4 pa-2>
-          <v-switch
-            dense
-            inset
-            hide-details
-            color="black"
-            v-model="myProfiles"
-            label="I created"
-            style="margin-top:5px!important"
-          ></v-switch>
-        </v-flex>
-      </client-only>-->
     </v-layout>
     <!-- map -->
     <v-flex xs12 pa-2>
@@ -72,25 +47,6 @@
     </v-layout>
     <!-- actual profiles -->
     <v-layout xs12 v-if="!loadingProfiles" wrap rows class="d-flex align-center">
-      <div class="profileCard" @click="createProfile" style="cursor:pointer">
-        <v-layout v-ripple cols wrap flex align-center justify-center>
-          <v-flex xs12 style="position:relative">
-            <v-lazy>
-              <div
-                class="profileImage"
-                style="text-align:center;background-size: contain;background-position: center;border-radius: 4px 4px 0px 0px"
-                :style="{ backgroundImage: `url(https://cdn2.iconfinder.com/data/icons/picons-basic-2/57/basic2-272_add_new_plus-512.png)` }"
-              ></div>
-            </v-lazy>
-          </v-flex>
-          <v-flex xs12>
-            <div class="profileDescription">
-              <p style="font-size:15px;margin-bottom:4px">Create a new profile</p>
-            </div>
-          </v-flex>
-        </v-layout>
-      </div>
-
       <div
         v-for="(profile, i) in profiles.filter(profile=>profile.distance<=3)"
         :key="i+'f'"
@@ -116,6 +72,25 @@
             <div class="profileDescription">
               <p style="font-size:15px;margin-bottom:4px">{{ profile.sentence }}</p>
               <p style="font-size:13px;color:light-grey">{{ profile.distance | twocomma }} Km</p>
+            </div>
+          </v-flex>
+        </v-layout>
+      </div>
+      <!-- create new profile -->
+      <div class="profileCard" @click="createProfile" style="cursor:pointer">
+        <v-layout v-ripple cols wrap flex align-center justify-center>
+          <v-flex xs12 style="position:relative">
+            <v-lazy>
+              <div
+                class="profileImage"
+                style="text-align:center;background-size: contain;background-position: center;border-radius: 4px 4px 0px 0px"
+                :style="{ backgroundImage: `url(https://cdn2.iconfinder.com/data/icons/picons-basic-2/57/basic2-272_add_new_plus-512.png)` }"
+              ></div>
+            </v-lazy>
+          </v-flex>
+          <v-flex xs12>
+            <div class="profileDescription">
+              <p style="font-size:15px;margin-bottom:4px;text-align:center">Create a new profile</p>
             </div>
           </v-flex>
         </v-layout>
@@ -157,7 +132,6 @@
         </v-layout>
       </div>
     </v-layout>
-    <!-- Create Button -->
   </v-layout>
 </template>
 <style>
@@ -177,7 +151,7 @@
 }
 .profileCard {
   width: calc(100% / 4);
-  height: calc(100vh / 3);
+  height: 265px;
   position: relative;
   padding: 8px;
 }
@@ -221,6 +195,11 @@
   font-size: 24px;
   color: white;
 }
+.mapbox {
+  width: 100%;
+  height: 200px;
+  z-index: 2;
+}
 
 .skeletonoverlay {
   position: absolute;
@@ -229,11 +208,6 @@
   height: 300px !important;
   width: 100%;
   z-index: 10;
-}
-.mapbox {
-  width: 100%;
-  height: 200px;
-  z-index: 2;
 }
 
 .popup {
@@ -306,7 +280,7 @@ export default {
       this.$store
         .dispatch('profiles/create')
         .then(x => {
-          this.$router.push('/profile/view/' + x)
+          this.$router.push('/profile/view/' + x + '?edit=true')
         })
         .catch(err => {})
     },

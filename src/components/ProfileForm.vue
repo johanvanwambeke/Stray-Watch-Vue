@@ -84,6 +84,24 @@
           v-bind:choices="sexChoices"
         ></choiceBox>
       </v-flex>
+
+      <!-- color -->
+      <v-layout>
+        <p class="editlabel">color(s)</p>
+      </v-layout>
+      <!-- <v-combobox
+        eager
+        chips
+        deletable-chips
+        small-chips
+        hide-no-data
+        hide-selected="true"
+        no-data-text="No matching color"
+        :items="colors"
+        multiple
+        outlined
+      ></v-combobox>-->
+      <!-- age -->
       <v-layout>
         <p class="editlabel">
           Approximate age
@@ -206,6 +224,7 @@ import choiceBox from '../components/ChoiceBoxes'
 export default {
   data() {
     return {
+      colors: ['gray', 'green', 'blue', 'stripes'],
       ageBirtdayToggle: false,
       sexChoices: [
         {

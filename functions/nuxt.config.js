@@ -12,8 +12,12 @@ module.exports = {
 
  buildModules: [
   // Simple usage
-  '@nuxtjs/vuetify'
+  '@nuxtjs/vuetify',
+  '@nuxtjs/gtm'
  ],
+ gtm: {
+  id: 'GTM-K2G9V4D'
+ },
 
  /*
   ** Headers of the page
